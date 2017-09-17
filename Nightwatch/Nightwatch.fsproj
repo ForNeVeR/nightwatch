@@ -4,7 +4,14 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CheckConfiguration.fs" />
+    <Compile Include="CheckerJob.fs" />
+    <Compile Include="Scheduler.fs" />
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Program.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FSharp.Control.FusionTasks.FS41" Version="1.1.0" />
+    <PackageReference Include="Quartz" Version="3.0.0-alpha3" />
   </ItemGroup>
 </Project>

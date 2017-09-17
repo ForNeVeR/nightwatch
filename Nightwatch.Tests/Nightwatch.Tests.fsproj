@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Dummy.fs" />
+    <Compile Include="Scheduler.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
@@ -15,6 +15,8 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0-preview-20170628-02" />
     <PackageReference Include="xunit" Version="2.2.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+
+    <ProjectReference Include="../Nightwatch/Nightwatch.fsproj" />
   </ItemGroup>
 
 </Project>

@@ -18,7 +18,12 @@ let private runScheduler() =
         let! scheduler = Scheduler.create()
         do! Scheduler.configure schedule scheduler
         do! Scheduler.start scheduler
-        do! Async.Ignore <| Async.AwaitEvent(Console.CancelKeyPress)
+        printfn "Scheduler started"
+        printfn "Press any key to stop"
+        ignore <| Console.ReadKey()
+        printfn "Stopping"
+        do! Scheduler.stop scheduler
+        printfn "Bye"
     } |> Async.RunSynchronously
 
 [<EntryPoint>]

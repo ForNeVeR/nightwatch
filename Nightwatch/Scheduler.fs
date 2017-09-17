@@ -51,5 +51,5 @@ let start (scheduler : IScheduler) : Async<unit> =
 
 let stop (scheduler : IScheduler) : Async<unit> =
     async {
-        do! scheduler.Shutdown()
+        do! scheduler.Shutdown true
     }

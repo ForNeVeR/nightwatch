@@ -22,6 +22,8 @@ In developer mode:
 $ dotnet run --project Nightwatch
 ```
 
+To stop the program, press any key.
+
 Test
 ----
 

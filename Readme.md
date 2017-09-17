@@ -1,4 +1,4 @@
-Nightwatch [![Build (Travis)][badge-travis]][build-travis] [![Build (Appveyor)][badge-appveyor]][build-appveyor] [![Status Zero][status-zero]][andivionian-status-classifier]
+Nightwatch [![Build (Travis)][badge-travis]][build-travis] [![Build (Appveyor)][badge-appveyor]][build-appveyor] [![Status Umbra][status-umbra]][andivionian-status-classifier]
 ==========
 
 Nightwatch is a monitoring service intedned to monitor daily and nightly
@@ -31,11 +31,11 @@ Test
 $ dotnet test Nightwatch.Tests
 ```
 
-[andivionian-status-classifier]: https://github.com/ForNeVeR/andivionian-status-classifier#status-zero-
+[andivionian-status-classifier]: https://github.com/ForNeVeR/andivionian-status-classifier#status-umbra-
 [build-appveyor]: https://ci.appveyor.com/project/ForNeVeR/nightwatch/branch/master
 [build-travis]: https://travis-ci.org/ForNeVeR/nightwatch
 [net-core-sdk]: https://www.microsoft.com/net/download/core#/sdk
 
 [badge-appveyor]: https://ci.appveyor.com/api/projects/status/6a2fla8atl7x0nhn/branch/master?svg=true
 [badge-travis]: https://travis-ci.org/ForNeVeR/nightwatch.svg?branch=master
-[status-zero]: https://img.shields.io/badge/status-zero-lightgrey.svg
+[status-umbra]: https://img.shields.io/badge/status-umbra-red.svg

@@ -10,7 +10,7 @@ Build
 [.NET Core 2.0 SDK][net-core-sdk] is required to build the project.
 
 ```console
-$ dotnet build 
+$ dotnet build
 ```
 
 Run
@@ -20,6 +20,13 @@ In developer mode:
 
 ```console
 $ dotnet run --project Nightwatch
+```
+
+Test
+----
+
+```console
+$ dotnet test Nightwatch.Tests
 ```
 
 [andivionian-status-classifier]: https://github.com/ForNeVeR/andivionian-status-classifier#status-zero-

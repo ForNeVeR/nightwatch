@@ -26,7 +26,7 @@ let prepareSchedule : CheckConfiguration seq -> Schedule =
     )
 
 
-let newScheduler() : Async<IScheduler> =
+let create() : Async<IScheduler> =
     async {
         let factory = StdSchedulerFactory()
         return! factory.GetScheduler()

@@ -42,7 +42,7 @@ let ``Schedule should be prepared`` () =
     Assert.Equal (JobKey task.id, job.Key)
 
 [<Fact>]
-let ``Schedule should be configured`` () =
+let ``Scheduler should be configured`` () =
     let task =
         { id = "1"
           runEvery = TimeSpan.FromMinutes 1.0

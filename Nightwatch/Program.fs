@@ -16,7 +16,7 @@ let private runScheduler() =
 
     async {
         let! scheduler = Scheduler.create()
-        do! Scheduler.configure schedule scheduler
+        do! Scheduler.configure scheduler schedule
         do! Scheduler.start scheduler
         printfn "Scheduler started"
         printfn "Press any key to stop"

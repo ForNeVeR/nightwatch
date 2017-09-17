@@ -35,7 +35,7 @@ let create() : Async<IScheduler> =
 let private configureTask (scheduler : IScheduler) (job : IJobDetail, trigger) : Task =
     upcast scheduler.ScheduleJob(job, trigger)
 
-let configure (schedule : Schedule) (scheduler: IScheduler) : Async<unit> =
+let configure (scheduler: IScheduler) (schedule : Schedule) : Async<unit> =
     async {
         let tasks =
             schedule

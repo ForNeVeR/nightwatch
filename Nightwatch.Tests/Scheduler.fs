@@ -50,7 +50,7 @@ let ``Scheduler should be configured`` () =
     async {
         let! scheduler = Scheduler.create()
         let schedule = Scheduler.prepareSchedule [| task |]
-        do! Scheduler.configure schedule scheduler
+        do! Scheduler.configure scheduler schedule
         let! job = scheduler.GetJobDetail (JobKey task.id)
         Assert.NotNull job
     }

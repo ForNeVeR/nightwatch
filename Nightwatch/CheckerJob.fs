@@ -3,7 +3,7 @@ namespace Nightwatch
 open Quartz
 
 type CheckerJob() =
-    static member CheckFunction = "CheckerFunction"
+    static member CheckFunction = "CheckFunction"
 
     interface IJob with
         member this.Execute(context) =

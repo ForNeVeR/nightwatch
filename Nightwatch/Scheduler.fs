@@ -5,18 +5,19 @@ open System.Threading.Tasks
 open Quartz
 open Quartz.Impl
 
-open Nightwatch
+open Nightwatch.Resources
 
 type Schedule = (IJobDetail * ITrigger) seq
 
-let prepareSchedule : CheckConfiguration seq -> Schedule =
-    Seq.map (fun { id = id; runEvery = runEvery; checkFunction = checkFunction } ->
+let prepareSchedule : Resource seq -> Schedule =
+    Seq.map (fun resource ->
+        let { id = id; runEvery = runEvery } = resource
         let trigger =
             TriggerBuilder.Create()
                 .WithIdentity(id)
                 .WithSimpleSchedule(fun x -> ignore <| x.WithInterval(runEvery).RepeatForever())
                 .Build()
-        let jobData = Map.ofArray [| CheckerJob.CheckFunction, box checkFunction |]
+        let jobData = Map.ofArray [| CheckerJob.Resource, box resource |]
         let job =
             JobBuilder.CreateForAsync<CheckerJob>()
                 .WithIdentity(JobKey id)

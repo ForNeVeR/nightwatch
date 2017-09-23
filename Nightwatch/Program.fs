@@ -3,6 +3,8 @@
 open System
 open System.Reflection
 
+open Nightwatch.Resources
+
 let private printVersion() =
     let version = Assembly.GetEntryAssembly().GetName().Version
     printfn "Nightwatch v. %A" version
@@ -11,7 +13,7 @@ let private runScheduler() =
     let healthCheck =
         { id = "health-check"
           runEvery = TimeSpan.FromSeconds 25.0
-          checkFunction = fun () -> async { printfn "Health check succeed"; return true } }
+          checkCommand = "Health check" }
     let schedule = Scheduler.prepareSchedule [| healthCheck |]
 
     async {

@@ -6,6 +6,7 @@ open Quartz
 open Xunit
 
 open Nightwatch
+open Nightwatch.Resources
 
 [<Fact>]
 let ``Scheduler should be created`` () =
@@ -36,7 +37,7 @@ let ``Schedule should be prepared`` () =
     let task =
         { id = "1"
           runEvery = TimeSpan.FromMinutes 1.0
-          checkFunction = fun () -> async { return true } }
+          checkCommand = "test 1" }
     let schedule = Scheduler.prepareSchedule [| task |]
     let (job, trigger) = Seq.exactlyOne schedule
     Assert.Equal (JobKey task.id, job.Key)
@@ -46,7 +47,7 @@ let ``Scheduler should be configured`` () =
     let task =
         { id = "1"
           runEvery = TimeSpan.FromMinutes 1.0
-          checkFunction = fun () -> async { return true } }
+          checkCommand = "test 1" }
     async {
         let! scheduler = Scheduler.create()
         let schedule = Scheduler.prepareSchedule [| task |]

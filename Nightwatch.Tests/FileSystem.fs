@@ -33,8 +33,8 @@ let private createFileSystem paths =
 let ``getFilesRecursively should return only the files corresponding to mask`` () =
     let fileList = [| "dir/"; "dir/file.txt"; "dir/file.yml"
                       "dir/subdir"; "dir/subdir/file.txt"; "dir/subdir/file.yml" |]
-    use dir = createFileSystem fileList
     async {
+        use dir = createFileSystem fileList
         let! files = fs.getFilesRecursively (Path dir.root) (Mask "*.txt")
         let expected =
             fileList

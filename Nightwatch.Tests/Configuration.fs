@@ -13,16 +13,14 @@ open Nightwatch.Resources
 
 let private mockFileSystem (paths : (string * string)[]) =
     let pathMap = Map paths
-    let getFiles wPath wMask =
-        match wPath, wMask with
-        | Path path, Mask mask ->
-            async {
-                return
-                    paths
-                    |> Seq.map fst
-                    |> Seq.filter (fun p -> p.StartsWith(path + "/") && p.EndsWith(mask.Substring 1))
-                    |> Seq.map Path
-            }
+    let getFiles (Path path) (Mask mask) =
+        async {
+            return
+                paths
+                |> Seq.map fst
+                |> Seq.filter (fun p -> p.StartsWith(path + "/") && p.EndsWith(mask.Substring 1))
+                |> Seq.map Path
+        }
     let openStream (Path path) : Async<Stream> =
         let text = Map.find path pathMap
         let bytes = Encoding.UTF8.GetBytes text

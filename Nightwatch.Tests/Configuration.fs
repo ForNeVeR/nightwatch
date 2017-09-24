@@ -46,7 +46,7 @@ check: ping localhost"
     let fileSystem = mockFileSystem [| "dir/test.yml", text |]
     async {
         let! result = Configuration.read fileSystem (Path "dir")
-        Assert.Equal<_>([| Choice1Of2 expected |], result)
+        Assert.Equal<_>([| Ok expected |], result)
     } |> Async.StartAsTask
 
 [<Fact>]
@@ -54,5 +54,5 @@ let ``Configuration should ignore non-YAML file`` () =
     let fileSystem = mockFileSystem [| "test.yml2", "" |]
     async {
         let! result = Configuration.read fileSystem (Path "dir")
-        Assert.Equal<Choice<_, _>>(Seq.empty, result)
+        Assert.Equal<Result<_, _>>(Seq.empty, result)
     } |> Async.StartAsTask

@@ -13,6 +13,23 @@ Build
 $ dotnet build
 ```
 
+Configure
+---------
+
+Nightwatch uses configuration directory with multiple configuration files. At
+start, it will recursively read all the `*.yml` files in the configuration
+directory, and set them up as periodic tasks. Here's a sample of the
+configuration file:
+
+```yaml
+version: 0.0.1.0 # should always be 0.0.1.0 for the current version
+id: test # task identifier
+schedule: 00:05:00 # run every 5 minutes
+check: ping localhost # check command
+```
+
+Path to the configuration directory should be explicitly passed as an argument.
+
 Run
 ---
 

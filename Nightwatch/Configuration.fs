@@ -15,7 +15,7 @@ type ResourceDescription() =
     member val Schedule = TimeSpan.Zero with get, set
     member val Check = "" with get, set
 
-let private configFormatVersion = Version "0.0.1.0"
+let configFormatVersion : Version = Version "0.0.1.0"
 
 type InvalidConfiguration =
     { path : Path
@@ -23,8 +23,8 @@ type InvalidConfiguration =
       message : string }
 
 let private correctResource (resource : ResourceDescription) path =
-    let errorPath msg = Choice2Of2 { path = path; id = None; message = msg }
-    let error msg = Choice2Of2 { path = path; id = Some resource.Id; message = msg }
+    let errorPath msg = Error { path = path; id = None; message = msg }
+    let error msg = Error { path = path; id = Some resource.Id; message = msg }
 
     match resource with
     | _ when resource.Version = Version "0.0.0.0" -> errorPath "Resource version is not defined"
@@ -33,7 +33,7 @@ let private correctResource (resource : ResourceDescription) path =
     | _ when String.IsNullOrWhiteSpace resource.Id -> errorPath "Resource identifier is not defined"
     | _ when resource.Schedule <= TimeSpan.Zero -> error "Resource schedule is invalid"
     | _ when String.IsNullOrWhiteSpace resource.Check -> error "Resource check is not defined"
-    | valid -> Choice1Of2 valid
+    | valid -> Ok valid
 
 let private deserializeResource (deserializer : Deserializer) path (reader : StreamReader) =
     let resource = deserializer.Deserialize<ResourceDescription> reader
@@ -62,14 +62,12 @@ let private buildDeserializer() =
         .WithTypeConverter(versionConverter)
         .Build()
 
-let private toResource = function
-| (Choice1Of2 (resource : ResourceDescription)) ->
-    Choice1Of2 { id = resource.Id; runEvery = resource.Schedule; checkCommand = resource.Check }
-| (Choice2Of2 error) -> Choice2Of2 error
+let private toResource = Result.map (fun (resource : ResourceDescription) ->
+    { id = resource.Id; runEvery = resource.Schedule; checkCommand = resource.Check })
 
 let private configFileMask = Mask "*.yml"
 
-let read (fs : FileSystem) (configDirectory : Path) : Async<seq<Choice<Resource, InvalidConfiguration>>> =
+let read (fs : FileSystem) (configDirectory : Path) : Async<seq<Result<Resource, InvalidConfiguration>>> =
     let deserializer = buildDeserializer()
     async {
         let! fileNames = fs.getFilesRecursively configDirectory configFileMask

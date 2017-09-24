@@ -47,7 +47,7 @@ let private loadFile (fs : FileSystem) deserializer path =
         return deserializeResource deserializer path reader
     }
 
-let versionConverter =
+let private versionConverter =
     { new IYamlTypeConverter with
         member __.Accepts(t) = t = typeof<Version>
         member __.ReadYaml(parser, _) : obj =

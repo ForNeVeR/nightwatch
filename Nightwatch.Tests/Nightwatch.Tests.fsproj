@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Compile Include="Configuration.fs" />
+    <Compile Include="FileSystem.fs" />
     <Compile Include="Scheduler.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>

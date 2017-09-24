@@ -9,6 +9,17 @@ type FileSystem =
     { getFilesRecursively : Path -> Mask -> Async<Path seq>
       openStream : Path -> Async<Stream> }
 
+let private getFilesRecursively (Path path) (Mask mask) =
+    async {
+        return Directory.GetFileSystemEntries(path, mask, SearchOption.AllDirectories)
+            |> Seq.map Path
+    }
+
+let private openStream (Path path) =
+    async {
+        return new FileStream(path, FileMode.Open, FileAccess.Read) :> Stream
+    }
+
 let system =
-    { getFilesRecursively = failwithf "Not implemented"
-      openStream = failwithf "Not implemented" }
+    { getFilesRecursively = getFilesRecursively
+      openStream = openStream }

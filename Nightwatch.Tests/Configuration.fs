@@ -35,9 +35,10 @@ let private mockFileSystem (paths : (string * string)[]) =
 
 [<Fact>]
 let ``Configuration should read the YAML file`` () =
-    let text = @"id: test
+    let text = @"version: 0.0.1.0
+id: test
 schedule: 00:05:00
-command: ping localhost"
+check: ping localhost"
     let expected =
         { id = "test"
           runEvery = TimeSpan.FromMinutes 5.0
@@ -45,7 +46,7 @@ command: ping localhost"
     let fileSystem = mockFileSystem [| "dir/test.yml", text |]
     async {
         let! result = Configuration.read fileSystem (Path "dir")
-        Assert.Equal<Resource>([| expected |], result)
+        Assert.Equal<_>([| Choice1Of2 expected |], result)
     } |> Async.StartAsTask
 
 [<Fact>]
@@ -53,5 +54,5 @@ let ``Configuration should ignore non-YAML file`` () =
     let fileSystem = mockFileSystem [| "test.yml2", "" |]
     async {
         let! result = Configuration.read fileSystem (Path "dir")
-        Assert.Equal<Resource>(Seq.empty, result)
+        Assert.Equal<Choice<_, _>>(Seq.empty, result)
     } |> Async.StartAsTask

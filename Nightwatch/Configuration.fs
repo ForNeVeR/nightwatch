@@ -9,11 +9,12 @@ open YamlDotNet.Serialization.NamingConventions
 open Nightwatch.FileSystem
 open Nightwatch.Resources
 
-type ResourceDescription() =
-    member val Version = Version("0.0.0.0") with get, set
-    member val Id = "" with get, set
-    member val Schedule = TimeSpan.Zero with get, set
-    member val Check = "" with get, set
+[<CLIMutable>]
+type ResourceDescription =
+    { version : Version
+      id : string
+      schedule : TimeSpan
+      check : string }
 
 let configFormatVersion : Version = Version "0.0.1.0"
 
@@ -24,15 +25,15 @@ type InvalidConfiguration =
 
 let private correctResource (resource : ResourceDescription) path =
     let errorPath msg = Error { path = path; id = None; message = msg }
-    let error msg = Error { path = path; id = Some resource.Id; message = msg }
+    let error msg = Error { path = path; id = Some resource.id; message = msg }
 
     match resource with
-    | _ when resource.Version = Version "0.0.0.0" -> errorPath "Resource version is not defined"
-    | _ when resource.Version <> configFormatVersion ->
-        errorPath (sprintf "Resource version %A is not supported" resource.Version)
-    | _ when String.IsNullOrWhiteSpace resource.Id -> errorPath "Resource identifier is not defined"
-    | _ when resource.Schedule <= TimeSpan.Zero -> error "Resource schedule is invalid"
-    | _ when String.IsNullOrWhiteSpace resource.Check -> error "Resource check is not defined"
+    | _ when resource.version = Version() -> errorPath "Resource version is not defined"
+    | _ when resource.version <> configFormatVersion ->
+        errorPath (sprintf "Resource version %A is not supported" resource.version)
+    | _ when String.IsNullOrWhiteSpace resource.id -> errorPath "Resource identifier is not defined"
+    | _ when resource.schedule <= TimeSpan.Zero -> error "Resource schedule is invalid"
+    | _ when String.IsNullOrWhiteSpace resource.check -> error "Resource check is not defined"
     | valid -> Ok valid
 
 let private deserializeResource (deserializer : Deserializer) path (reader : StreamReader) =
@@ -58,12 +59,11 @@ let versionConverter =
 
 let private buildDeserializer() =
     DeserializerBuilder()
-        .WithNamingConvention(CamelCaseNamingConvention())
         .WithTypeConverter(versionConverter)
         .Build()
 
-let private toResource = Result.map (fun (resource : ResourceDescription) ->
-    { id = resource.Id; runEvery = resource.Schedule; checkCommand = resource.Check })
+let private toResource = Result.map (fun { id = id; schedule = schedule; check = check } ->
+    { id = id; runEvery = schedule; checkCommand = check })
 
 let private configFileMask = Mask "*.yml"
 

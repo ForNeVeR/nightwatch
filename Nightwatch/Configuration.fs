@@ -62,8 +62,8 @@ let private buildDeserializer() =
         .WithTypeConverter(versionConverter)
         .Build()
 
-let private toResource = Result.map (fun { id = id; schedule = schedule; check = check } ->
-    { id = id; runEvery = schedule; checkCommand = check })
+let private toResource : Result<ResourceDescription, _> -> _ =
+    Result.map (fun res -> { id = res.id; runEvery = res.schedule; checkCommand = res.check })
 
 let private configFileMask = Mask "*.yml"
 

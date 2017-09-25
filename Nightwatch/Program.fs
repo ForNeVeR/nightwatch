@@ -12,7 +12,7 @@ let private printVersion() =
     printfn "Nightwatch v. %A" version
     printfn "Config file format v. %A" Configuration.configFormatVersion
 
-let private divideResults seq =
+let private splitResults seq =
     let chooseOk = function
     | Ok x -> Some x
     | Error _ -> None
@@ -32,7 +32,7 @@ let private divideResults seq =
 let private readConfiguration path : Result<Resource seq, InvalidConfiguration seq> =
     async {
         let! resources = Configuration.read FileSystem.system path
-        let (results, errors) = divideResults resources
+        let (results, errors) = splitResults resources
         return
             if Seq.isEmpty errors
             then Ok results

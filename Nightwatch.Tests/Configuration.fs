@@ -7,9 +7,9 @@ open System.Text
 open Xunit
 
 open Nightwatch
-open Nightwatch.FileSystem
 open Nightwatch.Configuration
-open Nightwatch.Resources
+open Nightwatch.Core.Resources
+open Nightwatch.FileSystem
 
 let private mockFileSystem (paths : (string * string)[]) =
     let pathMap = Map paths
@@ -36,21 +36,29 @@ let ``Configuration should read the YAML file`` () =
     let text = @"version: 0.0.1.0
 id: test
 schedule: 00:05:00
-check: ping localhost"
+type: test
+param:
+    check: ping localhost"
+    let checker = fun () -> failwith "nop"
     let expected =
         { id = "test"
           runEvery = TimeSpan.FromMinutes 5.0
-          checkCommand = "ping localhost" }
+          checker = checker }
+    let factory =
+        { resourceType = "test"
+          create = fun _ -> checker }
     let fileSystem = mockFileSystem [| "dir/test.yml", text |]
     async {
-        let! result = Configuration.read fileSystem (Path "dir")
+        let! result = Configuration.read [| factory |] fileSystem (Path "dir")
         Assert.Equal<_>([| Ok expected |], result)
     } |> Async.StartAsTask
+
+// TODO[F]: Add test for case when there is no corresponding factory for the type
 
 [<Fact>]
 let ``Configuration should ignore non-YAML file`` () =
     let fileSystem = mockFileSystem [| "test.yml2", "" |]
     async {
-        let! result = Configuration.read fileSystem (Path "dir")
+        let! result = Configuration.read [| |] fileSystem (Path "dir")
         Assert.Equal<Result<_, _>>(Seq.empty, result)
     } |> Async.StartAsTask

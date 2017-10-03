@@ -4,7 +4,6 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Resources.fs" />
     <Compile Include="CheckerJob.fs" />
     <Compile Include="FileSystem.fs" />
     <Compile Include="Configuration.fs" />
@@ -16,5 +15,7 @@
     <PackageReference Include="FSharp.Control.FusionTasks.FS41" Version="1.1.0" />
     <PackageReference Include="Quartz" Version="3.0.0-alpha3" />
     <PackageReference Include="YamlDotNet" Version="4.2.1" />
+    <ProjectReference Include="../Nightwatch.Core/Nightwatch.Core.fsproj" />
+    <ProjectReference Include="../Nightwatch.Resources/Nightwatch.Resources.fsproj" />
   </ItemGroup>
 </Project>

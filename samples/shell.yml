@@ -1,4 +1,6 @@
 version: 0.0.1.0 # should always be 0.0.1.0 for the current version
-id: test # task identifier
+id: sample/shell # task identifier
 schedule: 00:00:25 # run every 25 seconds
-check: ping localhost # check command
+type: shell
+param:
+    - cmd: ping localhost

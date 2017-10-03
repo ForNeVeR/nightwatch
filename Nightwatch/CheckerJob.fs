@@ -2,7 +2,8 @@ namespace Nightwatch
 
 open Quartz
 
-open Nightwatch.Resources
+open Nightwatch.Core
+open Nightwatch.Core.Resources
 
 type CheckerJob() =
     static member Resource = "Resource"

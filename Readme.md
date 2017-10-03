@@ -30,6 +30,8 @@ check: ping localhost # check command
 
 Path to the configuration directory should be explicitly passed as an argument.
 
+TODO[F]: Document checkers!
+
 Run
 ---
 

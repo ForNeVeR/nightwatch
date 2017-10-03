@@ -3,6 +3,7 @@
 open System
 open System.Reflection
 
+open Nightwatch.Core.Resources
 open Nightwatch.Configuration
 open Nightwatch.FileSystem
 open Nightwatch.Resources
@@ -28,16 +29,6 @@ let private splitResults seq =
         |> Seq.toArray
         |> Array.partition isOk
     Seq.choose chooseOk results, Seq.choose chooseError errors
-
-let private readConfiguration path : Result<Resource seq, InvalidConfiguration seq> =
-    async {
-        let! resources = Configuration.read FileSystem.system path
-        let (results, errors) = splitResults resources
-        return
-            if Seq.isEmpty errors
-            then Ok results
-            else Error errors
-    } |> Async.RunSynchronously
 
 let private runScheduler resources =
     let schedule = Scheduler.prepareSchedule resources
@@ -70,19 +61,38 @@ let private errorsToString errors =
 let private printUsage() =
     printfn "Arguments: <path to config directory>"
 
+let private configureResourceFactories =
+    let factories = Resources.Default.factories
+    let names = factories |> Seq.map (fun f -> f.resourceType)
+    printfn "Available resources: %s" (String.Join(", ", names))
+    factories
+
+let private readConfiguration path factories : Result<Resource seq, InvalidConfiguration seq> =
+    async {
+        let! resources = Configuration.read factories FileSystem.system path
+        let (results, errors) = splitResults resources
+        return
+            if Seq.isEmpty errors
+            then Ok results
+            else Error errors
+    } |> Async.RunSynchronously
+
+let private run = function
+| Ok resources ->
+    runScheduler resources
+    ExitCodes.success
+| Error errors ->
+    printfn "%s" (errorsToString errors)
+    ExitCodes.configurationError
+
 [<EntryPoint>]
 let main argv =
     printVersion()
     match argv with
     | [| configPath |] ->
-        let path = Path configPath
-        match readConfiguration path with
-        | Ok resources ->
-            runScheduler resources
-            ExitCodes.success
-        | Error errors ->
-            printfn "%s" (errorsToString errors)
-            ExitCodes.configurationError
+        configureResourceFactories
+        |> readConfiguration (Path configPath)
+        |> run
     | _ ->
         printUsage()
         ExitCodes.invalidArguments

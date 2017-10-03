@@ -1,11 +1,13 @@
 module Nightwatch.Configuration
 
 open System
+open System.Collections.Generic
 open System.IO
 
 open YamlDotNet.Serialization
 open YamlDotNet.Serialization.NamingConventions
 
+open Nightwatch.Core.Resources
 open Nightwatch.FileSystem
 open Nightwatch.Resources
 
@@ -14,7 +16,8 @@ type ResourceDescription =
     { version : Version
       id : string
       schedule : TimeSpan
-      check : string }
+      ``type`` : string
+      param : Map<string, string> }
 
 let configFormatVersion : Version = Version "0.0.1.0"
 
@@ -33,7 +36,7 @@ let private correctResource (resource : ResourceDescription) path =
         errorPath (sprintf "Resource version %A is not supported" resource.version)
     | _ when String.IsNullOrWhiteSpace resource.id -> errorPath "Resource identifier is not defined"
     | _ when resource.schedule <= TimeSpan.Zero -> error "Resource schedule is invalid"
-    | _ when String.IsNullOrWhiteSpace resource.check -> error "Resource check is not defined"
+    | _ when String.IsNullOrWhiteSpace resource.``type`` -> errorPath "Resource type is not defined"
     | valid -> Ok valid
 
 let private deserializeResource (deserializer : Deserializer) path (reader : StreamReader) =
@@ -62,16 +65,23 @@ let private buildDeserializer() =
         .WithTypeConverter(versionConverter)
         .Build()
 
-let private toResource : Result<ResourceDescription, _> -> _ =
-    Result.map (fun res -> { id = res.id; runEvery = res.schedule; checkCommand = res.check })
+let private toResource (factories : ResourceFactory seq) : Result<ResourceDescription, _> -> _ =
+    Result.map (fun res ->
+        let factory = // TODO: Make it more efficient
+            factories
+            |> Seq.filter (fun f -> f.resourceType = res.``type``)
+            |> Seq.head // TODO: Handle errors when factory was not found
+        let checker = factory.create res.param
+        { id = res.id; runEvery = res.schedule; checker = checker })
 
 let private configFileMask = Mask "*.yml"
 
-let read (fs : FileSystem) (configDirectory : Path) : Async<seq<Result<Resource, InvalidConfiguration>>> =
+let read (factories : ResourceFactory seq) (fs : FileSystem) (configDirectory : Path)
+         : Async<seq<Result<Resource, InvalidConfiguration>>> =
     let deserializer = buildDeserializer()
     async {
         let! fileNames = fs.getFilesRecursively configDirectory configFileMask
         let tasks = fileNames |> Seq.map (loadFile fs deserializer)
         let! checks = Async.Parallel tasks
-        return Seq.map toResource checks
+        return Seq.map (toResource factories) checks
     }

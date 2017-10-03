@@ -5,7 +5,7 @@ open System.Threading.Tasks
 open Quartz
 open Quartz.Impl
 
-open Nightwatch.Resources
+open Nightwatch.Core.Resources
 
 type Schedule = (IJobDetail * ITrigger) seq
 

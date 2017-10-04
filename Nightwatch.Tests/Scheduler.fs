@@ -7,6 +7,7 @@ open Xunit
 
 open Nightwatch
 open Nightwatch.Core.Resources
+open Nightwatch.Resources
 
 [<Fact>]
 let ``Scheduler should be created`` () =
@@ -32,12 +33,14 @@ let ``Scheduler should be stopped`` () =
         Assert.True scheduler.IsShutdown
     } |> Async.StartAsTask
 
+let trueChecker = ResourceChecker(fun () -> async { return true })
+
 [<Fact>]
 let ``Schedule should be prepared`` () =
     let task =
         { id = "1"
           runEvery = TimeSpan.FromMinutes 1.0
-          checker = fun () -> async { return true } }
+          checker = trueChecker }
     let schedule = Scheduler.prepareSchedule [| task |]
     let (job, trigger) = Seq.exactlyOne schedule
     Assert.Equal (JobKey task.id, job.Key)
@@ -47,7 +50,7 @@ let ``Scheduler should be configured`` () =
     let task =
         { id = "1"
           runEvery = TimeSpan.FromMinutes 1.0
-          checker = fun () -> async { return true } }
+          checker = trueChecker }
     async {
         let! scheduler = Scheduler.create()
         let schedule = Scheduler.prepareSchedule [| task |]

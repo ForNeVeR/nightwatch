@@ -1,5 +1,7 @@
 module Nightwatch.Resources.Default
 
-let factories =
+open Nightwatch.Core.Resources
+
+let factories : ResourceFactory[] =
     [| Http.factory
        Shell.factory |]

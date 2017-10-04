@@ -1,4 +1,4 @@
-module Nightwatch.Configuration
+module internal Nightwatch.Configuration
 
 open System
 open System.Collections.Generic
@@ -10,14 +10,6 @@ open YamlDotNet.Serialization.NamingConventions
 open Nightwatch.Core.Resources
 open Nightwatch.FileSystem
 open Nightwatch.Resources
-
-[<CLIMutable>]
-type ResourceDescription =
-    { version : Version
-      id : string
-      schedule : TimeSpan
-      ``type`` : string
-      param : Map<string, string> }
 
 let configFormatVersion : Version = Version "0.0.1.0"
 
@@ -37,7 +29,7 @@ let private correctResource (resource : ResourceDescription) path =
     | _ when String.IsNullOrWhiteSpace resource.id -> errorPath "Resource identifier is not defined"
     | _ when resource.schedule <= TimeSpan.Zero -> error "Resource schedule is invalid"
     | _ when String.IsNullOrWhiteSpace resource.``type`` -> errorPath "Resource type is not defined"
-    | valid -> Ok valid
+    | valid -> Ok(valid, path)
 
 let private deserializeResource (deserializer : Deserializer) path (reader : StreamReader) =
     let resource = deserializer.Deserialize<ResourceDescription> reader
@@ -65,23 +57,22 @@ let private buildDeserializer() =
         .WithTypeConverter(versionConverter)
         .Build()
 
-let private toResource (factories : ResourceFactory seq) : Result<ResourceDescription, _> -> _ =
-    Result.map (fun res ->
-        let factory = // TODO: Make it more efficient
-            factories
-            |> Seq.filter (fun f -> f.resourceType = res.``type``)
-            |> Seq.head // TODO: Handle errors when factory was not found
-        let checker = factory.create res.param
-        { id = res.id; runEvery = res.schedule; checker = checker })
+let private toResource (registry : ResourceRegistry) : Result<ResourceDescription * Path, _> -> _ =
+    Result.bind (fun (res, path) ->
+        match Resources.createResourceChecker registry res.``type`` res.param with
+        | Some checker -> Ok { id = res.id; runEvery = res.schedule; checker = checker }
+        | None -> Error { path = path
+                          id = Some res.id
+                          message = sprintf "The resource factory for type %s is not registered" res.``type`` })
 
 let private configFileMask = Mask "*.yml"
 
-let read (factories : ResourceFactory seq) (fs : FileSystem) (configDirectory : Path)
+let read (registry : ResourceRegistry) (fs : FileSystem) (configDirectory : Path)
          : Async<seq<Result<Resource, InvalidConfiguration>>> =
     let deserializer = buildDeserializer()
     async {
         let! fileNames = fs.getFilesRecursively configDirectory configFileMask
         let tasks = fileNames |> Seq.map (loadFile fs deserializer)
         let! checks = Async.Parallel tasks
-        return Seq.map (toResource factories) checks
+        return Seq.map (toResource registry) checks
     }

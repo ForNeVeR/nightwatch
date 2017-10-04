@@ -1,18 +1,16 @@
 module Nightwatch.Core.Resources
 
 open System
+open System.Collections.Generic
+open System.Threading.Tasks
 
-type ResourceChecker = unit -> Async<bool>
+type ResourceChecker = Func<Async<bool>> // TODO: Replace with Task
 
 type ResourceFactory =
     { resourceType : string
-      create : Map<string, string> -> ResourceChecker }
+      create : Func<IDictionary<string, string>, ResourceChecker> }
 
-type Resource =
-    { id : string
-      runEvery : TimeSpan
-      checker : ResourceChecker }
-
-let check (resource : Resource) : Async<bool> =
-    printfn "Checking resource %s…" resource.id
-    resource.checker()
+let fSharpFactory (resourceType : string) (create : IDictionary<string, string> -> unit -> Async<bool>) =
+    let create = fun param -> Func<_>(create param)
+    { resourceType = resourceType
+      create = Func<_, _> create }

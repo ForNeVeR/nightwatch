@@ -1,11 +1,11 @@
-module Nightwatch.Scheduler
+module internal Nightwatch.Scheduler
 
 open System.Threading.Tasks
 
 open Quartz
 open Quartz.Impl
 
-open Nightwatch.Core.Resources
+open Nightwatch.Resources
 
 type Schedule = (IJobDetail * ITrigger) seq
 

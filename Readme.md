@@ -18,19 +18,35 @@ Configure
 
 Nightwatch uses configuration directory with multiple configuration files. At
 start, it will recursively read all the `*.yml` files in the configuration
-directory, and set them up as periodic tasks. Here's a sample of the
-configuration file:
+directory, and set them up as periodic tasks. Each configuration file describes
+a _Resource_.
+
+Path to the configuration directory should be explicitly passed as an argument.
+
+Currently supported resources are documented below.
+
+### Shell Resource
 
 ```yaml
 version: 0.0.1.0 # should always be 0.0.1.0 for the current version
 id: test # task identifier
 schedule: 00:05:00 # run every 5 minutes
-check: ping localhost # check command
+type: shell
+param:
+    cmd: ping localhost # check command
 ```
 
-Path to the configuration directory should be explicitly passed as an argument.
+### HTTP Resource
 
-TODO[F]: Document checkers!
+```yaml
+version: 0.0.1.0 # should always be 0.0.1.0 for the current version
+id: test # task identifier
+schedule: 00:05:00 # run every 5 minutes
+type: shell
+param:
+    url: http://localhost:8080/ # URL to visit
+    ok-codes: 200, 304 # the list of the codes considered as a success
+```
 
 Run
 ---

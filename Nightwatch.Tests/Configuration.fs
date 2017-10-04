@@ -9,6 +9,7 @@ open Xunit
 open Nightwatch
 open Nightwatch.Configuration
 open Nightwatch.Core.Resources
+open Nightwatch.Resources
 open Nightwatch.FileSystem
 
 let private mockFileSystem (paths : (string * string)[]) =
@@ -39,26 +40,43 @@ schedule: 00:05:00
 type: test
 param:
     check: ping localhost"
-    let checker = fun () -> failwith "nop"
+    let checker = ResourceChecker(fun () -> failwith "nop")
     let expected =
         { id = "test"
           runEvery = TimeSpan.FromMinutes 5.0
           checker = checker }
-    let factory =
+    let factory : ResourceFactory =
         { resourceType = "test"
-          create = fun _ -> checker }
+          create = Func<_, _>(fun _ -> checker) }
+    let registry = Resources.createRegistry [| factory |]
     let fileSystem = mockFileSystem [| "dir/test.yml", text |]
     async {
-        let! result = Configuration.read [| factory |] fileSystem (Path "dir")
+        let! result = Configuration.read registry fileSystem (Path "dir")
         Assert.Equal<_>([| Ok expected |], result)
     } |> Async.StartAsTask
 
-// TODO[F]: Add test for case when there is no corresponding factory for the type
+let private emptyRegistry = Resources.createRegistry [| |]
+
+[<Fact>]
+let ``Confiuguration returns error if the type is not registered in the factory``() =
+    let text = @"version: 0.0.1.0
+id: test
+schedule: 00:05:00
+type: test"
+    let path = "dir/test.yml"
+    let fileSystem = mockFileSystem [| path, text |]
+    let expected = Error { path = (Path path)
+                           id = Some "test"
+                           message = "Resource type \"test\" is not registered" }
+    async {
+        let! result = Configuration.read emptyRegistry fileSystem (Path "dir")
+        Assert.Equal<_>([| expected |], result)
+    } |> Async.StartAsTask
 
 [<Fact>]
 let ``Configuration should ignore non-YAML file`` () =
     let fileSystem = mockFileSystem [| "test.yml2", "" |]
     async {
-        let! result = Configuration.read [| |] fileSystem (Path "dir")
+        let! result = Configuration.read emptyRegistry fileSystem (Path "dir")
         Assert.Equal<Result<_, _>>(Seq.empty, result)
     } |> Async.StartAsTask

@@ -2,6 +2,7 @@ module Nightwatch.Tests.Scheduler
 
 open System
 
+open FSharp.Control.Tasks
 open Quartz
 open Xunit
 
@@ -33,7 +34,7 @@ let ``Scheduler should be stopped`` () =
         Assert.True scheduler.IsShutdown
     } |> Async.StartAsTask
 
-let trueChecker = ResourceChecker(fun () -> async { return true })
+let trueChecker = ResourceChecker(fun () -> task { return true })
 
 [<Fact>]
 let ``Schedule should be prepared`` () =

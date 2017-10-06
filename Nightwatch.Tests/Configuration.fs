@@ -9,8 +9,8 @@ open Xunit
 open Nightwatch
 open Nightwatch.Configuration
 open Nightwatch.Core.Resources
-open Nightwatch.Resources
 open Nightwatch.FileSystem
+open Nightwatch.Resources
 
 let private mockFileSystem (paths : (string * string)[]) =
     let pathMap = Map paths

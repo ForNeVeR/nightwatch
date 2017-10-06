@@ -61,7 +61,7 @@ let private errorsToString errors =
 let private printUsage() =
     printfn "Arguments: <path to config directory>"
 
-let private configureResourceRegistry =
+let private configureResourceRegistry() =
     let factories = [| Http.factory; Shell.factory |]
     let names = factories |> Seq.map (fun f -> f.resourceType)
     printfn "Available resources: %s" (String.Join(", ", names))
@@ -90,7 +90,7 @@ let main argv =
     printVersion()
     match argv with
     | [| configPath |] ->
-        configureResourceRegistry
+        configureResourceRegistry()
         |> readConfiguration (Path configPath)
         |> run
     | _ ->

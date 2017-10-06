@@ -62,7 +62,7 @@ let private printUsage() =
     printfn "Arguments: <path to config directory>"
 
 let private configureResourceRegistry =
-    let factories = Resources.Default.factories
+    let factories = [| Http.factory; Shell.factory |]
     let names = factories |> Seq.map (fun f -> f.resourceType)
     printfn "Available resources: %s" (String.Join(", ", names))
     Registry.create factories

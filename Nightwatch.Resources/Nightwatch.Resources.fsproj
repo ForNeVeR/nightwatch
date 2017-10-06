@@ -5,7 +5,6 @@
   <ItemGroup>
     <Compile Include="Http.fs" />
     <Compile Include="Shell.fs" />
-    <Compile Include="Default.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="fornever.TaskBuilder.fs" Version="1.0.0-pre1" />

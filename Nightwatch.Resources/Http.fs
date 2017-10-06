@@ -23,4 +23,4 @@ let private create(param : IDictionary<string, string>) =
         return Set.contains code okCodes
     }
 
-let factory = fSharpFactory "http" create
+let factory : ResourceFactory = Factory.create "http" create

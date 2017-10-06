@@ -65,7 +65,7 @@ let private configureResourceRegistry =
     let factories = Resources.Default.factories
     let names = factories |> Seq.map (fun f -> f.resourceType)
     printfn "Available resources: %s" (String.Join(", ", names))
-    Resources.createRegistry factories
+    Registry.create factories
 
 let private readConfiguration path factories : Result<Resource seq, InvalidConfiguration seq> =
     async {

@@ -59,11 +59,11 @@ let private buildDeserializer() =
 
 let private toResource (registry : ResourceRegistry) : Result<ResourceDescription * Path, _> -> _ =
     Result.bind (fun (res, path) ->
-        match Resources.createResourceChecker registry res.``type`` res.param with
+        match Checker.create registry res.``type`` res.param with
         | Some checker -> Ok { id = res.id; runEvery = res.schedule; checker = checker }
         | None -> Error { path = path
                           id = Some res.id
-                          message = sprintf "The resource factory for type %s is not registered" res.``type`` })
+                          message = sprintf "The resource factory for type \"%s\" is not registered" res.``type`` })
 
 let private configFileMask = Mask "*.yml"
 

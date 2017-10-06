@@ -13,6 +13,6 @@ type CheckerJob() =
                 let argument =
                     context.JobDetail.JobDataMap.Get CheckerJob.Resource
                     :?> Resource
-                let! result = Resources.check argument
+                let! result = Checker.check argument
                 ignore result
             } |> Async.StartAsTask)

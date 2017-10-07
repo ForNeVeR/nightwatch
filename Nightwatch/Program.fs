@@ -61,11 +61,12 @@ let private errorsToString errors =
 let private printUsage() =
     printfn "Arguments: <path to config directory>"
 
+let resourceFactories = [| Http.factory; Shell.factory |]
+
 let private configureResourceRegistry() =
-    let factories = [| Http.factory; Shell.factory |]
-    let names = factories |> Seq.map (fun f -> f.resourceType)
+    let names = resourceFactories |> Seq.map (fun f -> f.resourceType)
     printfn "Available resources: %s" (String.Join(", ", names))
-    Registry.create factories
+    Registry.create resourceFactories
 
 let private readConfiguration path factories : Result<Resource seq, InvalidConfiguration seq> =
     async {

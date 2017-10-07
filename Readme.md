@@ -66,6 +66,13 @@ Test
 $ dotnet test Nightwatch.Tests
 ```
 
+Contributor documentation
+-------------------------
+
+- [Implementing a Resource type][implementing-a-resource-type]
+
+[implementing-a-resource-type]: docs/implementing-a-resource-type.md
+
 [andivionian-status-classifier]: https://github.com/ForNeVeR/andivionian-status-classifier#status-umbra-
 [build-appveyor]: https://ci.appveyor.com/project/ForNeVeR/nightwatch/branch/master
 [build-travis]: https://travis-ci.org/ForNeVeR/nightwatch

@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Core/FileSystem.fs" />
     <Compile Include="Configuration.fs" />
-    <Compile Include="FileSystem.fs" />
     <Compile Include="Scheduler.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>

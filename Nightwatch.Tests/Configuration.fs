@@ -3,31 +3,29 @@ module Nightwatch.Tests.Configuration
 open System
 open System.IO
 open System.Text
+open System.Threading.Tasks
 
 open Xunit
 
 open Nightwatch
 open Nightwatch.Configuration
+open Nightwatch.Core
+open Nightwatch.Core.FileSystem
 open Nightwatch.Core.Resources
-open Nightwatch.FileSystem
 open Nightwatch.Resources
 
 let private mockFileSystem (paths : (string * string)[]) =
     let pathMap = Map paths
     let getFiles (Path path) (Mask mask) =
-        async {
-            return
-                paths
-                |> Seq.map fst
-                |> Seq.filter (fun p -> p.StartsWith(path + "/") && p.EndsWith(mask.Substring 1))
-                |> Seq.map Path
-        }
-    let openStream (Path path) : Async<Stream> =
+        Task.Run(fun () ->
+            paths
+            |> Seq.map fst
+            |> Seq.filter (fun p -> p.StartsWith(path + "/") && p.EndsWith(mask.Substring 1))
+            |> Seq.map Path)
+    let openStream (Path path) : Task<Stream> =
         let text = Map.find path pathMap
         let bytes = Encoding.UTF8.GetBytes text
-        async {
-            return upcast new MemoryStream(bytes)
-        }
+        Task.Run(fun () -> new MemoryStream(bytes) :> Stream)
 
     { FileSystem.system with getFilesRecursively = getFiles
                              openStream = openStream }

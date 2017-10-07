@@ -1,12 +1,12 @@
-module Nightwatch.Tests.FileSystem
+module Nightwatch.Tests.Core.FileSystem
 
 open System
 open System.IO
 
 open Xunit
 
-open Nightwatch
-open Nightwatch.FileSystem
+open Nightwatch.Core
+open Nightwatch.Core.FileSystem
 
 let private fs = FileSystem.system
 

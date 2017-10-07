@@ -3,6 +3,7 @@
     <TargetFramework>netstandard1.6</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="FileSystem.fs" />
     <Compile Include="Resources.fs" />
   </ItemGroup>
 </Project>

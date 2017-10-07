@@ -3,9 +3,10 @@
 open System
 open System.Reflection
 
+open Nightwatch.Core
+open Nightwatch.Core.FileSystem
 open Nightwatch.Core.Resources
 open Nightwatch.Configuration
-open Nightwatch.FileSystem
 open Nightwatch.Resources
 
 let private printVersion() =

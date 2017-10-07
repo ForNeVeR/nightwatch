@@ -7,8 +7,8 @@ open System.IO
 open YamlDotNet.Serialization
 open YamlDotNet.Serialization.NamingConventions
 
+open Nightwatch.Core.FileSystem
 open Nightwatch.Core.Resources
-open Nightwatch.FileSystem
 open Nightwatch.Resources
 
 let configFormatVersion : Version = Version "0.0.1.0"

@@ -8,7 +8,6 @@
     <ProjectReference Include="../Nightwatch.Resources/Nightwatch.Resources.fsproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileSystem.fs" />
     <Compile Include="Resources.fs" />
     <Compile Include="CheckerJob.fs" />
     <Compile Include="Configuration.fs" />

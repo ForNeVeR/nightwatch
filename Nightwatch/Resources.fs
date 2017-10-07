@@ -3,8 +3,8 @@ namespace Nightwatch.Resources
 open System
 open System.Collections.Generic
 
+open Nightwatch.Core.FileSystem
 open Nightwatch.Core.Resources
-open Nightwatch.FileSystem
 
 /// Description of Resource stored in the configuration file.
 [<CLIMutable>]

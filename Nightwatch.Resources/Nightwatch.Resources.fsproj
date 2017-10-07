@@ -7,7 +7,7 @@
     <Compile Include="Shell.fs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="fornever.TaskBuilder.fs" Version="1.0.0-pre1" />
+    <PackageReference Include="TaskBuilder.fs" Version="1.0.0" />
     <PackageReference Include="System.Diagnostics.Process" Version="4.3.0" />
     <ProjectReference Include="../Nightwatch.Core/Nightwatch.Core.fsproj" />
   </ItemGroup>

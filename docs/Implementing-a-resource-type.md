@@ -37,6 +37,9 @@ There's a helper method `Nightwatch.Core.Resources.Factory.create` to
 instantiate a factory from F#. If using other languages, just call the
 `ResourceFactory` constructor.
 
+For a sample Resource implementation in C#, see
+[Nightwatch.Samples.CSharp][nightwatch-samples-csharp] project.
+
 Registering a factory
 ---------------------
 
@@ -50,5 +53,6 @@ the code. See [the corresponding issue][issue-14].
 [readme]: ../Readme.md
 [resourcefactory]: ../Nightwatch.Core/Resources.fs
 [nightwatch-program]: ../Nightwatch/Program.fs
+[nightwatch-samples-csharp]: ../Nightwatch.Samples.CSharp
 
 [issue-14]: https://github.com/ForNeVeR/nightwatch/issues/14

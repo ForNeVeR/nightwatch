@@ -43,14 +43,18 @@ param:
         { id = "test"
           runEvery = TimeSpan.FromMinutes 5.0
           checker = checker }
+    let mutable parsedParam = None
     let factory : ResourceFactory =
         { resourceType = "test"
-          create = Func<_, _>(fun _ -> checker) }
+          create = Func<_, _>(fun param -> parsedParam <- Some param; checker) }
     let registry = Registry.create [| factory |]
     let fileSystem = mockFileSystem [| "dir/test.yml", text |]
     async {
         let! result = Configuration.read registry fileSystem (Path "dir")
         Assert.Equal<_>([| Ok expected |], result)
+
+        let param = Option.get parsedParam
+        Assert.Equal("ping localhost", param.["check"])
     } |> Async.StartAsTask
 
 let private emptyRegistry = Registry.create [| |]

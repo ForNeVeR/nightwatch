@@ -38,7 +38,6 @@ let ``Shell Resource returns success if process returns zero exit code``() =
         Assert.True result
     }
 
-
 [<Fact>]
 let ``Shell Resource returns success if process returns nonzero exit code``() =
     let controller = { execute = fun _ _ -> Task.FromResult 1 }

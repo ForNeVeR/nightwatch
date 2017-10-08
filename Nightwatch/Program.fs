@@ -63,7 +63,7 @@ let private errorsToString errors =
 let private printUsage() =
     printfn "Arguments: <path to config directory>"
 
-let resourceFactories = [| Http.factory Http.system; Shell.factory |]
+let resourceFactories = [| Http.factory Http.system; Shell.factory Process.system |]
 
 let private configureResourceRegistry() =
     let names = resourceFactories |> Seq.map (fun f -> f.resourceType)

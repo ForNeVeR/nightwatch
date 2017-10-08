@@ -5,6 +5,7 @@ open System.Reflection
 
 open Nightwatch.Core
 open Nightwatch.Core.FileSystem
+open Nightwatch.Core.Network
 open Nightwatch.Core.Resources
 open Nightwatch.Configuration
 open Nightwatch.Resources
@@ -62,7 +63,7 @@ let private errorsToString errors =
 let private printUsage() =
     printfn "Arguments: <path to config directory>"
 
-let resourceFactories = [| Http.factory; Shell.factory |]
+let resourceFactories = [| Http.factory Http.system; Shell.factory |]
 
 let private configureResourceRegistry() =
     let names = resourceFactories |> Seq.map (fun f -> f.resourceType)

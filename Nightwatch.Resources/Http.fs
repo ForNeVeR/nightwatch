@@ -6,21 +6,21 @@ open System.Net.Http
 
 open FSharp.Control.Tasks
 
+open Nightwatch.Core.Network
 open Nightwatch.Core.Resources
 
-let private splitCodes (codeString : string) =
+let private splitCodes(codeString : string) =
     codeString.Split ','
     |> Seq.map (fun s -> s.Trim() |> int)
     |> Set.ofSeq
 
-let private create(param : IDictionary<string, string>) =
-    let url = param.["url"]
+let private create (http : Http.Client) (param : IDictionary<string, string>) =
+    let url = param.["url"] |> Uri
     let okCodes = param.["ok-codes"] |> splitCodes
     fun () -> task {
-        use client = new HttpClient()
-        let! response = client.GetAsync url
+        let! response = http.get url
         let code = int response.StatusCode
         return Set.contains code okCodes
     }
 
-let factory : ResourceFactory = Factory.create "http" create
+let factory (http : Http.Client) : ResourceFactory = Factory.create "http" (create http)

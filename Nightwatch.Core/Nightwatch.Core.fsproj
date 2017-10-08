@@ -4,6 +4,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="FileSystem.fs" />
+    <Compile Include="Network.fs" />
     <Compile Include="Resources.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="TaskBuilder.fs" Version="1.0.0" />
   </ItemGroup>
 </Project>

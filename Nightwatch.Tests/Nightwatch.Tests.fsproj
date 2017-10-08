@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <Compile Include="Core/FileSystem.fs" />
+    <Compile Include="Core/Network.fs" />
+    <Compile Include="Resources/Http.fs" />
     <Compile Include="Configuration.fs" />
     <Compile Include="Scheduler.fs" />
     <Compile Include="Program.fs" />

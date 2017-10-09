@@ -5,7 +5,7 @@ open System.Threading.Tasks
 open FSharp.Control.Tasks
 open Xunit
 
-open Nightwatch.Core
+open Nightwatch.Core.Process
 open Nightwatch.Resources
 
 let private getChecker controller processName =

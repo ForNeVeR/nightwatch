@@ -57,7 +57,7 @@ let private buildDeserializer() =
         .WithTypeConverter(versionConverter)
         .Build()
 
-let private toResource (registry : ResourceRegistry) : Result<ResourceDescription * Path, _> -> _ =
+let private toResource registry =
     Result.bind (fun (res, path) ->
         match Checker.create registry res.``type`` res.param with
         | Some checker -> Ok { id = res.id; runEvery = res.schedule; checker = checker }

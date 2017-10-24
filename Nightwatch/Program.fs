@@ -2,6 +2,7 @@
 
 open System
 open System.Reflection
+open Argu
 
 open Nightwatch.Core
 open Nightwatch.Core.FileSystem
@@ -88,14 +89,26 @@ let private run = function
     printfn "%s" (errorsToString errors)
     ExitCodes.configurationError
 
+type CLIArguments =
+    | [<MainCommand; ExactlyOnce; Last>] Arguments of configPath:string
+    interface IArgParserTemplate with
+        member s.Usage = 
+            match s with
+            | Arguments _ -> "path to config directory."
+
 [<EntryPoint>]
 let main argv =
-    printVersion()
-    match argv with
-    | [| configPath |] ->
+    let parser = ArgumentParser.Create<CLIArguments>(programName = "nightwatch")
+
+    try
+        let results = parser.ParseCommandLine argv
+        let configPath = results.GetResult <@ Arguments @>
+
+        printVersion()
         configureResourceRegistry()
         |> readConfiguration (Path configPath)
         |> run
-    | _ ->
-        printUsage()
+    with
+    | :? ArguParseException ->
+        printfn "%s" (parser.PrintUsage())
         ExitCodes.invalidArguments

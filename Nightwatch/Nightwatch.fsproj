@@ -16,6 +16,7 @@
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Argu" Version="3.7.0" />
     <PackageReference Include="FSharp.Control.FusionTasks.FS41" Version="1.1.0" />
     <PackageReference Include="Quartz" Version="3.0.0-alpha3" />
     <PackageReference Include="YamlDotNet" Version="4.2.1" />

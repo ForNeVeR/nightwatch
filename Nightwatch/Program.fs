@@ -11,10 +11,12 @@ open Nightwatch.Core.Resources
 open Nightwatch.Configuration
 open Nightwatch.Resources
 
-let private printVersion() =
-    let version = Assembly.GetEntryAssembly().GetName().Version
-    printfn "Nightwatch v. %A" version
-    printfn "Config file format v. %A" Configuration.configFormatVersion
+let private version = Assembly.GetEntryAssembly().GetName().Version
+
+let private fullVersion =
+    sprintf "Nightwatch v. %A\nConfig file format v. %A"
+        version
+        Configuration.configFormatVersion
 
 let private splitResults seq =
     let chooseOk = function
@@ -90,25 +92,29 @@ let private run = function
     ExitCodes.configurationError
 
 type CLIArguments =
-    | [<MainCommand; ExactlyOnce; Last>] Arguments of configPath:string
+    | Version
+    | [<MainCommand>] Arguments of configPath:string
     interface IArgParserTemplate with
-        member s.Usage = 
+        member s.Usage =
             match s with
-            | Arguments _ -> "path to config directory."
+            | Version -> "display nightwatch's version"
+            | Arguments _ -> "path to config directory"
 
 [<EntryPoint>]
 let main argv =
     let parser = ArgumentParser.Create<CLIArguments>(programName = "nightwatch")
+    let results = parser.ParseCommandLine(argv, raiseOnUsage=false)
 
-    try
-        let results = parser.ParseCommandLine argv
+    if results.Contains <@ Version @> then
+        printfn "%A" version
+        ExitCodes.success
+    else if results.Contains <@ Arguments @> then
         let configPath = results.GetResult <@ Arguments @>
 
-        printVersion()
+        printfn "%s" fullVersion
         configureResourceRegistry()
         |> readConfiguration (Path configPath)
         |> run
-    with
-    | :? ArguParseException ->
+    else
         printfn "%s" (parser.PrintUsage())
         ExitCodes.invalidArguments

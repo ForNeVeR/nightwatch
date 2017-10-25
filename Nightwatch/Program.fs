@@ -58,7 +58,7 @@ let private errorsToString errors =
     let printError { path = (Path path); id = id; message = message } =
         sprintf "Path: %s\nId: %s\nMessage: %s"
             path
-            (match id with Some x -> x | None -> "N/A")
+            (defaultArg id "N/A")
             message
 
     String.Join("\n", Seq.map printError errors)
@@ -103,7 +103,7 @@ type CLIArguments =
 [<EntryPoint>]
 let main argv =
     let parser = ArgumentParser.Create<CLIArguments>(programName = "nightwatch")
-    let results = parser.ParseCommandLine(argv, raiseOnUsage=false)
+    let results = parser.ParseCommandLine(argv, raiseOnUsage = false)
 
     if results.Contains <@ Version @> then
         printfn "%A" version

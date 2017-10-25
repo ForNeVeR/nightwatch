@@ -91,6 +91,7 @@ let private run = function
     printfn "%s" (errorsToString errors)
     ExitCodes.configurationError
 
+[<RequireQualifiedAccess>]
 type CLIArguments =
     | Version
     | [<MainCommand>] Arguments of configPath:string
@@ -105,11 +106,11 @@ let main argv =
     let parser = ArgumentParser.Create<CLIArguments>(programName = "nightwatch")
     let results = parser.ParseCommandLine(argv, raiseOnUsage = false)
 
-    if results.Contains <@ Version @> then
+    if results.Contains <@ CLIArguments.Version @> then
         printfn "%A" version
         ExitCodes.success
-    else if results.Contains <@ Arguments @> then
-        let configPath = results.GetResult <@ Arguments @>
+    else if results.Contains <@ CLIArguments.Arguments @> then
+        let configPath = results.GetResult <@ CLIArguments.Arguments @>
 
         printfn "%s" fullVersion
         configureResourceRegistry()

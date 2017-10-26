@@ -92,7 +92,7 @@ let private run = function
     ExitCodes.configurationError
 
 [<RequireQualifiedAccess>]
-type CLIArguments =
+type CliArguments =
     | Version
     | [<MainCommand>] Arguments of configPath:string
     interface IArgParserTemplate with
@@ -103,14 +103,14 @@ type CLIArguments =
 
 [<EntryPoint>]
 let main argv =
-    let parser = ArgumentParser.Create<CLIArguments>(programName = "nightwatch")
+    let parser = ArgumentParser.Create<CliArguments>(programName = "nightwatch")
     let results = parser.ParseCommandLine(argv, raiseOnUsage = false)
 
-    if results.Contains <@ CLIArguments.Version @> then
+    if results.Contains <@ CliArguments.Version @> then
         printfn "%A" version
         ExitCodes.success
-    else if results.Contains <@ CLIArguments.Arguments @> then
-        let configPath = results.GetResult <@ CLIArguments.Arguments @>
+    else if results.Contains <@ CliArguments.Arguments @> then
+        let configPath = results.GetResult <@ CliArguments.Arguments @>
 
         printfn "%s" fullVersion
         configureResourceRegistry()

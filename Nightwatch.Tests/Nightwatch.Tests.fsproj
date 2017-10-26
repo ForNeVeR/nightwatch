@@ -11,7 +11,7 @@
     <Compile Include="Resources/Shell.fs" />
     <Compile Include="Configuration.fs" />
     <Compile Include="Scheduler.fs" />
-    <Compile Include="CLI.fs" />
+    <Compile Include="Cli.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>

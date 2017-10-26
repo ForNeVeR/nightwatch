@@ -98,8 +98,8 @@ type CliArguments =
     interface IArgParserTemplate with
         member s.Usage =
             match s with
-            | Version -> "display nightwatch's version"
-            | Arguments _ -> "path to config directory"
+            | Version -> "display nightwatch's version."
+            | Arguments _ -> "path to config directory."
 
 [<EntryPoint>]
 let main argv =

@@ -54,10 +54,12 @@ Run
 In developer mode:
 
 ```console
-$ dotnet run --project Nightwatch
+$ dotnet run --project Nightwatch -- ./config/
 ```
 
 To stop the program, press any key.
+
+Add `--help` option to see additional command line arguments.
 
 Test
 ----

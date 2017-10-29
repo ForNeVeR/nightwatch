@@ -2,6 +2,7 @@ namespace Nightwatch.Resources
 
 open System
 open System.Collections.Generic
+open Serilog
 
 open Nightwatch.Core.FileSystem
 open Nightwatch.Core.Resources
@@ -36,6 +37,6 @@ module internal Checker =
 
     let check (resource : Resource) : Async<bool> =
         async {
-            printfn "Checking resource %s…" resource.id
+            Log.Information("Checking resource {0}...", resource.id)
             return! resource.checker.Invoke()
         }

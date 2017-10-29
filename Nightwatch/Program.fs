@@ -3,6 +3,7 @@
 open System
 open System.Reflection
 open Argu
+open Serilog
 
 open Nightwatch.Core
 open Nightwatch.Core.FileSystem
@@ -13,10 +14,9 @@ open Nightwatch.Resources
 
 let private version = Assembly.GetEntryAssembly().GetName().Version
 
-let private fullVersion =
-    sprintf "Nightwatch v. %A\nConfig file format v. %A"
-        version
-        Configuration.configFormatVersion
+let private logFullVersion() =
+    Log.Information("Nightwatch v. {0}", version)
+    Log.Information("Config file format v. {0}", Configuration.configFormatVersion)
 
 let private splitResults seq =
     let chooseOk = function
@@ -41,12 +41,12 @@ let private runScheduler resources =
         let! scheduler = Scheduler.create()
         do! Scheduler.configure scheduler schedule
         do! Scheduler.start scheduler
-        printfn "Scheduler started"
-        printfn "Press any key to stop"
+        Log.Information("Scheduler started")
+        printfn "Press any key to stop..."
         ignore <| Console.ReadKey()
-        printfn "Stopping"
+        Log.Information("Stopping...")
         do! Scheduler.stop scheduler
-        printfn "Bye"
+        Log.Information("Bye")
     } |> Async.RunSynchronously
 
 module private ExitCodes =
@@ -63,14 +63,11 @@ let private errorsToString errors =
 
     String.Join("\n", Seq.map printError errors)
 
-let private printUsage() =
-    printfn "Arguments: <path to config directory>"
-
 let resourceFactories = [| Http.factory Http.system; Shell.factory Process.system |]
 
 let private configureResourceRegistry() =
     let names = resourceFactories |> Seq.map (fun f -> f.resourceType)
-    printfn "Available resources: %s" (String.Join(", ", names))
+    Log.Information("Available resources: {0}", String.Join(", ", names))
     Registry.create resourceFactories
 
 let private readConfiguration path factories : Result<Resource seq, InvalidConfiguration seq> =
@@ -85,10 +82,11 @@ let private readConfiguration path factories : Result<Resource seq, InvalidConfi
 
 let private run = function
 | Ok resources ->
+    logFullVersion()
     runScheduler resources
     ExitCodes.success
 | Error errors ->
-    printfn "%s" (errorsToString errors)
+    Log.Error(errorsToString errors)
     ExitCodes.configurationError
 
 [<RequireQualifiedAccess>]
@@ -103,6 +101,10 @@ type CliArguments =
 
 [<EntryPoint>]
 let main argv =
+    Log.Logger <- LoggerConfiguration()
+                    .WriteTo.LiterateConsole()
+                    .CreateLogger()
+
     let parser = ArgumentParser.Create<CliArguments>(programName = "nightwatch")
     let results = parser.ParseCommandLine(argv, raiseOnUsage = false)
 
@@ -111,8 +113,6 @@ let main argv =
         ExitCodes.success
     else if results.Contains <@ CliArguments.Arguments @> then
         let configPath = results.GetResult <@ CliArguments.Arguments @>
-
-        printfn "%s" fullVersion
         configureResourceRegistry()
         |> readConfiguration (Path configPath)
         |> run

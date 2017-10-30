@@ -9,17 +9,16 @@ open Xunit
 open Nightwatch.Core.Process
 open Nightwatch.Resources
 
-let private getChecker controller command =
+let private getChecker controller (command: string) (args: string[]) =
     let factory = Shell.factory controller
-
-    let param = [| "cmd", command |] |> Map.ofArray
+    let args = String.Join(' ', args)
+    let param = [| "cmd", command; "args", args |] |> Map.ofArray
     factory.create.Invoke param
 
 [<Fact>]
 let ``Shell Resource starts a process``() =
-    let processName = "any.exe"
+    let command = "any.exe"
     let args = [|"-a"; "--b"; "test"|]
-    let command = processName + " " + String.Join(' ', args)
 
     let mutable startedCommand = None
     let mutable startedArgs = None
@@ -27,17 +26,17 @@ let ``Shell Resource starts a process``() =
         startedCommand <- Some name
         startedArgs <- Some args
         Task.FromResult 0 }
-    let checker = getChecker controller command
+    let checker = getChecker controller command args
     task {
         let! result = checker.Invoke()
-        Assert.Equal(processName, Option.get startedCommand)
-        Assert.Equal<string []>(args, Option.get startedArgs)
+        Assert.Equal(command, Option.get startedCommand)
+        Assert.Equal(Some args, startedArgs)
     }
 
 [<Fact>]
 let ``Shell Resource returns success if process returns zero exit code``() =
     let controller = { execute = fun _ _ -> Task.FromResult 0 }
-    let checker = getChecker controller ""
+    let checker = getChecker controller "" Array.empty<_>
     task {
         let! result = checker.Invoke()
         Assert.True result
@@ -46,7 +45,7 @@ let ``Shell Resource returns success if process returns zero exit code``() =
 [<Fact>]
 let ``Shell Resource returns success if process returns nonzero exit code``() =
     let controller = { execute = fun _ _ -> Task.FromResult 1 }
-    let checker = getChecker controller ""
+    let checker = getChecker controller "" Array.empty<_>
     task {
         let! result = checker.Invoke()
         Assert.False result

@@ -3,4 +3,5 @@ id: sample/shell # task identifier
 schedule: 00:00:25 # run every 25 seconds
 type: shell
 param:
-    cmd: ping localhost
+    cmd: ping
+    args: localhost

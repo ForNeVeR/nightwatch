@@ -102,7 +102,7 @@ type CliArguments =
 [<EntryPoint>]
 let main argv =
     Log.Logger <- LoggerConfiguration()
-                    .WriteTo.LiterateConsole()
+                    .WriteTo.Console()
                     .CreateLogger()
 
     let parser = ArgumentParser.Create<CliArguments>(programName = "nightwatch")

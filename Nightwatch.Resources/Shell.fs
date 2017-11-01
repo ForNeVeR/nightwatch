@@ -11,8 +11,13 @@ open Nightwatch.Core.Resources
 let private create (processController : Process.Controller)
                    (param : IDictionary<string, string>) =
     let command = param.["cmd"]
+
     let separator = [|' '|]
-    let args = param.["args"].Split(separator, StringSplitOptions.RemoveEmptyEntries)
+    let args =
+        match param.TryGetValue("args") with
+        | (true, x) -> x.Split(separator, StringSplitOptions.RemoveEmptyEntries)
+        | (false, _) -> Array.empty<string>
+
     fun () -> task {
         let! code = processController.execute command args
         return code = 0

@@ -11,9 +11,34 @@ open Nightwatch.Resources
 
 let private getChecker controller (command: string) (args: string[]) =
     let factory = Shell.factory controller
-    let args = String.Join(' ', args)
-    let param = [| "cmd", command; "args", args |] |> Map.ofArray
+    let param =
+        if Array.isEmpty args then
+            [| "cmd", command |]
+        else
+            let args = String.Join(' ', args)
+            [| "cmd", command; "args", args |]
+
+        |> Map.ofArray
+
     factory.create.Invoke param
+
+[<Fact>]
+let ``Shell Resource starts a process without args``() =
+    let command = "any.exe"
+    let args = [||]
+
+    let mutable startedCommand = None
+    let mutable startedArgs = None
+    let controller = { execute = fun name args ->
+        startedCommand <- Some name
+        startedArgs <- Some args
+        Task.FromResult 0 }
+    let checker = getChecker controller command args
+    task {
+        let! result = checker.Invoke()
+        Assert.Equal(command, Option.get startedCommand)
+        Assert.Equal(Some args, startedArgs)
+    }
 
 [<Fact>]
 let ``Shell Resource starts a process``() =

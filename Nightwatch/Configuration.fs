@@ -2,10 +2,12 @@ module internal Nightwatch.Configuration
 
 open System
 open System.Collections.Generic
+open System.Threading.Tasks
 open System.IO
 
 open YamlDotNet.Serialization
 open YamlDotNet.Serialization.NamingConventions
+open FSharp.Control.Tasks
 
 open Nightwatch.Core.FileSystem
 open Nightwatch.Core.Resources
@@ -36,7 +38,7 @@ let private deserializeResource (deserializer : Deserializer) path (reader : Str
     correctResource resource path
 
 let private loadFile (fs : FileSystem) deserializer path =
-    async {
+    task {
         use! stream = fs.openStream path
         use reader = new StreamReader(stream)
         return deserializeResource deserializer path reader
@@ -68,11 +70,11 @@ let private toResource registry =
 let private configFileMask = Mask "*.yml"
 
 let read (registry : ResourceRegistry) (fs : FileSystem) (configDirectory : Path)
-         : Async<seq<Result<Resource, InvalidConfiguration>>> =
+         : Task<seq<Result<Resource, InvalidConfiguration>>> =
     let deserializer = buildDeserializer()
-    async {
+    task {
         let! fileNames = fs.getFilesRecursively configDirectory configFileMask
         let tasks = fileNames |> Seq.map (loadFile fs deserializer)
-        let! checks = Async.Parallel tasks
+        let! checks = Task.WhenAll tasks
         return Seq.map (toResource registry) checks
     }

@@ -4,6 +4,7 @@ open System.Threading.Tasks
 
 open Quartz
 open Quartz.Impl
+open FSharp.Control.Tasks
 
 open Nightwatch.Resources
 
@@ -27,8 +28,8 @@ let prepareSchedule : Resource seq -> Schedule =
     )
 
 
-let create() : Async<IScheduler> =
-    async {
+let create() : Task<IScheduler> =
+    task {
         let factory = StdSchedulerFactory()
         return! factory.GetScheduler()
     }
@@ -36,8 +37,8 @@ let create() : Async<IScheduler> =
 let private configureTask (scheduler : IScheduler) (job : IJobDetail, trigger) : Task =
     upcast scheduler.ScheduleJob(job, trigger)
 
-let configure (scheduler: IScheduler) (schedule : Schedule) : Async<unit> =
-    async {
+let configure (scheduler: IScheduler) (schedule : Schedule) : Task<unit> =
+    task {
         let tasks =
             schedule
             |> Seq.map (configureTask scheduler)
@@ -45,12 +46,12 @@ let configure (scheduler: IScheduler) (schedule : Schedule) : Async<unit> =
         do! Task.WhenAll tasks
     }
 
-let start (scheduler : IScheduler) : Async<unit> =
-    async {
+let start (scheduler : IScheduler) : Task<unit> =
+    task {
         do! scheduler.Start()
     }
 
-let stop (scheduler : IScheduler) : Async<unit> =
-    async {
+let stop (scheduler : IScheduler) : Task<unit> =
+    task {
         do! scheduler.Shutdown true
     }

@@ -6,6 +6,7 @@ open System.Text
 open System.Threading.Tasks
 
 open Xunit
+open FSharp.Control.Tasks
 
 open Nightwatch
 open Nightwatch.Configuration
@@ -49,13 +50,13 @@ param:
           create = Func<_, _>(fun param -> parsedParam <- Some param; checker) }
     let registry = Registry.create [| factory |]
     let fileSystem = mockFileSystem [| "dir/test.yml", text |]
-    async {
+    task {
         let! result = Configuration.read registry fileSystem (Path "dir")
         Assert.Equal<_>([| Ok expected |], result)
 
         let param = Option.get parsedParam
         Assert.Equal("ping localhost", param.["check"])
-    } |> Async.StartAsTask
+    }
 
 let private emptyRegistry = Registry.create [| |]
 
@@ -70,15 +71,15 @@ type: test"
     let expected = Error { path = (Path path)
                            id = Some "test"
                            message = "The resource factory for type \"test\" is not registered" }
-    async {
+    task {
         let! result = Configuration.read emptyRegistry fileSystem (Path "dir")
         Assert.Equal([| expected |], result)
-    } |> Async.StartAsTask
+    }
 
 [<Fact>]
 let ``Configuration should ignore non-YAML file`` () =
     let fileSystem = mockFileSystem [| "test.yml2", "" |]
-    async {
+    task {
         let! result = Configuration.read emptyRegistry fileSystem (Path "dir")
         Assert.Equal<Result<_, _>>(Seq.empty, result)
-    } |> Async.StartAsTask
+    }

@@ -2,8 +2,10 @@ module Nightwatch.Tests.Core.FileSystem
 
 open System
 open System.IO
+open System.Threading.Tasks
 
 open Xunit
+open FSharp.Control.Tasks
 
 open Nightwatch.Core
 open Nightwatch.Core.FileSystem
@@ -37,7 +39,7 @@ let private createFileSystem paths =
 let ``getFilesRecursively should return only the files corresponding to mask`` () =
     let fileList = [| "dir/"; "dir/file.txt"; "dir/file.yml"
                       "dir/subdir/"; "dir/subdir/file.txt"; "dir/subdir/file.yml" |]
-    async {
+    task {
         use dir = createFileSystem fileList
         let! files = fs.getFilesRecursively (Path dir.root) (Mask "*.txt")
         let expected =
@@ -47,11 +49,11 @@ let ``getFilesRecursively should return only the files corresponding to mask`` (
             |> Seq.sort
             |> Seq.toArray
         Assert.Equal<Path>(expected, files |> Seq.sort)
-    } |> Async.StartAsTask
+    }
 
 [<Fact>]
 let ``openStream returns the file stream`` () =
-    async {
+    task {
         let path = Path.GetTempFileName()
         try
             let content = "Hello World\n123"
@@ -63,4 +65,4 @@ let ``openStream returns the file stream`` () =
             Assert.Equal(content, result)
         finally
             File.Delete path
-    } |> Async.StartAsTask
+    }

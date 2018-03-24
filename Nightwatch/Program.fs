@@ -2,8 +2,11 @@
 
 open System
 open System.Reflection
+open System.Threading.Tasks
+
 open Argu
 open Serilog
+open FSharp.Control.Tasks
 
 open Nightwatch.Core
 open Nightwatch.Core.FileSystem
@@ -37,7 +40,7 @@ let private splitResults seq =
 
 let private runScheduler resources =
     let schedule = Scheduler.prepareSchedule resources
-    async {
+    task {
         let! scheduler = Scheduler.create()
         do! Scheduler.configure scheduler schedule
         do! Scheduler.start scheduler
@@ -47,7 +50,7 @@ let private runScheduler resources =
         Log.Information("Stopping...")
         do! Scheduler.stop scheduler
         Log.Information("Bye")
-    } |> Async.RunSynchronously
+    }
 
 module private ExitCodes =
     let success = 0
@@ -71,19 +74,20 @@ let private configureResourceRegistry() =
     Registry.create resourceFactories
 
 let private readConfiguration path factories : Result<Resource seq, InvalidConfiguration seq> =
-    async {
+    let readTask = task {
         let! resources = Configuration.read factories FileSystem.system path
         let (results, errors) = splitResults resources
         return
             if Seq.isEmpty errors
             then Ok results
             else Error errors
-    } |> Async.RunSynchronously
+    }
+    readTask.Result
 
 let private run = function
 | Ok resources ->
     logFullVersion()
-    runScheduler resources
+    runScheduler resources |> ignore
     ExitCodes.success
 | Error errors ->
     Log.Error(errorsToString errors)

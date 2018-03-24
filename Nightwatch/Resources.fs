@@ -2,7 +2,9 @@ namespace Nightwatch.Resources
 
 open System
 open System.Collections.Generic
+open System.Threading.Tasks
 open Serilog
+open FSharp.Control.Tasks
 
 open Nightwatch.Core.FileSystem
 open Nightwatch.Core.Resources
@@ -35,8 +37,8 @@ module internal Checker =
         Map.tryFind resourceType registry
         |> Option.map (fun factory -> factory.create.Invoke param)
 
-    let check (resource : Resource) : Async<bool> =
-        async {
+    let check (resource : Resource) : Task<bool> =
+        task {
             Log.Information("Checking resource {0}...", resource.id)
             return! resource.checker.Invoke()
         }

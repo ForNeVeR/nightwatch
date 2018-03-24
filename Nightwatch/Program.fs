@@ -108,11 +108,11 @@ let main argv =
     let parser = ArgumentParser.Create<CliArguments>(programName = "nightwatch")
     let results = parser.ParseCommandLine(argv, raiseOnUsage = false)
 
-    if results.Contains <@ CliArguments.Version @> then
+    if results.Contains CliArguments.Version then
         printfn "%A" version
         ExitCodes.success
-    else if results.Contains <@ CliArguments.Arguments @> then
-        let configPath = results.GetResult <@ CliArguments.Arguments @>
+    else if results.Contains CliArguments.Arguments then
+        let configPath = results.GetResult CliArguments.Arguments
         configureResourceRegistry()
         |> readConfiguration (Path configPath)
         |> run

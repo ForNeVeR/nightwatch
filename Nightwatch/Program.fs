@@ -21,6 +21,8 @@ let private logFullVersion() =
     Log.Information("Nightwatch v. {0}", version)
     Log.Information("Config file format v. {0}", Configuration.configFormatVersion)
 
+let private synchronize (t:Task<'T>) = t.Result
+
 let private splitResults seq =
     let chooseOk = function
     | Ok x -> Some x
@@ -73,8 +75,8 @@ let private configureResourceRegistry() =
     Log.Information("Available resources: {0}", String.Join(", ", names))
     Registry.create resourceFactories
 
-let private readConfiguration path factories : Result<Resource seq, InvalidConfiguration seq> =
-    let readTask = task {
+let private readConfiguration path factories : Task<Result<Resource seq, InvalidConfiguration seq>> =
+    task {
         let! resources = Configuration.read factories FileSystem.system path
         let (results, errors) = splitResults resources
         return
@@ -82,7 +84,6 @@ let private readConfiguration path factories : Result<Resource seq, InvalidConfi
             then Ok results
             else Error errors
     }
-    readTask.Result
 
 let private run = function
 | Ok resources ->
@@ -119,6 +120,7 @@ let main argv =
         let configPath = results.GetResult CliArguments.Arguments
         configureResourceRegistry()
         |> readConfiguration (Path configPath)
+        |> synchronize
         |> run
     else
         printfn "%s" (parser.PrintUsage())

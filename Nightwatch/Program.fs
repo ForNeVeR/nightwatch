@@ -108,24 +108,22 @@ type CliArguments =
             | Arguments _ -> "path to config directory."
 
 [<EntryPoint>]
-let main argv =
+let main argv = synchronize <| task {
     Log.Logger <- LoggerConfiguration()
                     .WriteTo.Console()
                     .CreateLogger()
 
     let parser = ArgumentParser.Create<CliArguments>(programName = "nightwatch")
     let results = parser.ParseCommandLine(argv, raiseOnUsage = false)
-
+    
     if results.Contains CliArguments.Version then
         printfn "%A" version
-        ExitCodes.success
+        return ExitCodes.success
     else if results.Contains CliArguments.Arguments then
         let configPath = results.GetResult CliArguments.Arguments
         let registry = configureResourceRegistry()
-        task {
-            let! config = readConfiguration (Path configPath) registry
-            return! run config
-        } |> synchronize
+        let! config = readConfiguration (Path configPath) registry
+        return! run config
     else
         printfn "%s" (parser.PrintUsage())
-        ExitCodes.invalidArguments
+        return ExitCodes.invalidArguments } 

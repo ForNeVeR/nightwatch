@@ -85,14 +85,17 @@ let private readConfiguration path factories : Task<Result<Resource seq, Invalid
             else Error errors
     }
 
-let private run = function
-| Ok resources ->
-    logFullVersion()
-    runScheduler resources |> ignore
-    ExitCodes.success
-| Error errors ->
-    Log.Error(errorsToString errors)
-    ExitCodes.configurationError
+let private run config =
+    task {
+        match config with
+        | Ok resources ->
+            logFullVersion()
+            do! runScheduler resources
+            return ExitCodes.success
+        | Error errors ->
+            Log.Error(errorsToString errors)
+            return ExitCodes.configurationError
+    }
 
 [<RequireQualifiedAccess>]
 type CliArguments =
@@ -118,10 +121,11 @@ let main argv =
         ExitCodes.success
     else if results.Contains CliArguments.Arguments then
         let configPath = results.GetResult CliArguments.Arguments
-        configureResourceRegistry()
-        |> readConfiguration (Path configPath)
-        |> synchronize
-        |> run
+        let registry = configureResourceRegistry()
+        task {
+            let! config = readConfiguration (Path configPath) registry
+            return! run config
+        } |> synchronize
     else
         printfn "%s" (parser.PrintUsage())
         ExitCodes.invalidArguments

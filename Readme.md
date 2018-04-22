@@ -16,6 +16,9 @@ $ dotnet build
 Configure
 ---------
 
+**⚠ By default, the configuration directory is `$pwd/samples`. There's no way
+for the user to redefine it yet.**
+
 Nightwatch uses configuration directory with multiple configuration files. At
 start, it will recursively read all the `*.yml` files in the configuration
 directory, and set them up as periodic tasks. Each configuration file describes
@@ -54,7 +57,7 @@ Run
 In developer mode:
 
 ```console
-$ dotnet run --project Nightwatch -- ./config/
+$ dotnet run --project Nightwatch
 ```
 
 To stop the program, press any key.

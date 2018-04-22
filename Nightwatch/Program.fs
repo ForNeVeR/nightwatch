@@ -1,12 +1,14 @@
 ﻿module Nightwatch.Program
 
 open System
+open System.IO
 open System.Reflection
 open System.Threading.Tasks
 
 open Argu
-open Serilog
 open FSharp.Control.Tasks
+open Serilog
+open Topshelf
 
 open Nightwatch.Core
 open Nightwatch.Core.FileSystem
@@ -40,24 +42,17 @@ let private splitResults seq =
         |> Array.partition isOk
     Seq.choose chooseOk results, Seq.choose chooseError errors
 
-let private runScheduler resources =
+let private createScheduler resources =
     let schedule = Scheduler.prepareSchedule resources
     task {
         let! scheduler = Scheduler.create()
         do! Scheduler.configure scheduler schedule
-        do! Scheduler.start scheduler
-        Log.Information("Scheduler started")
-        printfn "Press any key to stop..."
-        ignore <| Console.ReadKey()
-        Log.Information("Stopping...")
-        do! Scheduler.stop scheduler
-        Log.Information("Bye")
+        return scheduler
     }
 
 module private ExitCodes =
     let success = 0
-    let invalidArguments = 1
-    let configurationError = 2
+    let configurationError = 1
 
 let private errorsToString errors =
     let printError { path = (Path path); id = id; message = message } =
@@ -85,18 +80,6 @@ let private readConfiguration path factories : Task<Result<Resource seq, Invalid
             else Error errors
     }
 
-let private run config =
-    task {
-        match config with
-        | Ok resources ->
-            logFullVersion()
-            do! runScheduler resources
-            return ExitCodes.success
-        | Error errors ->
-            Log.Error(errorsToString errors)
-            return ExitCodes.configurationError
-    }
-
 [<RequireQualifiedAccess>]
 type CliArguments =
     | Version
@@ -107,23 +90,58 @@ type CliArguments =
             | Version -> "display nightwatch's version."
             | Arguments _ -> "path to config directory."
 
+let private defaultConfigPath = Path.Combine(Environment.CurrentDirectory, "samples") // TODO[F]: Remove the "samples" part
+
+let private runService scheduler =
+    let doSync f _ =
+        synchronize f
+        true
+
+    // TODO[F]: It will throw an exception if it will find any additional command-line arguments, e.g. `./config/`
+
+    Service.Default
+    |> with_start (doSync <| Scheduler.start scheduler)
+    |> with_stop (doSync <| Scheduler.stop scheduler)
+    |> service_name "nightwatch"
+    |> display_name "Nightwatch"
+    |> description "Nightwatch service"
+    |> run
+
 [<EntryPoint>]
-let main argv = synchronize <| task {
-    Log.Logger <- LoggerConfiguration()
-                    .WriteTo.Console()
-                    .CreateLogger()
+let main (argv : string[]) : int =
+    let initializeLogger() =
+        Log.Logger <-
+            LoggerConfiguration()
+                .WriteTo.Console()
+                .CreateLogger()
+
+    initializeLogger()
 
     let parser = ArgumentParser.Create<CliArguments>(programName = "nightwatch")
-    let results = parser.ParseCommandLine(argv, raiseOnUsage = false)
-    
-    if results.Contains CliArguments.Version then
-        printfn "%A" version
-        return ExitCodes.success
-    else if results.Contains CliArguments.Arguments then
-        let configPath = results.GetResult CliArguments.Arguments
-        let registry = configureResourceRegistry()
-        let! config = readConfiguration (Path configPath) registry
-        return! run config
-    else
+    let arguments = parser.ParseCommandLine(argv, raiseOnUsage = false)
+
+    let getConfigPath() =
+    // TODO[F]: This messes up with `install` argument, fix please
+//         if arguments.Contains CliArguments.Arguments then
+//             arguments.GetResult CliArguments.Arguments
+//         else
+         defaultConfigPath
+
+    if arguments.IsUsageRequested then
         printfn "%s" (parser.PrintUsage())
-        return ExitCodes.invalidArguments } 
+        ExitCodes.success
+    else if arguments.Contains CliArguments.Version then
+        printfn "%A" version
+        ExitCodes.success
+    else
+        let configPath = getConfigPath()
+        let registry = configureResourceRegistry()
+        let config = synchronize <| readConfiguration (Path configPath) registry
+        match config with
+        | Ok resources ->
+            logFullVersion()
+            let scheduler = synchronize <| createScheduler resources
+            runService scheduler
+        | Error errors ->
+            Log.Error(errorsToString errors)
+            ExitCodes.configurationError

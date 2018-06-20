@@ -23,7 +23,7 @@ let private logFullVersion() =
     Log.Information("Nightwatch v. {0}", version)
     Log.Information("Config file format v. {0}", Configuration.configFormatVersion)
 
-let private synchronize (t:Task<'T>) = t.Result
+let private synchronize(t : Task<'T>) = t.GetAwaiter().GetResult()
 
 let private splitResults seq =
     let chooseOk = function

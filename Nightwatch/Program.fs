@@ -94,14 +94,14 @@ let private defaultConfigPath = Path.Combine(Environment.CurrentDirectory, "samp
 
 let private runService scheduler =
     let doSync f _ =
-        synchronize f
+        synchronize <| f()
         true
 
     // TODO[F]: It will throw an exception if it will find any additional command-line arguments, e.g. `./config/`
 
     Service.Default
-    |> with_start (doSync <| Scheduler.start scheduler)
-    |> with_stop (doSync <| Scheduler.stop scheduler)
+    |> with_start (doSync <| fun () -> Scheduler.start scheduler)
+    |> with_stop (doSync <| fun () -> Scheduler.stop scheduler)
     |> service_name "nightwatch"
     |> display_name "Nightwatch"
     |> description "Nightwatch service"

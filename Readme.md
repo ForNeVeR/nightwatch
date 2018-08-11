@@ -7,7 +7,7 @@ activities and notify the administrator if something wrong happens.
 Build
 -----
 
-[.NET Core 2.0 SDK][net-core-sdk] is required to build the project.
+[.NET Core 2.1 SDK][net-core-sdk] is required to build the project.
 
 ```console
 $ dotnet build

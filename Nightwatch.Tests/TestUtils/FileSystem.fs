@@ -15,8 +15,12 @@ let mockFileSystem (paths : (string * string)[]) =
         |> Seq.filter (fun p -> p.StartsWith(path + "/") && p.EndsWith(mask.Substring 1))
         |> Seq.map Path
         |> Task.FromResult
+    let fileNotFound path =
+        let allKeys = pathMap |> Map.toSeq |> Seq.map fst |> Seq.toArray
+        raise <| FileNotFoundException(sprintf "File not found: %s\nAvailable files: %A" path allKeys)
     let openStream (Path path) : Task<Stream> =
-        Map.find path pathMap
+        Map.tryFind path pathMap
+        |> Option.defaultWith(fun () -> fileNotFound path)
         |> Encoding.UTF8.GetBytes
         |> fun bytes -> new MemoryStream(bytes) :> Stream
         |> Task.FromResult

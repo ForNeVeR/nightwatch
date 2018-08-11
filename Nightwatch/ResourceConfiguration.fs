@@ -1,16 +1,16 @@
-module internal Nightwatch.Configuration
+module internal Nightwatch.ResourceConfiguration
 
 open System
 open System.Collections.Generic
 open System.Threading.Tasks
 open System.IO
 
-open YamlDotNet.Serialization
-open YamlDotNet.Serialization.NamingConventions
 open FSharp.Control.Tasks
+open YamlDotNet.Serialization
 
 open Nightwatch.Core.FileSystem
 open Nightwatch.Core.Resources
+open Nightwatch.ProgramConfiguration
 open Nightwatch.Resources
 
 let configFormatVersion : Version = Version "0.0.1.0"
@@ -69,11 +69,13 @@ let private toResource registry =
 
 let private configFileMask = Mask "*.yml"
 
-let read (registry : ResourceRegistry) (fs : FileSystem) (configDirectory : Path)
+let read (registry : ResourceRegistry)
+         (fs : FileSystem)
+         (config : ProgramConfiguration)
          : Task<seq<Result<Resource, InvalidConfiguration>>> =
     let deserializer = buildDeserializer()
     task {
-        let! fileNames = fs.getFilesRecursively configDirectory configFileMask
+        let! fileNames = fs.getFilesRecursively config.resourceDirectory configFileMask
         let tasks = fileNames |> Seq.map (loadFile fs deserializer)
         let! checks = Task.WhenAll tasks
         return Seq.map (toResource registry) checks

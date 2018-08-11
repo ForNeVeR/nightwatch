@@ -1,4 +1,4 @@
-module Nightwatch.Tests.Configuration
+module Nightwatch.Tests.ResourceConfiguration
 
 open System
 open System.IO
@@ -9,31 +9,20 @@ open Xunit
 open FSharp.Control.Tasks
 
 open Nightwatch
-open Nightwatch.Configuration
+open Nightwatch.ProgramConfiguration
+open Nightwatch.ResourceConfiguration
 open Nightwatch.Core
 open Nightwatch.Core.FileSystem
 open Nightwatch.Core.Resources
 open Nightwatch.Resources
+open Nightwatch.Tests.TestUtils.FileSystem
 
-let private mockFileSystem (paths : (string * string)[]) =
-    let pathMap = Map paths
-    let getFiles (Path path) (Mask mask) =
-        paths
-        |> Seq.map fst
-        |> Seq.filter (fun p -> p.StartsWith(path + "/") && p.EndsWith(mask.Substring 1))
-        |> Seq.map Path
-        |> Task.FromResult
-    let openStream (Path path) : Task<Stream> =
-        Map.find path pathMap
-        |> Encoding.UTF8.GetBytes
-        |> fun bytes -> new MemoryStream(bytes) :> Stream
-        |> Task.FromResult
-
-    { FileSystem.system with getFilesRecursively = getFiles
-                             openStream = openStream }
+let private programConfiguration =
+    { baseDirectory = Path "."
+      resourceDirectory = Path "dir" }
 
 [<Fact>]
-let ``Configuration should read the YAML file`` () =
+let ``ResourceConfiguration should read the YAML file`` () =
     let text = @"version: 0.0.1.0
 id: test
 schedule: 00:05:00
@@ -52,7 +41,7 @@ param:
     let registry = Registry.create [| factory |]
     let fileSystem = mockFileSystem [| "dir/test.yml", text |]
     task {
-        let! result = Configuration.read registry fileSystem (Path "dir")
+        let! result = ResourceConfiguration.read registry fileSystem programConfiguration
         Assert.Equal<_>([| Ok expected |], result)
 
         let param = Option.get parsedParam
@@ -62,7 +51,7 @@ param:
 let private emptyRegistry = Registry.create [| |]
 
 [<Fact>]
-let ``Confiuguration returns error if the type is not registered in the factory``() =
+let ``ResourceConfiguration returns error if the type is not registered in the factory``() =
     let text = @"version: 0.0.1.0
 id: test
 schedule: 00:05:00
@@ -73,14 +62,14 @@ type: test"
                            id = Some "test"
                            message = "The resource factory for type \"test\" is not registered" }
     task {
-        let! result = Configuration.read emptyRegistry fileSystem (Path "dir")
+        let! result = ResourceConfiguration.read emptyRegistry fileSystem programConfiguration
         Assert.Equal([| expected |], result)
     }
 
 [<Fact>]
-let ``Configuration should ignore non-YAML file`` () =
+let ``ResourceConfiguration should ignore non-YAML file`` () =
     let fileSystem = mockFileSystem [| "test.yml2", "" |]
     task {
-        let! result = Configuration.read emptyRegistry fileSystem (Path "dir")
+        let! result = ResourceConfiguration.read emptyRegistry fileSystem programConfiguration
         Assert.Equal<Result<_, _>>(Seq.empty, result)
     }

@@ -66,3 +66,15 @@ let ``openStream returns the file stream`` () =
         finally
             File.Delete path
     }
+
+[<Fact>]
+let ``/ operator combines paths``() : unit =
+    let p1 = Path "a"
+    let p2 = Path "b"
+    Assert.Equal(Path(Path.Combine("a", "b")), p1 / p2)
+
+[<Fact>]
+let ``Path.parent returns full parent path``() : unit =
+    let path = Path @"C:\Documents and Settings\Vasily"
+    let parent = Path.parent path
+    Assert.Equal(Path @"C:\Documents and Settings", parent)

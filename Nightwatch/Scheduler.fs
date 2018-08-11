@@ -46,12 +46,12 @@ let configure (scheduler: IScheduler) (schedule : Schedule) : Task<unit> =
         do! Task.WhenAll tasks
     }
 
-let start (scheduler : IScheduler) : Task<unit> =
-    task {
-        do! scheduler.Start()
+let start (scheduler : IScheduler) : Async<unit> =
+    async {
+        do! Async.AwaitTask(scheduler.Start())
     }
 
-let stop (scheduler : IScheduler) : Task<unit> =
-    task {
-        do! scheduler.Shutdown true
+let stop (scheduler : IScheduler) : Async<unit> =
+    async {
+        do! Async.AwaitTask(scheduler.Shutdown true)
     }

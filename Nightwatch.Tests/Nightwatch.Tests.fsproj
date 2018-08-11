@@ -9,9 +9,11 @@
     <Compile Include="Core/Process.fs" />
     <Compile Include="Resources/Http.fs" />
     <Compile Include="Resources/Shell.fs" />
-    <Compile Include="Configuration.fs" />
+    <Compile Include="TestUtils/FileSystem.fs" />
+    <Compile Include="TestUtils/Environment.fs" />
+    <Compile Include="ResourceConfiguration.fs" />
+    <Compile Include="ProgramConfiguration.fs" />
     <Compile Include="Scheduler.fs" />
-    <Compile Include="Cli.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>

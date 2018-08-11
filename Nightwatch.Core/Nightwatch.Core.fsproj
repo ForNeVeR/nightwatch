@@ -1,9 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="FileSystem.fs" />
+    <Compile Include="Environment.fs" />
     <Compile Include="Network.fs" />
     <Compile Include="Process.fs" />
     <Compile Include="Resources.fs" />

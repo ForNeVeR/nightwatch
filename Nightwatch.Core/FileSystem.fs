@@ -1,10 +1,15 @@
 module Nightwatch.Core.FileSystem
 
+open System
 open System.IO
 open System.Threading.Tasks
 
 type Path = Path of string
+    with
+        static member parent(Path path) : Path = Path(Path.GetDirectoryName path)
 type Mask = Mask of string
+
+let (/) (Path p1) (Path p2) : Path = Path(Path.Combine(p1, p2))
 
 type FileSystem =
     { getFilesRecursively : Path -> Mask -> Task<Path seq>

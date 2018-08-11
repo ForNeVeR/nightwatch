@@ -16,15 +16,20 @@ $ dotnet build
 Configure
 ---------
 
-**⚠ By default, the configuration directory is `$pwd/samples`. There's no way
-for the user to redefine it yet.**
+Nightwatch could be configured by placing the `nightwatch.yml` file in the
+current directory. You may also override the configuration file path by using
+the command-line arguments, see the Run section of this document.
 
-Nightwatch uses configuration directory with multiple configuration files. At
-start, it will recursively read all the `*.yml` files in the configuration
+`nightwatch.yml` has the following form:
+
+```yaml
+resource-directory: "some/path"
+```
+
+Nightwatch searches the resource directory for the configuration files. At
+start, it will recursively read all the `*.yml` files in the resource
 directory, and set them up as periodic tasks. Each configuration file describes
 a _Resource_.
-
-Path to the configuration directory should be explicitly passed as an argument.
 
 Currently supported resources are documented below.
 
@@ -62,7 +67,10 @@ $ dotnet run --project Nightwatch
 
 To stop the program, press any key.
 
-Add `--help` option to see additional command line arguments.
+Add `-config ./some/path.yml` option to set the configuration file path
+(`nightwatch.yml` in the current directory is the default).
+
+Add `install` to install the service.
 
 Test
 ----

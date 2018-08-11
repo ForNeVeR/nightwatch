@@ -15,13 +15,13 @@ let private fullPath = Path.GetFullPath
 
 [<Fact>]
 let ``ProgramConfiguration should be read from the YAML file``() : Task =
-    let text = sprintf "resource-directory: %s" (fullPath @"C:\Temp")
-    let fileSystem = mockFileSystem [| fullPath @"C:\Users\gsomix\mytest\nightwatch.yml", text |]
-    let environment = mockEnvironment(fullPath @"C:\Users\gsomix")
+    let text = sprintf "resource-directory: %s" (fullPath "/Temp")
+    let fileSystem = mockFileSystem [| fullPath "/Users/gsomix/mytest/nightwatch.yml", text |]
+    let environment = mockEnvironment(fullPath "/Users/gsomix")
     upcast (Async.StartAsTask <| async {
         let! configuration = ProgramConfiguration.read environment fileSystem (Path(Path.Combine("mytest", "nightwatch.yml")))
-        let expected = { baseDirectory = Path(fullPath @"C:\Users\gsomix\mytest")
-                         resourceDirectory = Path(fullPath @"C:\Temp") }
+        let expected = { baseDirectory = Path(fullPath "/Users/gsomix/mytest")
+                         resourceDirectory = Path(fullPath "/Temp") }
         Assert.Equal(expected, configuration)
     })
 
@@ -33,6 +33,6 @@ let ``ProgramConfiguration's resourcePath should be interpreted from basePath``(
     upcast (Async.StartAsTask <| async {
         let! configuration = ProgramConfiguration.read environment fileSystem (Path "nightwatch.yml")
         let expected = { baseDirectory = Path(fullPath "/test")
-                         resourceDirectory = Path(fullPath @"/test/test-relative-path") }
+                         resourceDirectory = Path(fullPath "/test/test-relative-path") }
         Assert.Equal(expected, configuration)
     })

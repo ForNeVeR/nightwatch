@@ -75,6 +75,6 @@ let ``/ operator combines paths``() : unit =
 
 [<Fact>]
 let ``Path.parent returns full parent path``() : unit =
-    let path = Path @"C:\Documents and Settings\Vasily"
-    let parent = Path.parent path
-    Assert.Equal(Path @"C:\Documents and Settings", parent)
+    let path = "/Documents and Settings/Vasily"
+    let parent = Path.parent(Path path)
+    Assert.Equal(Path(Path.GetDirectoryName path), parent)

@@ -67,7 +67,7 @@ $ dotnet run --project Nightwatch
 
 To stop the program, press any key.
 
-Add `-config ./some/path.yml` option to set the configuration file path
+Add `--config ./some/path.yml` option to set the configuration file path
 (`nightwatch.yml` in the current directory is the default).
 
 Add `install` to install the service.

@@ -66,7 +66,7 @@ let private createScheduler resources =
         return scheduler
     }
 
-let startService logger programInfo env fs (configFilePath : Path) =
+let private startService logger programInfo env fs (configFilePath : Path) =
     let errorsToString errors =
         let printError { path = (Path path); id = id; message = message } =
             sprintf "Path: %s\nId: %s\nMessage: %s"

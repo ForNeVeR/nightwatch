@@ -1,26 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="Core/FileSystem.fs" />
-    <Compile Include="Core/Network.fs" />
-    <Compile Include="Core/Process.fs" />
-    <Compile Include="Resources/Http.fs" />
-    <Compile Include="Resources/Shell.fs" />
-    <Compile Include="TestUtils/FileSystem.fs" />
-    <Compile Include="TestUtils/Environment.fs" />
-    <Compile Include="Cli.fs" />
-    <Compile Include="ResourceConfiguration.fs" />
-    <Compile Include="ProgramConfiguration.fs" />
-    <Compile Include="Scheduler.fs" />
-    <Compile Include="Program.fs" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0-preview-20170628-02" />
-    <PackageReference Include="xunit" Version="2.2.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
-    <ProjectReference Include="../Nightwatch/Nightwatch.fsproj" />
-  </ItemGroup>
+    <PropertyGroup>
+        <TargetFramework>netcoreapp2.0</TargetFramework>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+    <ItemGroup>
+        <Compile Include="Core/FileSystem.fs"/>
+        <Compile Include="Core/Network.fs"/>
+        <Compile Include="Core/Process.fs"/>
+        <Compile Include="Resources/Http.fs"/>
+        <Compile Include="Resources/Shell.fs"/>
+        <Compile Include="TestUtils/FileSystem.fs"/>
+        <Compile Include="TestUtils/Environment.fs"/>
+        <Compile Include="ServiceModel\HostedService.fs"/>
+        <Compile Include="Cli.fs"/>
+        <Compile Include="ResourceConfiguration.fs"/>
+        <Compile Include="ProgramConfiguration.fs"/>
+        <Compile Include="Scheduler.fs"/>
+        <Compile Include="Program.fs"/>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0-preview-20170628-02"/>
+        <PackageReference Include="TaskBuilder.fs" Version="2.0.0"/>
+        <PackageReference Include="xunit" Version="2.2.0"/>
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0"/>
+        <ProjectReference Include="../Nightwatch/Nightwatch.fsproj"/>
+        <ProjectReference Include="../Nightwatch.ServiceModel/Nightwatch.ServiceModel.fsproj"/>
+    </ItemGroup>
 </Project>

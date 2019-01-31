@@ -1,29 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="../Nightwatch.Core/Nightwatch.Core.fsproj" />
-    <ProjectReference Include="../Nightwatch.Resources/Nightwatch.Resources.fsproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Resources.fs" />
-    <Compile Include="CheckerJob.fs" />
-    <Compile Include="ProgramConfiguration.fs" />
-    <Compile Include="ResourceConfiguration.fs" />
-    <Compile Include="Scheduler.fs" />
-    <Compile Include="AssemblyInfo.fs" />
-    <Compile Include="Service.fs" />
-    <Compile Include="Program.fs" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Argu" Version="5.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="2.2.0" />
-    <PackageReference Include="Quartz" Version="3.0.0-alpha3" />
-    <PackageReference Include="Serilog" Version="2.5.0" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
-    <PackageReference Include="YamlDotNet" Version="4.2.1" />
-    <PackageReference Include="TaskBuilder.fs" Version="2.0.0" />
-  </ItemGroup>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp2.0</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="../Nightwatch.Core/Nightwatch.Core.fsproj"/>
+        <ProjectReference Include="../Nightwatch.Resources/Nightwatch.Resources.fsproj"/>
+        <ProjectReference Include="../Nightwatch.ServiceModel/Nightwatch.ServiceModel.fsproj"/>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="Resources.fs"/>
+        <Compile Include="CheckerJob.fs"/>
+        <Compile Include="ProgramConfiguration.fs"/>
+        <Compile Include="ResourceConfiguration.fs"/>
+        <Compile Include="Scheduler.fs"/>
+        <Compile Include="AssemblyInfo.fs"/>
+        <Compile Include="Service.fs"/>
+        <Compile Include="Program.fs"/>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Argu" Version="5.2.0"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="2.2.0"/>
+        <PackageReference Include="Quartz" Version="3.0.0-alpha3"/>
+        <PackageReference Include="Serilog" Version="2.5.0"/>
+        <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1"/>
+        <PackageReference Include="YamlDotNet" Version="4.2.1"/>
+        <PackageReference Include="TaskBuilder.fs" Version="2.0.0"/>
+    </ItemGroup>
 </Project>

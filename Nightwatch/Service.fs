@@ -1,14 +1,12 @@
 module Nightwatch.Service
 
 open System
-open System.Threading
-open System.Threading.Tasks
 
 open FSharp.Control.Tasks
+open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
 open Serilog
 
-open Microsoft.Extensions.DependencyInjection
 open Nightwatch
 open Nightwatch.Core
 open Nightwatch.Core.Environment
@@ -16,6 +14,7 @@ open Nightwatch.Core.FileSystem
 open Nightwatch.Core.Network
 open Nightwatch.ResourceConfiguration
 open Nightwatch.Resources
+open Nightwatch.ServiceModel
 
 type ProgramInfo =
     { version : Version }
@@ -94,25 +93,24 @@ let private startService logger programInfo env fs (configFilePath : Path) =
             return None
     }
 
-type HostedService(logger : ILogger,
-                   programInfo: ProgramInfo,
-                   environment : Environment,
-                   fs : FileSystem,
-                   configFilePath : Path) =
-    let mutable scheduler = None
-    interface IHostedService with
-        member __.StartAsync(cancellationToken: CancellationToken) : Task =
-            upcast task {
-                let! startedScheduler = startService logger programInfo environment fs configFilePath
-                scheduler <- startedScheduler
-            }
-
-        member __.StopAsync(cancellationToken: CancellationToken) : Task =
-            scheduler
-            |> Option.map (Scheduler.stop >> Async.StartAsTask)
-            |> Option.map (fun x -> x :> Task)
-            |> Option.defaultValue Task.CompletedTask
-
-let configure (service : HostedService) (services : IServiceCollection) : unit =
+let configure (logger : ILogger)
+              (programInfo: ProgramInfo)
+              (environment : Environment)
+              (fs : FileSystem)
+              (configFilePath : Path)
+              (services : IServiceCollection) : unit =
+    let startService =
+        async {
+            let! service = startService logger programInfo environment fs configFilePath
+            let startedService =
+                match service with
+                | None -> failwith "Cannot start Nightwatch service"
+                | Some s -> s
+            return startedService
+        }
+    let service =
+        HostedService(
+            (fun ct -> Async.StartAsTask(startService, cancellationToken = ct)),
+            fun ct scheduler -> upcast Async.StartAsTask(Scheduler.stop scheduler, cancellationToken = ct))
     services.AddSingleton<IHostedService> service
     |> ignore

@@ -57,12 +57,11 @@ let main (argv : string []) : int =
                 if argv.Length >= 2 && argv.[0] = "--config"
                 then Path argv.[1]
                 else Path "nightwatch.yml"
-            let mutable scheduler = None
 
-            let service = HostedService(logger, programInfo, env, fs, configPath)
-            let host = HostBuilder()
-                           .ConfigureServices(Service.configure service)
-                           .Build()
+            let host =
+                HostBuilder()
+                   .ConfigureServices(Service.configure logger programInfo env fs configPath)
+                   .Build()
 
             if arguments.Contains CliArguments.Service
             then () // TODO[F]: Run as Windows Service

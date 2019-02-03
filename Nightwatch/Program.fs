@@ -49,14 +49,10 @@ let main (argv : string []) : int =
         ExitCodes.success
     else
         try
+            let configPath = Path(arguments.GetResult(CliArguments.Config, "nightwatch.yml"))
             let programInfo = { version = version }
             let env = Environment.fixedEnvironment (Path Environment.CurrentDirectory)
             let fs = FileSystem.system
-
-            let configPath =
-                if argv.Length >= 2 && argv.[0] = "--config"
-                then Path argv.[1]
-                else Path "nightwatch.yml"
 
             let host =
                 HostBuilder()

@@ -11,6 +11,7 @@ open Nightwatch
 open Nightwatch.Core
 open Nightwatch.Core.FileSystem
 open Nightwatch.Service
+open Nightwatch.ServiceModel
 
 let private version = Assembly.GetEntryAssembly().GetName().Version
 
@@ -31,7 +32,14 @@ type CliArguments =
             match s with
             | Version -> "print the program version."
             | Config _ -> "path to the YML configuration file."
-            | Service -> "start the application as a service."
+            | Service -> "start the application as a Windows service."
+
+let private run(builder : IHostBuilder) =
+    builder.Build().Run()
+
+let private runAsService(builder : IHostBuilder) =
+    builder.ConfigureServices Lifetime.useServiceBasedRuntime
+    |> run
 
 [<EntryPoint>]
 let main (argv : string []) : int =
@@ -54,14 +62,11 @@ let main (argv : string []) : int =
             let env = Environment.fixedEnvironment (Path Environment.CurrentDirectory)
             let fs = FileSystem.system
 
-            let host =
-                HostBuilder()
-                   .ConfigureServices(Service.configure logger programInfo env fs configPath)
-                   .Build()
+            let builder = HostBuilder().ConfigureServices(Service.configure logger programInfo env fs configPath)
 
             if arguments.Contains CliArguments.Service
-            then () // TODO[F]: Run as Windows Service
-            else host.Run()
+            then runAsService builder
+            else run builder
 
             ExitCodes.success
         with

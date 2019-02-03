@@ -13,6 +13,14 @@ Build
 $ dotnet build
 ```
 
+If you need a standalone executable (useful for service deployment), then add
+the following options:
+
+```console
+$ cd Nightwatch
+$ dotnet build --configuration Release --runtime win-x64 --output out
+```
+
 Configure
 ---------
 
@@ -65,14 +73,21 @@ In developer mode:
 $ dotnet run --project Nightwatch
 ```
 
-To stop the program, press any key.
+To stop the program, press `Ctrl-C`.
 
 Add `--config ./some/path.yml` option to set the configuration file path
 (`nightwatch.yml` in the current directory is the default).
 
-Add `--service` to run in a service mode.
+Add `--service` to run in a Windows service mode.
 
-TODO[F]: Add install/uninstall instructions
+To install the service on Windows, execute the following commands in your shell:
+
+```pwsh
+$ sc.exe Nightwatch binpath= "D:\Path\To\Nightwatch.exe --config D:\Path\To\nightwatch.yml --service" start= auto
+$ sc.exe start Nightwatch
+```
+
+_(note the space and quote placement, that's important)_
 
 Test
 ----

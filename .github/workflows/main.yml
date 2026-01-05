@@ -1,0 +1,79 @@
+# SPDX-FileCopyrightText: 2024-2026 Friedrich von Never <friedrich@fornever.me>
+#
+# SPDX-License-Identifier: MIT
+
+# This file is auto-generated.
+name: Main
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+  schedule:
+  - cron: 0 0 * * 6
+  workflow_dispatch: 
+jobs:
+  verify-workflows:
+    runs-on: ubuntu-24.04
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      DOTNET_NOLOGO: 1
+      NUGET_PACKAGES: ${{ github.workspace }}/.github/nuget-packages
+    steps:
+    - name: Check out the sources
+      uses: actions/checkout@v6
+    - name: Set up .NET SDK
+      uses: actions/setup-dotnet@v5
+    - name: Cache NuGet packages
+      uses: actions/cache@v5
+      with:
+        key: ${{ runner.os }}.nuget.${{ hashFiles('**/*.*proj', '**/*.props') }}
+        path: ${{ env.NUGET_PACKAGES }}
+    - run: dotnet fsi ./scripts/github-actions.fsx verify
+  check:
+    strategy:
+      matrix:
+        image:
+        - macos-14
+        - ubuntu-24.04
+        - ubuntu-24.04-arm
+        - windows-11-arm
+        - windows-2025
+      fail-fast: false
+    runs-on: ${{ matrix.image }}
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      DOTNET_NOLOGO: 1
+      NUGET_PACKAGES: ${{ github.workspace }}/.github/nuget-packages
+    steps:
+    - name: Check out the sources
+      uses: actions/checkout@v6
+    - name: Set up .NET SDK
+      uses: actions/setup-dotnet@v5
+    - name: Cache NuGet packages
+      uses: actions/cache@v5
+      with:
+        key: ${{ runner.os }}.nuget.${{ hashFiles('**/*.*proj', '**/*.props') }}
+        path: ${{ env.NUGET_PACKAGES }}
+    - name: Build
+      run: dotnet build
+    - name: Test
+      run: dotnet test
+      timeout-minutes: 10
+  licenses:
+    runs-on: ubuntu-24.04
+    steps:
+    - name: Check out the sources
+      uses: actions/checkout@v6
+    - name: REUSE license check
+      uses: fsfe/reuse-action@v6
+  encoding:
+    runs-on: ubuntu-24.04
+    steps:
+    - name: Check out the sources
+      uses: actions/checkout@v6
+    - name: Verify encoding
+      shell: pwsh
+      run: Install-Module VerifyEncoding -Repository PSGallery -RequiredVersion 2.2.1 -Force && Test-Encoding

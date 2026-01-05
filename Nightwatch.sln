@@ -15,6 +15,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nightwatch.Samples.CSharp",
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Nightwatch.ServiceModel", "Nightwatch.ServiceModel\Nightwatch.ServiceModel.fsproj", "{4F516E4D-4881-4149-849C-C1137A00CB4D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{9F50BE94-AD72-43A5-8C60-2C25710F4863}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\github-actions.fsx = scripts\github-actions.fsx
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{0E8B5E47-2C7D-4F38-B131-C4B7E437F8C2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{1445E00A-4DBE-4991-B93C-0B3A93887C85}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\main.yml = .github\workflows\main.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -100,5 +112,8 @@ Global
 		{4F516E4D-4881-4149-849C-C1137A00CB4D}.Release|x64.Build.0 = Release|Any CPU
 		{4F516E4D-4881-4149-849C-C1137A00CB4D}.Release|x86.ActiveCfg = Release|Any CPU
 		{4F516E4D-4881-4149-849C-C1137A00CB4D}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1445E00A-4DBE-4991-B93C-0B3A93887C85} = {0E8B5E47-2C7D-4F38-B131-C4B7E437F8C2}
 	EndGlobalSection
 EndGlobal

@@ -107,12 +107,20 @@ Documentation
 - [Implementing a Resource type][implementing-a-resource-type]
 - [Contributor Guide][docs.contributing]
 
+License
+-------
+The project is distributed under the terms of [the MIT license][docs.license].
+
+The license indication in the project's sources is compliant with the [REUSE specification v3.3][reuse.spec].
+
 [andivionian-status-classifier]: https://github.com/ForNeVeR/andivionian-status-classifier#status-umbra-
 [badge-appveyor]: https://ci.appveyor.com/api/projects/status/6a2fla8atl7x0nhn/branch/master?svg=true
 [badge-travis]: https://travis-ci.org/ForNeVeR/nightwatch.svg?branch=master
 [build-appveyor]: https://ci.appveyor.com/project/ForNeVeR/nightwatch/branch/master
 [build-travis]: https://travis-ci.org/ForNeVeR/nightwatch
 [docs.contributing]: CONTRIBUTING.md
+[docs.license]: LICENSE.txt
 [implementing-a-resource-type]: docs/implementing-a-resource-type.md
 [net-core-sdk]: https://www.microsoft.com/net/download/core#/sdk
+[reuse.spec]: https://reuse.software/spec-3.3/
 [status-umbra]: https://img.shields.io/badge/status-umbra-red.svg

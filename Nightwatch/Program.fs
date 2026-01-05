@@ -1,4 +1,4 @@
-﻿module Nightwatch.Program
+module Nightwatch.Program
 
 open System
 open System.Reflection

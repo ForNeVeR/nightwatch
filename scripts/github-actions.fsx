@@ -63,7 +63,7 @@ let workflows = [
                     "macos-14"
                     "ubuntu-24.04"
                     "ubuntu-24.04-arm"
-                    "windows-11-arm"
+                    // "windows-11-arm" // TODO: Enable after migrating to a newer runtime.
                     "windows-2025"
                 ]
             ])

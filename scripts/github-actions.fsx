@@ -47,7 +47,8 @@ let workflows = [
 
     workflow "main" [
         name "Main"
-        onPushTo "*"
+        onPushTo "master"
+        onPushTo "renovate/**"
         onPullRequestTo "master"
         onSchedule "0 0 * * 6"
         onWorkflowDispatch

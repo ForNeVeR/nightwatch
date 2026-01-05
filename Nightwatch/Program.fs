@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2017-2026 Nightwatch contributors <https://github.com/ForNeVeR/nightwatch>
+//
+// SPDX-License-Identifier: MIT
+
 module Nightwatch.Program
 
 open System

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2019 Friedrich von Never <friedrich@fornever.me>
+//
+// SPDX-License-Identifier: MIT
+
 module Nightwatch.Tests.ServiceModel.HostedService
 
 open System.Threading.Tasks

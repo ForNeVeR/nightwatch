@@ -33,6 +33,32 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		renovate.json.license = renovate.json.license
 		global.json = global.json
 		global.json.license = global.json.license
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		.travis.yml = .travis.yml
+		appveyor.yml = appveyor.yml
+		Nightwatch.sln.license = Nightwatch.sln.license
+		Nightwatch.sln.DotSettings = Nightwatch.sln.DotSettings
+		REUSE.toml = REUSE.toml
+		nightwatch.yml = nightwatch.yml
+		Readme.md = Readme.md
+		LICENSE.txt = LICENSE.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{A289065B-246E-4A38-B7D0-5FD3056EA322}"
+	ProjectSection(SolutionItems) = preProject
+		docs\Implementing-a-resource-type.md = docs\Implementing-a-resource-type.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{3C7099D9-67A1-43B6-9175-6C8B3B2788AB}"
+	ProjectSection(SolutionItems) = preProject
+		samples\http.yml = samples\http.yml
+		samples\shell.yml = samples\shell.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LICENSES", "LICENSES", "{4BBA65C0-27FC-49DA-9CAD-181331C95496}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSES\MIT.txt = LICENSES\MIT.txt
 	EndProjectSection
 EndProject
 Global

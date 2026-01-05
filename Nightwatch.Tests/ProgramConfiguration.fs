@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2018 Friedrich von Never <friedrich@fornever.me>
+//
+// SPDX-License-Identifier: MIT
+
 module Nightwatch.Tests.ProgramConfiguration
 
 open System.IO

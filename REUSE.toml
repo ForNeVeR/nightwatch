@@ -1,0 +1,10 @@
+version = 1
+SPDX-PackageName = "Nightwatch"
+SPDX-PackageSupplier = "Nightwatch contributors <https://github.com/ForNeVeR/nightwatch>"
+SPDX-PackageDownloadLocation = "https://github.com/ForNeVeR/nightwatch"
+
+[[annotations]]
+path = "*.DotSettings"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2019 Friedrich von Never <friedrich@fornever.me>"
+SPDX-License-Identifier = "MIT"

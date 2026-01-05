@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2017-2019 Nightwatch contributors <https://github.com/ForNeVeR/nightwatch>
+//
+// SPDX-License-Identifier: MIT
+
 module Nightwatch.Tests.Cli
 
 open Xunit

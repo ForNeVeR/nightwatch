@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2017 Nightwatch contributors <https://github.com/ForNeVeR/nightwatch>
+#
+# SPDX-License-Identifier: MIT
+
 version: 0.0.1.0 # should always be 0.0.1.0 for the current version
 id: sample/shell # task identifier
 schedule: 00:00:25 # run every 25 seconds

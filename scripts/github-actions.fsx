@@ -73,7 +73,9 @@ let workflows = [
                 name = "Build",
                 run = "dotnet build"
             )
+            // TODO: Enable tests after migrating to a newer runtime.
             step(
+                condition = "runner.os == 'Windows' && runner.arch == 'X64'",
                 name = "Test",
                 run = "dotnet test",
                 timeoutMin = 10

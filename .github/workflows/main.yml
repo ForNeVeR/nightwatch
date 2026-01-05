@@ -59,7 +59,8 @@ jobs:
         path: ${{ env.NUGET_PACKAGES }}
     - name: Build
       run: dotnet build
-    - name: Test
+    - if: runner.os == 'Windows' && runner.arch == 'X64'
+      name: Test
       run: dotnet test
       timeout-minutes: 10
   licenses:

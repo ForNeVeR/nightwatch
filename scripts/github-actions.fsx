@@ -64,7 +64,7 @@ let workflows = [
                     "macos-15"
                     "ubuntu-24.04"
                     "ubuntu-24.04-arm"
-                    // "windows-11-arm" // TODO[#31]: Enable after migrating to a newer runtime.
+                    "windows-11-arm"
                     "windows-2025"
                 ]
             ])
@@ -74,9 +74,7 @@ let workflows = [
                 name = "Build",
                 run = "dotnet build"
             )
-            // TODO[#31]: Enable tests after migrating to a newer runtime.
             step(
-                condition = "runner.os == 'Windows' && runner.arch == 'X64'",
                 name = "Test",
                 run = "dotnet test",
                 timeoutMin = 10

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: 2024-2026 Friedrich von Never <friedrich@fornever.me>
+SPDX-FileCopyrightText: 2017-2026 Friedrich von Never <friedrich@fornever.me>
 
 SPDX-License-Identifier: MIT
 -->
@@ -9,14 +9,19 @@ Contributor Guide
 
 Prerequisites
 -------------
-To work with the project, you'll need [.NET SDK 2.1][dotnet-sdk] or later.
+To work with the project, you'll need [.NET SDK 10][dotnet-sdk] or later.
 
 Build
 -----
 Use the following shell command:
-
 ```console
 $ dotnet build
+```
+
+If you need a standalone executable (useful for service deployment), then add the following options:
+```console
+$ cd Nightwatch
+$ dotnet build --configuration Release --runtime win-x64 --output out
 ```
 
 Test
@@ -37,7 +42,7 @@ If the CI asks you to update the file licenses, follow one of these:
    // SPDX-License-Identifier: MIT
    ```
    (accommodate to the file's comment style if required).
-2. Alternately, use [REUSE][reuse] tool:
+2. Alternately, use the [REUSE][reuse] tool:
    ```console
    $ reuse annotate --license MIT --copyright '%your name% <%your contact info, e.g. email%>' %file names to annotate%
    ```

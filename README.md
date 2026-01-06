@@ -4,7 +4,7 @@ SPDX-FileCopyrightText: 2017-2026 Friedrich von Never <friedrich@fornever.me>
 SPDX-License-Identifier: MIT
 -->
 
-Nightwatch [![Build (Travis)][badge-travis]][build-travis] [![Build (Appveyor)][badge-appveyor]][build-appveyor] [![Status Umbra][status-umbra]][andivionian-status-classifier]
+Nightwatch [![Status Umbra][status-umbra]][andivionian-status-classifier]
 ==========
 
 Nightwatch is a monitoring service intedned to monitor daily and nightly
@@ -114,10 +114,6 @@ The project is distributed under the terms of [the MIT license][docs.license].
 The license indication in the project's sources is compliant with the [REUSE specification v3.3][reuse.spec].
 
 [andivionian-status-classifier]: https://github.com/ForNeVeR/andivionian-status-classifier#status-umbra-
-[badge-appveyor]: https://ci.appveyor.com/api/projects/status/6a2fla8atl7x0nhn/branch/master?svg=true
-[badge-travis]: https://travis-ci.org/ForNeVeR/nightwatch.svg?branch=master
-[build-appveyor]: https://ci.appveyor.com/project/ForNeVeR/nightwatch/branch/master
-[build-travis]: https://travis-ci.org/ForNeVeR/nightwatch
 [docs.contributing]: CONTRIBUTING.md
 [docs.license]: LICENSE.txt
 [implementing-a-resource-type]: docs/implementing-a-resource-type.md

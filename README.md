@@ -47,7 +47,7 @@ param:
 version: 0.0.1.0 # should always be 0.0.1.0 for the current version
 id: test # task identifier
 schedule: 00:05:00 # run every 5 minutes
-type: shell
+type: http
 param:
     url: http://localhost:8080/ # URL to visit
     ok-codes: 200, 304 # the list of the codes considered as a success

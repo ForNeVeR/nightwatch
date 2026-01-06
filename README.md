@@ -10,23 +10,6 @@ Nightwatch [![Status Umbra][status-umbra]][andivionian-status-classifier]
 Nightwatch is a monitoring service intedned to monitor daily and nightly
 activities and notify the administrator if something wrong happens.
 
-Build
------
-
-[.NET Core 2.1 SDK][net-core-sdk] is required to build the project.
-
-```console
-$ dotnet build
-```
-
-If you need a standalone executable (useful for service deployment), then add
-the following options:
-
-```console
-$ cd Nightwatch
-$ dotnet build --configuration Release --runtime win-x64 --output out
-```
-
 Configure
 ---------
 

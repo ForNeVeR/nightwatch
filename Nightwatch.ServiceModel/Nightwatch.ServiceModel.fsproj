@@ -1,4 +1,4 @@
-﻿<!--
+<!--
 SPDX-FileCopyrightText: 2019-2026 Friedrich von Never <friedrich@fornever.me>
 
 SPDX-License-Identifier: MIT
@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
     </PropertyGroup>
     <ItemGroup>
         <Compile Include="HostedService.fs" />

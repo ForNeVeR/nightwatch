@@ -1,0 +1,16 @@
+<!--
+SPDX-FileCopyrightText: 2026 Friedrich von Never <friedrich@fornever.me>
+
+SPDX-License-Identifier: MIT
+-->
+
+<Project>
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+    </PropertyGroup>
+
+    <!-- Enable reproducible build on CI: -->
+    <PropertyGroup Condition="$(CI) != ''">
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    </PropertyGroup>
+</Project>

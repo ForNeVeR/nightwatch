@@ -19,14 +19,11 @@ open Funogram.Types
 open Nightwatch.Core.Notifications
 
 let private formatMessage(notification: CheckNotification) =
-    let statusText =
+    let (emoji, statusText) =
         match notification.Status with
-        | Failed -> "FAILED"
-        | Recovered -> "RECOVERED"
-    sprintf "[%s] Resource %s: %s"
-        (notification.Timestamp.ToString("yyyy-MM-dd HH:mm:ss"))
-        notification.ResourceId
-        statusText
+        | Failed -> ("❌", "FAILED")
+        | Recovered -> ("✅", "RECOVERED")
+    sprintf "%s Resource <b>%s</b>: %s" emoji notification.ResourceId statusText
 
 let private createBotConfig(token: string) : BotConfig =
     { IsTest = false
@@ -48,9 +45,15 @@ let private create (param: IDictionary<string, string>) (notification: CheckNoti
 
     task {
         let message = formatMessage notification
-        let request = Req.SendMessage.Make(chatId = ChatId.Int chatId, text = message)
-        let! _ = api config request
-        return ()
+        let request = Req.SendMessage.Make(chatId = ChatId.Int chatId, text = message, parseMode = ParseMode.HTML)
+        let! result = api config request
+        match result with
+        | Ok _ -> ()
+        | Error errorValue -> Log.Error(
+            "Error {ErrorCode}: {ErrorDescription}",
+            errorValue.ErrorCode,
+            errorValue.Description
+        )
     }
 
 let Factory: NotificationFactory =

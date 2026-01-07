@@ -18,7 +18,7 @@ open Nightwatch.Notifications
 open Nightwatch.Resources
 
 // Test helpers to create fake resource checkers and notification senders
-module internal TestHelpers =
+module private TestHelpers =
     let createResource id notificationIds checkResult =
         let checker = ResourceChecker(fun () -> Task.FromResult(checkResult))
         { id = id
@@ -36,20 +36,6 @@ module internal TestHelpers =
         let sender = NotificationSender(fun _ ->
             Task.FromException<unit>(InvalidOperationException("Notification sending failed")))
         { id = id; sender = sender }
-
-    let executeJobWithScheduler resource providers stateTracker =
-        task {
-            // Create a real scheduler and execute the job
-            let! scheduler = Scheduler.create()
-            let schedule = Scheduler.prepareSchedule providers stateTracker [| resource |]
-            do! Scheduler.configure scheduler schedule
-            do! Scheduler.start scheduler
-            
-            // Wait a bit for the job to execute
-            do! Task.Delay(100)
-            
-            do! Scheduler.stop scheduler
-        }
     
     let executeJob resource providers stateTracker =
         task {

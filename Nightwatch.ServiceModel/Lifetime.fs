@@ -16,7 +16,7 @@ type private ParametrizedServiceBase(onStart : unit -> unit, onStop : unit -> un
     override _.OnStart(_ : string []) : unit = onStart()
     override _.OnStop() : unit = onStop()
 
-/// This lifetime starts the Windows Service when the application has been started, and requests IApplicationLifetime
+/// This lifetime starts the Windows Service when the application has been started, and requests IHostApplicationLifetime
 /// termination on service stop.
 type ServiceBaseLifetime(applicationLifetime : IHostApplicationLifetime) =
     let startedTask = TaskCompletionSource()

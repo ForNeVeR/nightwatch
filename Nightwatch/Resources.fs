@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2017-2018 Nightwatch contributors <https://github.com/ForNeVeR/nightwatch>
+// SPDX-FileCopyrightText: 2017-2026 Nightwatch contributors <https://github.com/ForNeVeR/nightwatch>
 //
 // SPDX-License-Identifier: MIT
 
@@ -10,7 +10,6 @@ open System.Threading.Tasks
 open Serilog
 open FSharp.Control.Tasks
 
-open Nightwatch.Core.FileSystem
 open Nightwatch.Core.Resources
 
 /// Description of Resource stored in the configuration file.
@@ -20,14 +19,16 @@ type ResourceDescription =
       id : string
       schedule : TimeSpan
       ``type`` : string
-      param : Dictionary<string, string> }
+      param : Dictionary<string, string>
+      notifications : string[] }
 
 type internal ResourceRegistry = Map<string, ResourceFactory>
 
 type internal Resource =
     { id : string
       runEvery : TimeSpan
-      checker : ResourceChecker }
+      checker : ResourceChecker
+      notificationIds : string[] }
 
 module internal Registry =
     let create (factories : ResourceFactory seq) : ResourceRegistry =

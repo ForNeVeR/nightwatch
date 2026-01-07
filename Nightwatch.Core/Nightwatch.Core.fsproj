@@ -14,6 +14,7 @@ SPDX-License-Identifier: MIT
     <Compile Include="Network.fs" />
     <Compile Include="Process.fs" />
     <Compile Include="Resources.fs" />
+    <Compile Include="Notifications.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Diagnostics.Process" Version="4.3.0" />

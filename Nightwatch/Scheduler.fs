@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2017-2018 Nightwatch contributors <https://github.com/ForNeVeR/nightwatch>
+// SPDX-FileCopyrightText: 2017-2026 Nightwatch contributors <https://github.com/ForNeVeR/nightwatch>
 //
 // SPDX-License-Identifier: MIT
 
@@ -11,10 +11,15 @@ open Quartz.Impl
 open FSharp.Control.Tasks
 
 open Nightwatch.Resources
+open Nightwatch.Notifications
+open Nightwatch.CheckState
 
 type Schedule = (IJobDetail * ITrigger) seq
 
-let prepareSchedule : Resource seq -> Schedule =
+let prepareSchedule (providers: Map<string, NotificationProvider>)
+                    (stateTracker: ResourceStateTracker)
+                    (resources: Resource seq)
+                    : Schedule =
     Seq.map (fun resource ->
         let { id = id; runEvery = runEvery } = resource
         let trigger =
@@ -22,14 +27,18 @@ let prepareSchedule : Resource seq -> Schedule =
                 .WithIdentity(id)
                 .WithSimpleSchedule(fun x -> ignore <| x.WithInterval(runEvery).RepeatForever())
                 .Build()
-        let jobData = Map.ofArray [| CheckerJob.Resource, box resource |]
+        let jobData = Map.ofArray [|
+            CheckerJob.Resource, box resource
+            CheckerJob.NotificationProviders, box providers
+            CheckerJob.StateTracker, box stateTracker
+        |]
         let job =
-            JobBuilder.CreateForAsync<CheckerJob>()
+            JobBuilder.Create<CheckerJob>()
                 .WithIdentity(JobKey id)
                 .UsingJobData(JobDataMap jobData)
                 .Build()
         job, trigger
-    )
+    ) resources
 
 
 let create() : Task<IScheduler> =

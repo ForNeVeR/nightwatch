@@ -1,11 +1,10 @@
-// SPDX-FileCopyrightText: 2017-2018 Nightwatch contributors <https://github.com/ForNeVeR/nightwatch>
+// SPDX-FileCopyrightText: 2017-2026 Nightwatch contributors <https://github.com/ForNeVeR/nightwatch>
 //
 // SPDX-License-Identifier: MIT
 
 module internal Nightwatch.ResourceConfiguration
 
 open System
-open System.Collections.Generic
 open System.Threading.Tasks
 open System.IO
 
@@ -13,7 +12,6 @@ open FSharp.Control.Tasks
 open YamlDotNet.Serialization
 
 open Nightwatch.Core.FileSystem
-open Nightwatch.Core.Resources
 open Nightwatch.ProgramConfiguration
 open Nightwatch.Resources
 
@@ -31,7 +29,7 @@ let private correctResource (resource : ResourceDescription) path =
     match resource with
     | _ when resource.version = Version() -> errorPath "Resource version is not defined"
     | _ when resource.version <> configFormatVersion ->
-        errorPath (sprintf "Resource version %A is not supported" resource.version)
+        errorPath $"Resource version %A{resource.version} is not supported"
     | _ when String.IsNullOrWhiteSpace resource.id -> errorPath "Resource identifier is not defined"
     | _ when resource.schedule <= TimeSpan.Zero -> error "Resource schedule is invalid"
     | _ when String.IsNullOrWhiteSpace resource.``type`` -> errorPath "Resource type is not defined"
@@ -48,28 +46,20 @@ let private loadFile (fs : FileSystem) deserializer path =
         return deserializeResource deserializer path reader
     }
 
-let private versionConverter =
-    { new IYamlTypeConverter with
-        member __.Accepts(t) = t = typeof<Version>
-        member __.ReadYaml(parser, _, _) : obj =
-             let scalar = parser.Current :?> YamlDotNet.Core.Events.Scalar
-             ignore <| parser.MoveNext()
-             let version = scalar.Value
-             box <| Version version
-        member __.WriteYaml(_, _, _, _) = failwithf "Not supported" }
-
 let private buildDeserializer() =
     DeserializerBuilder()
-        .WithTypeConverter(versionConverter)
+        .WithTypeConverter(VersionConverter())
         .Build()
 
 let private toResource registry =
     Result.bind (fun (res, path) ->
         match Checker.create registry res.``type`` res.param with
-        | Some checker -> Ok { id = res.id; runEvery = res.schedule; checker = checker }
+        | Some checker ->
+            let notificationIds = if isNull res.notifications then [||] else res.notifications
+            Ok { id = res.id; runEvery = res.schedule; checker = checker; notificationIds = notificationIds }
         | None -> Error { path = path
                           id = Some res.id
-                          message = sprintf "The resource factory for type \"%s\" is not registered" res.``type`` })
+                          message = $"The resource factory for type \"%s{res.``type``}\" is not registered" })
 
 let private configFileMask = Mask "*.yml"
 

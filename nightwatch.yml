@@ -1,5 +1,6 @@
-# SPDX-FileCopyrightText: 2018 Friedrich von Never <friedrich@fornever.me>
+# SPDX-FileCopyrightText: 2018-2026 Friedrich von Never <friedrich@fornever.me>
 #
 # SPDX-License-Identifier: MIT
 
-resource-directory: "samples"
+resource-directory: "samples/resources"
+notification-directory: "samples/notifications"

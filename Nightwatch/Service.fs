@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2019 Friedrich von Never <friedrich@fornever.me>
+// SPDX-FileCopyrightText: 2019-2026 Friedrich von Never <friedrich@fornever.me>
 //
 // SPDX-License-Identifier: MIT
 
@@ -9,6 +9,7 @@ open System
 open FSharp.Control.Tasks
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
+open Nightwatch.NotificationConfiguration
 open Serilog
 
 open Nightwatch
@@ -18,6 +19,8 @@ open Nightwatch.Core.FileSystem
 open Nightwatch.Core.Network
 open Nightwatch.ResourceConfiguration
 open Nightwatch.Resources
+open Nightwatch.Notifications
+open Nightwatch.CheckState
 open Nightwatch.ServiceModel
 
 type ProgramInfo =
@@ -28,11 +31,17 @@ let private logFullVersion (logger : ILogger) programInfo =
     logger.Information("Config file format v. {0}", ResourceConfiguration.configFormatVersion)
 
 let private resourceFactories = [| Http.factory Http.system; Shell.factory Process.system |]
+let private notificationFactories = [| Telegram.Factory |]
 
-let private configureResourceRegistry (logger : ILogger) =
-    let names = resourceFactories |> Seq.map (fun f -> f.resourceType)
+let private configureResourceRegistry(logger: ILogger) =
+    let names = resourceFactories |> Seq.map _.resourceType
     logger.Information("Available resources: {0}", String.Join(", ", names))
     Registry.create resourceFactories
+
+let private configureNotificationRegistry(logger: ILogger) =
+    let names = notificationFactories |> Seq.map _.NotificationType
+    logger.Information("Available notification providers: {0}", String.Join(", ", names))
+    NotificationRegistry.create notificationFactories
 
 let private readResources fs config factories : Async<Result<Resource [], InvalidConfiguration []>> =
     let splitResults seq =
@@ -46,7 +55,7 @@ let private readResources fs config factories : Async<Result<Resource [], Invali
 
         let isOk = chooseOk >> Option.isSome
 
-        let (results, errors) =
+        let results, errors =
             seq
             |> Seq.toArray
             |> Array.partition isOk
@@ -54,15 +63,43 @@ let private readResources fs config factories : Async<Result<Resource [], Invali
 
     async {
         let! resources = Async.AwaitTask <| ResourceConfiguration.read factories fs config
-        let (results, errors) = splitResults resources
+        let results, errors = splitResults resources
         return
             if Seq.isEmpty errors
             then Ok results
             else Error errors
     }
 
-let private createScheduler resources =
-    let schedule = Scheduler.prepareSchedule resources
+let private readNotifications fs notificationDirectory registry : Async<Result<NotificationProvider [],
+                                                                            NotificationConfigurationError[]>> =
+    let splitResults seq =
+        let chooseOk = function
+        | Ok x -> Some x
+        | Error _ -> None
+
+        let chooseError = function
+        | Ok _ -> None
+        | Error x -> Some x
+
+        let isOk = chooseOk >> Option.isSome
+
+        let results, errors =
+            seq
+            |> Seq.toArray
+            |> Array.partition isOk
+        Array.choose chooseOk results, Array.choose chooseError errors
+
+    async {
+        let! notifications = Async.AwaitTask <| NotificationConfiguration.read registry fs notificationDirectory
+        let results, errors = splitResults notifications
+        return
+            if Seq.isEmpty errors
+            then Ok results
+            else Error errors
+    }
+
+let private createScheduler providers stateTracker resources =
+    let schedule = Scheduler.prepareSchedule providers stateTracker resources
     task {
         let! scheduler = Scheduler.create()
         do! Scheduler.configure scheduler schedule
@@ -70,8 +107,17 @@ let private createScheduler resources =
     }
 
 let private startService logger programInfo env fs (configFilePath : Path) =
-    let errorsToString errors =
-        let printError { path = (Path path); id = id; message = message } =
+    let resourceErrorsToString (errors: InvalidConfiguration[]) =
+        let printError (error: InvalidConfiguration) =
+            sprintf "Path: %s\nId: %s\nMessage: %s"
+                (let (Path p) = error.path in p)
+                (defaultArg error.id "N/A")
+                error.message
+
+        String.Join("\n", Seq.map printError errors)
+
+    let notificationErrorsToString (errors: NotificationConfigurationError[]) =
+        let printError { Path = (Path path); Id = id; Message = message } =
             sprintf "Path: %s\nId: %s\nMessage: %s"
                 path
                 (defaultArg id "N/A")
@@ -84,16 +130,45 @@ let private startService logger programInfo env fs (configFilePath : Path) =
         logger.Information("Configuration file location: {0}", configFilePath)
         let! config = ProgramConfiguration.read env fs configFilePath
         logger.Information("Resource directory location: {0}", config.resourceDirectory)
-        let registry = configureResourceRegistry logger
-        let! resources = readResources fs config registry
+
+        let resourceRegistry = configureResourceRegistry logger
+        let notificationRegistry = configureNotificationRegistry logger
+
+        // Load notification providers if directory is configured
+        let! notificationProviders =
+            match config.notificationDirectory with
+            | Some dir ->
+                logger.Information("Notification directory location: {0}", dir)
+                async {
+                    let! result = readNotifications fs dir notificationRegistry
+                    match result with
+                    | Ok providers ->
+                        logger.Information("{0} notification providers loaded", providers.Length)
+                        return providers
+                    | Error errors ->
+                        logger.Error("Failed to load notifications:\n{0}", notificationErrorsToString errors)
+                        return [||]
+                }
+            | None ->
+                logger.Information("No notification directory configured")
+                async { return [||] }
+
+        let providersMap =
+            notificationProviders
+            |> Array.map (fun p -> p.id, p)
+            |> Map.ofArray
+
+        let stateTracker = ResourceStateTracker()
+
+        let! resources = readResources fs config resourceRegistry
         match resources with
         | Ok resources ->
             logger.Information("{0} resources loaded", resources.Length)
-            let! scheduler = Async.AwaitTask <| createScheduler resources
+            let! scheduler = Async.AwaitTask <| createScheduler providersMap stateTracker resources
             do! Scheduler.start scheduler
             return Some scheduler
         | Error errors ->
-            logger.Error(errorsToString errors)
+            logger.Error(resourceErrorsToString errors)
             return None
     }
 

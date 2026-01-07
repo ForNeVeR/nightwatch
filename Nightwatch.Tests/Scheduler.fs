@@ -13,6 +13,8 @@ open FSharp.Control.Tasks
 open Nightwatch
 open Nightwatch.Core.Resources
 open Nightwatch.Resources
+open Nightwatch.Notifications
+open Nightwatch.CheckState
 
 [<Fact>]
 let ``Scheduler should be created`` () =
@@ -38,15 +40,18 @@ let ``Scheduler should be stopped`` () =
         Assert.True scheduler.IsShutdown
     }
 
-let trueChecker = ResourceChecker(fun () -> task { return true })
+let private trueChecker = ResourceChecker(fun () -> task { return true })
+let private emptyProviders: Map<string, NotificationProvider> = Map.empty
+let private stateTracker = ResourceStateTracker()
 
 [<Fact>]
 let ``Schedule should be prepared`` () =
     let task =
         { id = "1"
           runEvery = TimeSpan.FromMinutes 1.0
-          checker = trueChecker }
-    let schedule = Scheduler.prepareSchedule [| task |]
+          checker = trueChecker
+          notificationIds = [||] }
+    let schedule = Scheduler.prepareSchedule emptyProviders stateTracker [| task |]
     let (job, trigger) = Seq.exactlyOne schedule
     Assert.Equal (JobKey task.id, job.Key)
 
@@ -55,12 +60,12 @@ let ``Scheduler should be configured`` () =
     let taskResource =
         { id = "1"
           runEvery = TimeSpan.FromMinutes 1.0
-          checker = trueChecker }
+          checker = trueChecker
+          notificationIds = [||] }
     task {
         let! scheduler = Scheduler.create()
-        let schedule = Scheduler.prepareSchedule [| taskResource |]
+        let schedule = Scheduler.prepareSchedule emptyProviders stateTracker [| taskResource |]
         do! Scheduler.configure scheduler schedule
         let! job = scheduler.GetJobDetail (JobKey taskResource.id)
         Assert.NotNull job
     }
-

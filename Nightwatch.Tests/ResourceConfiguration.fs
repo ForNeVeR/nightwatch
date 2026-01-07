@@ -5,17 +5,12 @@
 module Nightwatch.Tests.ResourceConfiguration
 
 open System
-open System.IO
-open System.Text
-open System.Threading.Tasks
-
 open Xunit
 open FSharp.Control.Tasks
 
 open Nightwatch
 open Nightwatch.ProgramConfiguration
 open Nightwatch.ResourceConfiguration
-open Nightwatch.Core
 open Nightwatch.Core.FileSystem
 open Nightwatch.Core.Resources
 open Nightwatch.Resources
@@ -23,7 +18,8 @@ open Nightwatch.Tests.TestUtils.FileSystem
 
 let private programConfiguration =
     { baseDirectory = Path "."
-      resourceDirectory = Path "dir" }
+      resourceDirectory = Path "dir"
+      notificationDirectory = None }
 
 [<Fact>]
 let ``ResourceConfiguration should read the YAML file`` () =
@@ -37,7 +33,8 @@ param:
     let expected =
         { id = "test"
           runEvery = TimeSpan.FromMinutes 5.0
-          checker = checker }
+          checker = checker
+          notificationIds = [||] }
     let mutable parsedParam = None
     let factory : ResourceFactory =
         { resourceType = "test"

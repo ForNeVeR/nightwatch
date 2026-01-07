@@ -1,0 +1,10 @@
+# SPDX-FileCopyrightText: 2026 Friedrich von Never <friedrich@fornever.me>
+#
+# SPDX-License-Identifier: MIT
+
+version: 0.0.1.0 # should always be 0.0.1.0 for the current version
+id: notifications/telegram # notification provider identifier
+type: telegram
+param:
+    bot-token: YOUR_BOT_TOKEN_HERE
+    chat-id: YOUR_CHAT_ID_HERE

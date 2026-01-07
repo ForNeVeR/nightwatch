@@ -25,7 +25,8 @@ let ``ProgramConfiguration should be read from the YAML file``() : Task =
     upcast (Async.StartAsTask <| async {
         let! configuration = ProgramConfiguration.read environment fileSystem (Path(Path.Combine("mytest", "nightwatch.yml")))
         let expected = { baseDirectory = Path(fullPath "/Users/gsomix/mytest")
-                         resourceDirectory = Path(fullPath "/Temp") }
+                         resourceDirectory = Path(fullPath "/Temp")
+                         notificationDirectory = None }
         Assert.Equal(expected, configuration)
     })
 
@@ -37,6 +38,7 @@ let ``ProgramConfiguration's resourcePath should be interpreted from basePath``(
     upcast (Async.StartAsTask <| async {
         let! configuration = ProgramConfiguration.read environment fileSystem (Path "nightwatch.yml")
         let expected = { baseDirectory = Path(fullPath "/test")
-                         resourceDirectory = Path(fullPath "/test/test-relative-path") }
+                         resourceDirectory = Path(fullPath "/test/test-relative-path")
+                         notificationDirectory = None }
         Assert.Equal(expected, configuration)
     })

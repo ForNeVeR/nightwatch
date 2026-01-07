@@ -9,3 +9,5 @@ type: http
 param:
     url: http://localhost:8081/
     ok-codes: 200, 304
+notifications:
+    - notifications/telegram

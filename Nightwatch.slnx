@@ -9,9 +9,13 @@
   <Folder Name="/LICENSES/">
     <File Path="LICENSES/MIT.txt" />
   </Folder>
-  <Folder Name="/samples/">
-    <File Path="samples/http.yml" />
-    <File Path="samples/shell.yml" />
+  <Folder Name="/samples/" />
+  <Folder Name="/samples/resources/">
+    <File Path="samples/resources/http.yml" />
+    <File Path="samples/resources/shell.yml" />
+  </Folder>
+  <Folder Name="/samples/notifications/">
+    <File Path="samples/notifications/telegram.yml" />
   </Folder>
   <Folder Name="/Scripts/">
     <File Path="scripts/github-actions.fsx" />
@@ -33,6 +37,7 @@
     <File Path="REUSE.toml" />
   </Folder>
   <Project Path="Nightwatch.Core/Nightwatch.Core.fsproj" />
+  <Project Path="Nightwatch.Notifications/Nightwatch.Notifications.fsproj" />
   <Project Path="Nightwatch.Resources/Nightwatch.Resources.fsproj" />
   <Project Path="Nightwatch.Samples.CSharp/Nightwatch.Samples.CSharp.csproj" />
   <Project Path="Nightwatch.ServiceModel/Nightwatch.ServiceModel.fsproj" />

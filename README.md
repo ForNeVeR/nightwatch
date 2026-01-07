@@ -29,7 +29,7 @@ start, it will recursively read all the `*.yml` files in the resource
 directory, and set them up as periodic tasks. Each configuration file describes
 a _Resource_.
 
-Similarly, Nightwatch reads all `*.yml` files from the notification directory to configure _Notification_ providers. When a resource check fails or recovers, Nightwatch sends notifications via all configured providers.
+Similarly, Nightwatch reads all `*.yml` files from the notification directory to configure _Notification_ providers. When a resource check fails or recovers, Nightwatch sends notifications via the providers listed in that resource's `notifications` section, not via all configured providers.
 
 Currently supported resources are documented below.
 

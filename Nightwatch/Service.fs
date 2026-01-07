@@ -147,7 +147,8 @@ let private startService logger programInfo env fs (configFilePath : Path) =
                         return providers
                     | Error errors ->
                         logger.Error("Failed to load notifications:\n{0}", notificationErrorsToString errors)
-                        return [||]
+                        return failwithf
+                                   $"Cannot start Nightwatch service: failed to load notification configuration:\n%s{notificationErrorsToString errors}"
                 }
             | None ->
                 logger.Information("No notification directory configured")

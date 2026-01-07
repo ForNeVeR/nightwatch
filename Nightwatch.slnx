@@ -28,8 +28,7 @@
     <File Path="global.json" />
     <File Path="global.json.license" />
     <File Path="LICENSE.txt" />
-    <File Path="Nightwatch.sln.DotSettings" />
-    <File Path="Nightwatch.sln.license" />
+    <File Path="Nightwatch.slnx.license" />
     <File Path="nightwatch.yml" />
     <File Path="README.md" />
     <File Path="renovate.json" />

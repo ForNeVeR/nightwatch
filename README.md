@@ -21,12 +21,15 @@ the command-line arguments, see the Run section of this document.
 
 ```yaml
 resource-directory: "some/path"
+notification-directory: "notifications/path"
 ```
 
 Nightwatch searches the resource directory for the configuration files. At
 start, it will recursively read all the `*.yml` files in the resource
 directory, and set them up as periodic tasks. Each configuration file describes
 a _Resource_.
+
+Similarly, Nightwatch reads all `*.yml` files from the notification directory to configure _Notification_ providers. When a resource check fails or recovers, Nightwatch sends notifications via all configured providers.
 
 Currently supported resources are documented below.
 
@@ -39,6 +42,8 @@ schedule: 00:05:00 # run every 5 minutes
 type: shell
 param:
     cmd: ping localhost # check command
+notifications: # optional list of notification provider IDs to use
+    - myNotifications/telegram
 ```
 
 ### HTTP Resource
@@ -51,6 +56,26 @@ type: http
 param:
     url: http://localhost:8080/ # URL to visit
     ok-codes: 200, 304 # the list of the codes considered as a success
+notifications: # optional list of notification provider IDs to use
+    - myNotifications/telegram
+```
+
+Notifications
+-------------
+
+Notification providers are configured in the notification directory. Each `*.yml` file describes a notification provider that will be used to send alerts when resource checks fail or recover.
+
+Currently supported notification providers are documented below.
+
+### Telegram Notification
+
+```yaml
+version: 0.0.1.0 # should always be 0.0.1.0 for the current version
+id: myNotifications/telegram # notification provider identifier
+type: telegram
+param:
+    bot-token: YOUR_BOT_TOKEN_HERE # Telegram bot API token
+    chat-id: YOUR_CHAT_ID_HERE # target chat ID for notifications
 ```
 
 Run

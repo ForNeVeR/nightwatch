@@ -43,24 +43,24 @@ let private configureNotificationRegistry(logger: ILogger) =
     logger.Information("Available notification providers: {0}", String.Join(", ", names))
     NotificationRegistry.create notificationFactories
 
+let private splitResults seq =
+    let chooseOk = function
+    | Ok x -> Some x
+    | Error _ -> None
+
+    let chooseError = function
+    | Ok _ -> None
+    | Error x -> Some x
+
+    let isOk = chooseOk >> Option.isSome
+
+    let results, errors =
+        seq
+        |> Seq.toArray
+        |> Array.partition isOk
+    Array.choose chooseOk results, Array.choose chooseError errors
+
 let private readResources fs config factories : Async<Result<Resource [], InvalidConfiguration []>> =
-    let splitResults seq =
-        let chooseOk = function
-        | Ok x -> Some x
-        | Error _ -> None
-
-        let chooseError = function
-        | Ok _ -> None
-        | Error x -> Some x
-
-        let isOk = chooseOk >> Option.isSome
-
-        let results, errors =
-            seq
-            |> Seq.toArray
-            |> Array.partition isOk
-        Array.choose chooseOk results, Array.choose chooseError errors
-
     async {
         let! resources = Async.AwaitTask <| ResourceConfiguration.read factories fs config
         let results, errors = splitResults resources
@@ -72,23 +72,6 @@ let private readResources fs config factories : Async<Result<Resource [], Invali
 
 let private readNotifications fs notificationDirectory registry : Async<Result<NotificationProvider [],
                                                                             NotificationConfigurationError[]>> =
-    let splitResults seq =
-        let chooseOk = function
-        | Ok x -> Some x
-        | Error _ -> None
-
-        let chooseError = function
-        | Ok _ -> None
-        | Error x -> Some x
-
-        let isOk = chooseOk >> Option.isSome
-
-        let results, errors =
-            seq
-            |> Seq.toArray
-            |> Array.partition isOk
-        Array.choose chooseOk results, Array.choose chooseError errors
-
     async {
         let! notifications = Async.AwaitTask <| NotificationConfiguration.read registry fs notificationDirectory
         let results, errors = splitResults notifications

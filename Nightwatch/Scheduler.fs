@@ -8,7 +8,6 @@ open System.Threading.Tasks
 
 open Quartz
 open Quartz.Impl
-open FSharp.Control.Tasks
 
 open Nightwatch.Resources
 open Nightwatch.Notifications

@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2017-2018 Nightwatch contributors <https://github.com/ForNeVeR/nightwatch>
+// SPDX-FileCopyrightText: 2017-2026 Nightwatch contributors <https://github.com/ForNeVeR/nightwatch>
 //
 // SPDX-License-Identifier: MIT
 
@@ -6,7 +6,6 @@ module Nightwatch.Tests.ResourceConfiguration
 
 open System
 open Xunit
-open FSharp.Control.Tasks
 
 open Nightwatch
 open Nightwatch.ProgramConfiguration

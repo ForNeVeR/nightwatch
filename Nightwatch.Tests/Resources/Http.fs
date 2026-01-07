@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2017 Friedrich von Never <friedrich@fornever.me>
+// SPDX-FileCopyrightText: 2017-2026 Friedrich von Never <friedrich@fornever.me>
 //
 // SPDX-License-Identifier: MIT
 
@@ -8,7 +8,6 @@ open System.Net
 open System.Net.Http
 open System.Threading.Tasks
 
-open FSharp.Control.Tasks
 open Xunit
 
 open Nightwatch.Core.Network.Http

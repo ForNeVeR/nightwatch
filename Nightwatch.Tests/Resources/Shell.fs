@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2017 Nightwatch contributors <https://github.com/ForNeVeR/nightwatch>
+// SPDX-FileCopyrightText: 2017-2026 Nightwatch contributors <https://github.com/ForNeVeR/nightwatch>
 //
 // SPDX-License-Identifier: MIT
 
@@ -7,7 +7,6 @@ module Nightwatch.Tests.Resources.Shell
 open System
 open System.Threading.Tasks
 
-open FSharp.Control.Tasks
 open Xunit
 
 open Nightwatch.Core.Process
@@ -39,7 +38,7 @@ let ``Shell Resource starts a process without args``() =
         Task.FromResult 0 }
     let checker = getChecker controller command args
     task {
-        let! result = checker.Invoke()
+        let! _ = checker.Invoke()
         Assert.Equal(command, Option.get startedCommand)
         Assert.Equal(Some args, startedArgs)
     }
@@ -57,7 +56,7 @@ let ``Shell Resource starts a process``() =
         Task.FromResult 0 }
     let checker = getChecker controller command args
     task {
-        let! result = checker.Invoke()
+        let! _ = checker.Invoke()
         Assert.Equal(command, Option.get startedCommand)
         Assert.Equal(Some args, startedArgs)
     }

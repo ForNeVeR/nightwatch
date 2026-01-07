@@ -8,7 +8,6 @@ open System
 
 open Quartz
 open Xunit
-open FSharp.Control.Tasks
 
 open Nightwatch
 open Nightwatch.Core.Resources
@@ -52,7 +51,7 @@ let ``Schedule should be prepared`` () =
           checker = trueChecker
           notificationIds = [||] }
     let schedule = Scheduler.prepareSchedule emptyProviders stateTracker [| task |]
-    let (job, trigger) = Seq.exactlyOne schedule
+    let job, _ = Seq.exactlyOne schedule
     Assert.Equal (JobKey task.id, job.Key)
 
 [<Fact>]

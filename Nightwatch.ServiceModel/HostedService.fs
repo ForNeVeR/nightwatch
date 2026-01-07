@@ -7,7 +7,6 @@ namespace Nightwatch.ServiceModel
 open System.Threading
 open System.Threading.Tasks
 
-open FSharp.Control.Tasks
 open Microsoft.Extensions.Hosting
 
 type HostedService<'a>(start : CancellationToken -> Task<'a>, stop : CancellationToken -> 'a -> Task) =

@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2017 Friedrich von Never <friedrich@fornever.me>
+// SPDX-FileCopyrightText: 2017-2026 Friedrich von Never <friedrich@fornever.me>
 //
 // SPDX-License-Identifier: MIT
 
@@ -6,10 +6,6 @@ module Nightwatch.Resources.Http
 
 open System
 open System.Collections.Generic
-open System.Net.Http
-
-open FSharp.Control.Tasks
-
 open Nightwatch.Core.Network
 open Nightwatch.Core.Resources
 

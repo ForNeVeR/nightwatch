@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2017 Nightwatch contributors <https://github.com/ForNeVeR/nightwatch>
+// SPDX-FileCopyrightText: 2017-2026 Nightwatch contributors <https://github.com/ForNeVeR/nightwatch>
 //
 // SPDX-License-Identifier: MIT
 
@@ -6,8 +6,6 @@ module Nightwatch.Resources.Shell
 
 open System
 open System.Collections.Generic
-
-open FSharp.Control.Tasks
 
 open Nightwatch.Core
 open Nightwatch.Core.Resources

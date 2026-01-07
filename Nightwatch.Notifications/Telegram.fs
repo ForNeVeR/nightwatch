@@ -8,7 +8,6 @@ open System
 open System.Collections.Generic
 open System.Net.Http
 open System.Threading.Tasks
-open FSharp.Control.Tasks
 open Serilog
 
 open Funogram.Api
@@ -19,11 +18,12 @@ open Funogram.Types
 open Nightwatch.Core.Notifications
 
 let private formatMessage(notification: CheckNotification) =
-    let (emoji, statusText) =
+    let emoji, statusText =
         match notification.Status with
         | Failed -> ("❌", "FAILED")
         | Recovered -> ("✅", "RECOVERED")
-    sprintf "%s Resource <b>%s</b>: %s" emoji notification.ResourceId statusText
+
+    $"%s{emoji} Resource <b>%s{notification.ResourceId}</b>: %s{statusText}"
 
 let private createBotConfig(token: string) : BotConfig =
     { IsTest = false
@@ -39,8 +39,8 @@ let private createBotConfig(token: string) : BotConfig =
       RequestLogger = None }
 
 let private create (param: IDictionary<string, string>) (notification: CheckNotification): Task =
-    let botToken = param.["bot-token"]
-    let chatId = param.["chat-id"] |> int64
+    let botToken = param["bot-token"]
+    let chatId = param["chat-id"] |> int64
     let config = createBotConfig botToken
 
     task {

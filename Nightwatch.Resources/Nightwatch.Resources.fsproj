@@ -13,7 +13,6 @@ SPDX-License-Identifier: MIT
     <Compile Include="Shell.fs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="TaskBuilder.fs" Version="2.1.0" />
     <ProjectReference Include="../Nightwatch.Core/Nightwatch.Core.fsproj" />
   </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2017-2018 Nightwatch contributors <https://github.com/ForNeVeR/nightwatch>
+// SPDX-FileCopyrightText: 2017-2026 Nightwatch contributors <https://github.com/ForNeVeR/nightwatch>
 //
 // SPDX-License-Identifier: MIT
 
@@ -6,15 +6,11 @@ module Nightwatch.Tests.Core.FileSystem
 
 open System
 open System.IO
-open System.Threading.Tasks
-
 open Xunit
-open FSharp.Control.Tasks
 
-open Nightwatch.Core
 open Nightwatch.Core.FileSystem
 
-let private fs = FileSystem.system
+let private fs = system
 
 type private MockFileSystem =
     { root : string }

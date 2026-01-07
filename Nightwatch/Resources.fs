@@ -8,7 +8,6 @@ open System
 open System.Collections.Generic
 open System.Threading.Tasks
 open Serilog
-open FSharp.Control.Tasks
 
 open Nightwatch.Core.Resources
 

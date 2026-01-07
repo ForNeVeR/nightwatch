@@ -7,7 +7,6 @@ module Nightwatch.Tests.Core.Network
 open System
 open System.Net
 open System.Net.Sockets
-open FSharp.Control.Tasks
 open Xunit
 
 open Nightwatch.Core

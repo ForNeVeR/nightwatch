@@ -8,7 +8,6 @@ open System
 open System.Threading.Tasks
 
 open Xunit
-open FSharp.Control.Tasks
 
 open Nightwatch.Core.FileSystem
 open Nightwatch.Core.Notifications

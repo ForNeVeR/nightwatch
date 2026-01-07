@@ -6,7 +6,6 @@ namespace Nightwatch
 
 open System
 open Quartz
-open FSharp.Control.Tasks
 open Serilog
 
 open Nightwatch.Core.Notifications

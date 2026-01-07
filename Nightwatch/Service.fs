@@ -6,7 +6,6 @@ module Nightwatch.Service
 
 open System
 
-open FSharp.Control.Tasks
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
 open Nightwatch.NotificationConfiguration

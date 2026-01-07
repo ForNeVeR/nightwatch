@@ -6,7 +6,6 @@ module Nightwatch.Tests.CheckerJobTests
 
 open System
 open System.Threading.Tasks
-open FSharp.Control.Tasks
 open Quartz
 open Xunit
 
@@ -36,7 +35,7 @@ module private TestHelpers =
         let sender = NotificationSender(fun _ ->
             Task.FromException<unit>(InvalidOperationException("Notification sending failed")))
         { id = id; sender = sender }
-    
+
     let executeJob resource providers stateTracker =
         task {
             // Create JobDataMap the same way Scheduler does
@@ -50,9 +49,9 @@ module private TestHelpers =
                     .WithIdentity(JobKey resource.id)
                     .UsingJobData(JobDataMap jobData)
                     .Build()
-            
+
             // Create minimal context
-            let context = 
+            let context =
                 { new IJobExecutionContext with
                     member _.JobDetail = jobDetail
                     member _.Trigger = null
@@ -64,7 +63,7 @@ module private TestHelpers =
                     member _.PreviousFireTimeUtc = Nullable()
                     member _.NextFireTimeUtc = Nullable()
                     member _.JobRunTime = TimeSpan.Zero
-                    member _.Result with get() = null and set(_) = ()
+                    member _.Result with get() = null and set _ = ()
                     member _.Scheduler = null
                     member _.FireInstanceId = ""
                     member _.RecoveringTriggerKey = null
@@ -72,8 +71,8 @@ module private TestHelpers =
                     member _.Recovering = false
                     member _.JobInstance = null
                     member _.Put(_, _) = ()
-                    member _.Get(_) = null }
-            
+                    member _.Get _ = null }
+
             let job = CheckerJob() :> IJob
             do! job.Execute(context)
         }
@@ -104,12 +103,12 @@ let ``CheckerJob should send notification when resource recovers`` () =
         // Arrange
         let capturedNotifications = ref []
         let stateTracker = ResourceStateTracker()
-        
+
         // First, fail the resource
         let failingResource = TestHelpers.createResource "test-resource" [||] false
         let emptyProviders: Map<string, NotificationProvider> = Map.empty
         do! TestHelpers.executeJob failingResource emptyProviders stateTracker
-        
+
         // Now, recover the resource
         let recoveringResource = TestHelpers.createResource "test-resource" [|"provider1"|] true
         let provider = TestHelpers.createNotificationProvider "provider1" capturedNotifications
@@ -156,13 +155,13 @@ let ``CheckerJob should not send notifications when shouldNotify is false`` () =
         // Arrange
         let capturedNotifications = ref []
         let stateTracker = ResourceStateTracker()
-        
+
         // First check passes - should not notify
         let passingResource1 = TestHelpers.createResource "test-resource" [|"provider1"|] true
         let provider = TestHelpers.createNotificationProvider "provider1" capturedNotifications
         let providers = Map.ofList [("provider1", provider)]
         do! TestHelpers.executeJob passingResource1 providers stateTracker
-        
+
         // Second check still passes - should not notify
         let passingResource2 = TestHelpers.createResource "test-resource" [|"provider1"|] true
 

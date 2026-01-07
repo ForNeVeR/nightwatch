@@ -8,7 +8,6 @@ open System
 open System.IO
 open System.Threading.Tasks
 
-open FSharp.Control.Tasks
 open YamlDotNet.Serialization
 
 open Nightwatch.Core.FileSystem

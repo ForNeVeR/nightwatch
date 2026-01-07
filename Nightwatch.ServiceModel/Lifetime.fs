@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2019 Friedrich von Never <friedrich@fornever.me>
+// SPDX-FileCopyrightText: 2019-2026 Friedrich von Never <friedrich@fornever.me>
 //
 // SPDX-License-Identifier: MIT
 
@@ -13,12 +13,12 @@ open Microsoft.Extensions.Hosting
 
 type private ParametrizedServiceBase(onStart : unit -> unit, onStop : unit -> unit) =
     inherit ServiceBase()
-    override __.OnStart(_ : string []) : unit = onStart()
-    override __.OnStop() : unit = onStop()
+    override _.OnStart(_ : string []) : unit = onStart()
+    override _.OnStop() : unit = onStop()
 
 /// This lifetime starts the Windows Service when the application has been started, and requests IApplicationLifetime
 /// termination on service stop.
-type ServiceBaseLifetime(applicationLifetime : IApplicationLifetime) =
+type ServiceBaseLifetime(applicationLifetime : IHostApplicationLifetime) =
     let startedTask = TaskCompletionSource()
     let stoppedTask = TaskCompletionSource()
     let onStart = startedTask.SetResult
@@ -29,7 +29,7 @@ type ServiceBaseLifetime(applicationLifetime : IApplicationLifetime) =
     let service = new ParametrizedServiceBase(onStart, onStop)
 
     interface IHostLifetime with
-        member this.WaitForStartAsync(ct : CancellationToken) : Task =
+        member this.WaitForStartAsync _ =
             let thread = Thread(fun () ->
                 try
                     ServiceBase.Run service
@@ -39,11 +39,11 @@ type ServiceBaseLifetime(applicationLifetime : IApplicationLifetime) =
                     applicationLifetime.StopApplication())
 
             thread.Start()
-            upcast startedTask.Task
+            startedTask.Task
 
-        member __.StopAsync(ct : CancellationToken) : Task =
+        member _.StopAsync _ =
             service.Stop()
-            upcast stoppedTask.Task
+            stoppedTask.Task
 
 let useServiceBasedRuntime(services : IServiceCollection) : unit =
     services.AddSingleton<IHostLifetime, ServiceBaseLifetime>()

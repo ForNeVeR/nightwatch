@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2019 Friedrich von Never <friedrich@fornever.me>
+// SPDX-FileCopyrightText: 2019-2026 Friedrich von Never <friedrich@fornever.me>
 //
 // SPDX-License-Identifier: MIT
 
@@ -14,13 +14,13 @@ type HostedService<'a>(start : CancellationToken -> Task<'a>, stop : Cancellatio
     let mutable service = None
 
     interface IHostedService with
-        member __.StartAsync(cancellationToken : CancellationToken) : Task =
+        member _.StartAsync(cancellationToken : CancellationToken) : Task =
             upcast task {
                 let! startedService = start cancellationToken
                 service <- Some startedService
             }
 
-        member __.StopAsync(cancellationToken : CancellationToken) : Task =
+        member _.StopAsync(cancellationToken : CancellationToken) : Task =
             service
             |> Option.map (stop cancellationToken)
             |> Option.defaultValue Task.CompletedTask

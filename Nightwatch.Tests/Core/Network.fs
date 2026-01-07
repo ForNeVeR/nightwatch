@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2017 Friedrich von Never <friedrich@fornever.me>
+// SPDX-FileCopyrightText: 2017-2026 Friedrich von Never <friedrich@fornever.me>
 //
 // SPDX-License-Identifier: MIT
 
@@ -7,16 +7,14 @@ module Nightwatch.Tests.Core.Network
 open System
 open System.Net
 open System.Net.Sockets
-open System.Net.Http
-
 open FSharp.Control.Tasks
 open Xunit
 
 open Nightwatch.Core
 
 let private getUnusedPort() =
-    // TcpListener will automatically select unused port if passed 0
-    let listener = TcpListener(IPAddress.Any, 0)
+    // TcpListener will automatically select an unused port if passed 0
+    use listener = new TcpListener(IPAddress.Any, 0)
     listener.Start()
     let endpoint = listener.LocalEndpoint :?> IPEndPoint
     let port = endpoint.Port
@@ -26,7 +24,7 @@ let private getUnusedPort() =
 let private listenHttp() =
     let port = getUnusedPort()
     let listener = new HttpListener()
-    let prefix = sprintf "http://localhost:%d/" port
+    let prefix = $"http://localhost:%d{port}/"
     listener.Prefixes.Add prefix
     listener.Start()
     listener

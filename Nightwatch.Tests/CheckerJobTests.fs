@@ -34,8 +34,7 @@ module internal TestHelpers =
 
     let createFailingNotificationProvider id =
         let sender = NotificationSender(fun _ ->
-            raise (InvalidOperationException("Notification sending failed"))
-            Task.CompletedTask)
+            Task.FromException<unit>(InvalidOperationException("Notification sending failed")))
         { id = id; sender = sender }
 
     let executeJobWithScheduler resource providers stateTracker =
@@ -149,11 +148,8 @@ let ``CheckerJob should handle notification sending errors gracefully`` () =
         let providers = Map.ofList [("failing-provider", failingProvider)]
         let stateTracker = ResourceStateTracker()
 
-        // Act - should not throw
+        // Act & Assert - should not throw, errors are logged internally
         do! TestHelpers.executeJob resource providers stateTracker
-
-        // Assert - if we reach here, the exception was handled
-        Assert.True(true)
     }
 
 [<Fact>]
@@ -164,11 +160,8 @@ let ``CheckerJob should handle missing notification provider`` () =
         let providers: Map<string, NotificationProvider> = Map.empty  // No providers configured
         let stateTracker = ResourceStateTracker()
 
-        // Act - should not throw
+        // Act & Assert - should not throw, missing provider is logged as warning
         do! TestHelpers.executeJob resource providers stateTracker
-
-        // Assert - if we reach here, the missing provider was handled
-        Assert.True(true)
     }
 
 [<Fact>]

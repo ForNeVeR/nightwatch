@@ -37,7 +37,7 @@ let private correctResource (resource : ResourceDescription) path =
     | _ when String.IsNullOrWhiteSpace resource.``type`` -> errorPath "Resource type is not defined"
     | valid -> Ok(valid, path)
 
-let private deserializeResource (deserializer : Deserializer) path (reader : StreamReader) =
+let private deserializeResource (deserializer : IDeserializer) path (reader : StreamReader) =
     let resource = deserializer.Deserialize<ResourceDescription> reader
     correctResource resource path
 
@@ -51,12 +51,12 @@ let private loadFile (fs : FileSystem) deserializer path =
 let private versionConverter =
     { new IYamlTypeConverter with
         member __.Accepts(t) = t = typeof<Version>
-        member __.ReadYaml(parser, _) : obj =
+        member __.ReadYaml(parser, _, _) : obj =
              let scalar = parser.Current :?> YamlDotNet.Core.Events.Scalar
              ignore <| parser.MoveNext()
              let version = scalar.Value
              box <| Version version
-        member __.WriteYaml(_, _, _) = failwithf "Not supported" }
+        member __.WriteYaml(_, _, _, _) = failwithf "Not supported" }
 
 let private buildDeserializer() =
     DeserializerBuilder()

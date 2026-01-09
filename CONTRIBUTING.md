@@ -58,6 +58,27 @@ $ pwsh -c "Install-Module VerifyEncoding -Repository PSGallery -RequiredVersion 
 
 The `-AutoFix` switch will automatically fix the encoding issues, and you'll only need to commit and push the changes.
 
+Documentation
+-------------
+The project uses [docfx][docfx] to generate API documentation. To build and preview the documentation locally:
+
+1. Restore the docfx tool:
+   ```console
+   $ dotnet tool restore
+   ```
+
+2. Build the project in Release mode (required for API docs):
+   ```console
+   $ dotnet build -c Release
+   ```
+
+3. Start the documentation server:
+   ```console
+   $ dotnet docfx docs/docfx.json --serve
+   ```
+
+4. Open http://localhost:8080 in your browser to preview the documentation.
+
 GitHub Actions
 --------------
 If you want to update the GitHub Actions used in the project, edit the file that generated them: `scripts/github-actions.fsx`.
@@ -67,6 +88,7 @@ Then run the following shell command:
 $ dotnet fsi scripts/github-actions.fsx
 ```
 
+[docfx]: https://dotnet.github.io/docfx/
 [dotnet-sdk]: https://dotnet.microsoft.com/en-us/download
 [powershell]: https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell
 [reuse]: https://reuse.software/

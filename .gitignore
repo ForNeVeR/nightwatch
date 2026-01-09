@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2017-2019 Friedrich von Never <friedrich@fornever.me>
+# SPDX-FileCopyrightText: 2017-2026 Friedrich von Never <friedrich@fornever.me>
 #
 # SPDX-License-Identifier: MIT
 
@@ -11,3 +11,7 @@ obj/
 out/
 
 *.user
+
+# Documentation generator
+/docs/_site/
+/docs/api/

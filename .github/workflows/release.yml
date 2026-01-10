@@ -52,8 +52,16 @@ jobs:
         name: nuget-packages
         path: |-
           ./release-notes.md
-          **/*.nupkg
-          **/*.snupkg
+          Nightwatch/bin/Release/*.nupkg
+          Nightwatch/bin/Release/*.snupkg
+          Nightwatch.Core/bin/Release/*.nupkg
+          Nightwatch.Core/bin/Release/*.snupkg
+          Nightwatch.Notifications/bin/Release/*.nupkg
+          Nightwatch.Notifications/bin/Release/*.snupkg
+          Nightwatch.Tool/bin/Release/*.nupkg
+          Nightwatch.Tool/bin/Release/*.snupkg
+          Nightwatch.Resources/bin/Release/*.nupkg
+          Nightwatch.Resources/bin/Release/*.snupkg
     - if: startsWith(github.ref, 'refs/tags/v')
       name: Create a release
       uses: softprops/action-gh-release@v2
@@ -68,8 +76,8 @@ jobs:
           Nightwatch.Notifications/bin/Release/*.snupkg
           Nightwatch.Tool/bin/Release/*.nupkg
           Nightwatch.Tool/bin/Release/*.snupkg
-          Nigthtwatch.Resources/bin/Release/*.nupkg
-          Nigthtwatch.Resources/bin/Release/*.snupkg
+          Nightwatch.Resources/bin/Release/*.nupkg
+          Nightwatch.Resources/bin/Release/*.snupkg
         name: Nightwatch v${{ steps.version.outputs.version }}
     - if: startsWith(github.ref, 'refs/tags/v')
       name: Push Nightwatch to NuGet
@@ -84,5 +92,5 @@ jobs:
       name: Push Nightwatch.Tool to NuGet
       run: dotnet nuget push ./Nightwatch.Tool/bin/Release/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_TOKEN }}
     - if: startsWith(github.ref, 'refs/tags/v')
-      name: Push Nigthtwatch.Resources to NuGet
-      run: dotnet nuget push ./Nigthtwatch.Resources/bin/Release/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_TOKEN }}
+      name: Push Nightwatch.Resources to NuGet
+      run: dotnet nuget push ./Nightwatch.Resources/bin/Release/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_TOKEN }}

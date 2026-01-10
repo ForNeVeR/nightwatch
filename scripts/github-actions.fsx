@@ -197,25 +197,13 @@ let workflows = [
                 name = "Pack NuGet packages",
                 run = "dotnet pack --configuration Release -p:Version=${{ steps.version.outputs.version }}"
             )
-            step(
-                name = "Upload NuGet artifacts",
-                usesSpec = Auto "actions/upload-artifact",
-                options = Map.ofList [
-                    "name", "nuget-packages"
-                    "path", String.concat "\n" [
-                        "./release-notes.md"
-                        "**/*.nupkg"
-                        "**/*.snupkg"
-                    ]
-                ]
-            )
 
             let projectsToPublish = [
                 "Nightwatch"
                 "Nightwatch.Core"
                 "Nightwatch.Notifications"
                 "Nightwatch.Tool"
-                "Nigthtwatch.Resources"
+                "Nightwatch.Resources"
             ]
             let filesToUpload =
                 projectsToPublish
@@ -223,6 +211,18 @@ let workflows = [
                     $"{project}/bin/Release/*.nupkg"
                     $"{project}/bin/Release/*.snupkg"
                 })
+
+            step(
+                name = "Upload NuGet artifacts",
+                usesSpec = Auto "actions/upload-artifact",
+                options = Map.ofList [
+                    "name", "nuget-packages"
+                    "path", String.concat "\n" [
+                        "./release-notes.md"
+                        yield! filesToUpload
+                    ]
+                ]
+            )
 
             step(
                 condition = "startsWith(github.ref, 'refs/tags/v')",

@@ -4,7 +4,6 @@
 
 module Nightwatch.EntryPoint
 
-open System
 open System.Reflection
 
 open Argu
@@ -16,13 +15,14 @@ open Nightwatch.Core
 open Nightwatch.Core.FileSystem
 open Nightwatch.Service
 open Nightwatch.ServiceModel
+open TruePath
 
 let private version = Assembly.GetEntryAssembly().GetName().Version
 
-let private createLogger(logFilePath: Path option) =
+let private createLogger(logFilePath: AbsolutePath option) =
     let config = LoggerConfiguration()
     match logFilePath with
-    | Some(Path path) -> config.WriteTo.File(path)
+    | Some path -> config.WriteTo.File(path.Value)
     | None -> config.WriteTo.Console()
     |> _.CreateLogger()
 
@@ -61,8 +61,8 @@ let Main(args: string[]): int =
         printfn $"Nightwatch %A{version}"
         ExitCodes.success
     else
-        let configPath = Path(arguments.GetResult(CliArguments.Config, "nightwatch.yml"))
-        let env = Environment.fixedEnvironment (Path Environment.CurrentDirectory)
+        let configPath = LocalPath(arguments.GetResult(CliArguments.Config, "nightwatch.yml"))
+        let env = Environment.fixedEnvironment AbsolutePath.CurrentWorkingDirectory
         let fs = system
 
         let config = ProgramConfiguration.read env fs configPath |> Async.RunSynchronously

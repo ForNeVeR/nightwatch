@@ -17,4 +17,7 @@ SPDX-License-Identifier: MIT
     <Compile Include="Resources.fs" />
     <Compile Include="Notifications.fs" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="TruePath" Version="1.11.0" />
+  </ItemGroup>
 </Project>

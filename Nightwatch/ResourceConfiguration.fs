@@ -8,6 +8,7 @@ open System
 open System.Threading.Tasks
 open System.IO
 
+open TruePath
 open YamlDotNet.Serialization
 
 open Nightwatch.Core.FileSystem
@@ -16,14 +17,15 @@ open Nightwatch.Resources
 
 let configFormatVersion : Version = Version "0.0.1.0"
 
-type InvalidConfiguration =
-    { path : Path
-      id : string option
-      message : string }
+type InvalidConfiguration = {
+    Path: AbsolutePath
+    Id: string option
+    Message: string
+}
 
 let private correctResource (resource : ResourceDescription) path =
-    let errorPath msg = Error { path = path; id = None; message = msg }
-    let error msg = Error { path = path; id = Some resource.id; message = msg }
+    let errorPath msg = Error { Path = path; Id = None; Message = msg }
+    let error msg = Error { Path = path; Id = Some resource.id; Message = msg }
 
     match resource with
     | _ when resource.version = Version() -> errorPath "Resource version is not defined"
@@ -40,7 +42,7 @@ let private deserializeResource (deserializer : IDeserializer) path (reader : St
 
 let private loadFile (fs : FileSystem) deserializer path =
     task {
-        use! stream = fs.openStream path
+        use! stream = fs.OpenStream path
         use reader = new StreamReader(stream)
         return deserializeResource deserializer path reader
     }
@@ -56,11 +58,11 @@ let private toResource registry =
         | Some checker ->
             let notificationIds = if isNull res.notifications then [||] else res.notifications
             Ok { id = res.id; runEvery = res.schedule; checker = checker; notificationIds = notificationIds }
-        | None -> Error { path = path
-                          id = Some res.id
-                          message = $"The resource factory for type \"%s{res.``type``}\" is not registered" })
+        | None -> Error { Path = path
+                          Id = Some res.id
+                          Message = $"The resource factory for type \"%s{res.``type``}\" is not registered" })
 
-let private configFileMask = Mask "*.yml"
+let private configFileMask = LocalPathPattern "*.yml"
 
 let read (registry : ResourceRegistry)
          (fs : FileSystem)
@@ -68,7 +70,7 @@ let read (registry : ResourceRegistry)
          : Task<seq<Result<Resource, InvalidConfiguration>>> =
     let deserializer = buildDeserializer()
     task {
-        let! fileNames = fs.getFilesRecursively config.ResourceDirectory configFileMask
+        let! fileNames = fs.GetFilesRecursively config.ResourceDirectory configFileMask
         let tasks = fileNames |> Seq.map (loadFile fs deserializer)
         let! checks = Task.WhenAll tasks
         return Seq.map (toResource registry) checks

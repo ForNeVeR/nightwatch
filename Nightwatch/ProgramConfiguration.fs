@@ -7,6 +7,7 @@ module Nightwatch.ProgramConfiguration
 open System
 open System.IO
 
+open TruePath
 open YamlDotNet.Serialization
 
 open Nightwatch.Core.Environment
@@ -20,31 +21,33 @@ type ProgramConfigurationDescription = {
 }
 
 type ProgramConfiguration = {
-    BaseDirectory: Path
-    ResourceDirectory: Path
-    NotificationDirectory: Path option
-    LogFilePath: Path option
+    BaseDirectory: AbsolutePath
+    ResourceDirectory: AbsolutePath
+    NotificationDirectory: AbsolutePath option
+    LogFilePath: AbsolutePath option
 }
 
-let read (env : Environment) (fs : FileSystem) (configFilePath : Path) : Async<ProgramConfiguration> =
+let read (env: Environment) (fs: FileSystem) (configFilePath: LocalPath) : Async<ProgramConfiguration> =
     let deserializer = Deserializer()
     async {
-        let configFilePath = env.currentDirectory / configFilePath
-        use! stream = Async.AwaitTask <| fs.openStream configFilePath
+        let configFilePath = env.CurrentDirectory / configFilePath
+        use! stream = Async.AwaitTask <| fs.OpenStream configFilePath
         use reader = new StreamReader(stream)
         let config = deserializer.Deserialize<ProgramConfigurationDescription> reader
-        let baseDirectory = Path.parent configFilePath
-        let relResourceDirectory = Path config.``resource-directory``
+        let baseDirectory = configFilePath.Parent |> nonNullV
+        let relResourceDirectory = LocalPath config.``resource-directory``
         let notificationDirectory =
             if String.IsNullOrWhiteSpace config.``notification-directory``
             then None
-            else Some (baseDirectory / Path config.``notification-directory``)
+            else Some (baseDirectory / config.``notification-directory``)
         let logFilePath =
             if String.IsNullOrWhiteSpace config.``log-file``
             then None
-            else Some (baseDirectory / Path config.``log-file``)
-        return { BaseDirectory = baseDirectory
-                 ResourceDirectory = baseDirectory / relResourceDirectory
-                 NotificationDirectory = notificationDirectory
-                 LogFilePath = logFilePath }
+            else Some (baseDirectory / config.``log-file``)
+        return {
+            BaseDirectory = baseDirectory
+            ResourceDirectory = baseDirectory / relResourceDirectory
+            NotificationDirectory = notificationDirectory
+            LogFilePath = logFilePath
+        }
     }

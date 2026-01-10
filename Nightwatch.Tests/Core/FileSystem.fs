@@ -6,6 +6,8 @@ module Nightwatch.Tests.Core.FileSystem
 
 open System
 open System.IO
+open System.Threading.Tasks
+open TruePath
 open Xunit
 
 open Nightwatch.Core.FileSystem
@@ -17,6 +19,8 @@ type private MockFileSystem =
     interface IDisposable with
         member this.Dispose() =
             Directory.Delete(this.root, true)
+
+    member this.RootPath = AbsolutePath this.root
 
 let rec private createFileSystemEntry (path : string) =
     if path.EndsWith "/" || path.EndsWith(Path.DirectorySeparatorChar)
@@ -36,45 +40,33 @@ let private createFileSystem paths =
     { root = root }
 
 [<Fact>]
-let ``getFilesRecursively should return only the files corresponding to mask`` () =
+let ``GetFilesRecursively should return only the files corresponding to mask``(): Task =
     let fileList = [| "dir/"; "dir/file.txt"; "dir/file.yml"
                       "dir/subdir/"; "dir/subdir/file.txt"; "dir/subdir/file.yml" |]
     task {
         use dir = createFileSystem fileList
-        let! files = fs.getFilesRecursively (Path dir.root) (Mask "*.txt")
+        let! files = fs.GetFilesRecursively dir.RootPath (LocalPathPattern "*.txt")
         let expected =
             fileList
             |> Seq.filter (fun p -> p.EndsWith ".txt")
-            |> Seq.map (fun p -> Path(Path.Combine(dir.root, p.Replace("/", string Path.DirectorySeparatorChar))))
-            |> Seq.sort
+            |> Seq.map (fun p -> dir.RootPath / p)
+            |> Seq.sortBy _.Value
             |> Seq.toArray
-        Assert.Equal<Path>(expected, files |> Seq.sort)
+        Assert.Equal<AbsolutePath>(expected, files |> Seq.sortBy _.Value)
     }
 
 [<Fact>]
-let ``openStream returns the file stream`` () =
+let ``OpenStream returns the file stream``(): Task =
     task {
         let path = Path.GetTempFileName()
         try
             let content = "Hello World\n123"
             do! Async.AwaitTask(File.WriteAllTextAsync(path, content))
 
-            use! stream = fs.openStream (Path path)
+            use! stream = fs.OpenStream (AbsolutePath path)
             use reader = new StreamReader(stream)
             let! result = Async.AwaitTask <| reader.ReadToEndAsync()
             Assert.Equal(content, result)
         finally
             File.Delete path
     }
-
-[<Fact>]
-let ``/ operator combines paths``() : unit =
-    let p1 = Path "a"
-    let p2 = Path "b"
-    Assert.Equal(Path(Path.Combine("a", "b")), p1 / p2)
-
-[<Fact>]
-let ``Path.parent returns full parent path``() : unit =
-    let path = "/Documents and Settings/Vasily"
-    let parent = Path.parent(Path path)
-    Assert.Equal(Path(Path.GetDirectoryName path), parent)

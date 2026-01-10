@@ -8,6 +8,7 @@ open System
 open System.IO
 open System.Threading.Tasks
 
+open TruePath
 open YamlDotNet.Serialization
 
 open Nightwatch.Core.FileSystem
@@ -16,7 +17,7 @@ open Nightwatch.Notifications
 let ConfigFormatVersion: Version = Version "0.0.1.0"
 
 type NotificationConfigurationError = {
-    Path: Path
+    Path: AbsolutePath
     Id: string option
     Message: string
 }
@@ -39,7 +40,7 @@ let private deserializeNotification (deserializer: IDeserializer) path (reader: 
 
 let private loadFile (fs: FileSystem) deserializer path =
     task {
-        use! stream = fs.openStream path
+        use! stream = fs.OpenStream path
         use reader = new StreamReader(stream)
         return deserializeNotification deserializer path reader
     }
@@ -57,15 +58,15 @@ let private toProvider registry =
                           Id = Some desc.id
                           Message = $"The notification factory for type \"%s{desc.``type``}\" is not registered" })
 
-let private configFileMask = Mask "*.yml"
+let private configFileMask = LocalPathPattern "*.yml"
 
 let read (registry: NotificationRegistry)
          (fs: FileSystem)
-         (notificationDirectory: Path)
+         (notificationDirectory: AbsolutePath)
          : Task<seq<Result<NotificationProvider, NotificationConfigurationError>>> =
     let deserializer = buildDeserializer()
     task {
-        let! fileNames = fs.getFilesRecursively notificationDirectory configFileMask
+        let! fileNames = fs.GetFilesRecursively notificationDirectory configFileMask
         let tasks = fileNames |> Seq.map (loadFile fs deserializer)
         let! checks = Task.WhenAll tasks
         return Seq.map (toProvider registry) checks

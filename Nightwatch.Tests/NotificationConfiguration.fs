@@ -7,9 +7,9 @@ module Nightwatch.Tests.NotificationConfiguration
 open System
 open System.Threading.Tasks
 
+open TruePath
 open Xunit
 
-open Nightwatch.Core.FileSystem
 open Nightwatch.Core.Notifications
 open Nightwatch
 open Nightwatch.Notifications
@@ -30,14 +30,15 @@ param:
     let registry = NotificationRegistry.create [| factory |]
     let fileSystem = mockFileSystem [| "notifications/test.yml", text |]
     task {
-        let! result = NotificationConfiguration.read registry fileSystem (Path "notifications")
+        let path = MockedRoot / LocalPath "notifications"
+        let! result = NotificationConfiguration.read registry fileSystem path
         let results = result |> Seq.toArray
         match Assert.Single(results) with
         | Ok provider -> Assert.Equal("test-notification", provider.id)
         | Error e -> Assert.True(false, $"Expected Ok but got Error: %s{e.Message}")
 
         let param = Option.get parsedParam
-        Assert.Equal("abc123", param.["token"])
+        Assert.Equal("abc123", param["token"])
     }
 
 let private emptyRegistry = NotificationRegistry.create [| |]
@@ -50,11 +51,11 @@ type: unknown"
     let path = "notifications/test.yml"
     let fileSystem = mockFileSystem [| path, text |]
     let expected: Result<NotificationProvider, NotificationConfiguration.NotificationConfigurationError> =
-        Error { NotificationConfiguration.NotificationConfigurationError.Path = (Path path)
+        Error { NotificationConfiguration.NotificationConfigurationError.Path = MockedRoot / path
                 NotificationConfiguration.NotificationConfigurationError.Id = Some "test"
                 NotificationConfiguration.NotificationConfigurationError.Message = "The notification factory for type \"unknown\" is not registered" }
     task {
-        let! result = NotificationConfiguration.read emptyRegistry fileSystem (Path "notifications")
+        let! result = NotificationConfiguration.read emptyRegistry fileSystem (MockedRoot / "notifications")
         Assert.Equal<Result<NotificationProvider, NotificationConfiguration.NotificationConfigurationError>>([| expected |], result |> Seq.toArray)
     }
 
@@ -62,7 +63,7 @@ type: unknown"
 let ``NotificationConfiguration should ignore non-YAML file``(): Task =
     let fileSystem = mockFileSystem [| "notifications/test.yml2", "" |]
     task {
-        let! result = NotificationConfiguration.read emptyRegistry fileSystem (Path "notifications")
+        let! result = NotificationConfiguration.read emptyRegistry fileSystem (MockedRoot / "notifications")
         Assert.Empty(result)
     }
 
@@ -73,10 +74,10 @@ type: test"
     let path = "notifications/test.yml"
     let fileSystem = mockFileSystem [| path, text |]
     task {
-        let! result = NotificationConfiguration.read emptyRegistry fileSystem (Path "notifications")
+        let! result = NotificationConfiguration.read emptyRegistry fileSystem (MockedRoot / "notifications")
         let results = result |> Seq.toArray
         Assert.Single(results) |> ignore
-        match results.[0] with
+        match results[0] with
         | Error e -> Assert.Contains("version", e.Message)
         | Ok _ -> Assert.True(false, "Expected Error but got Ok")
     }
@@ -88,10 +89,10 @@ type: test"
     let path = "notifications/test.yml"
     let fileSystem = mockFileSystem [| path, text |]
     task {
-        let! result = NotificationConfiguration.read emptyRegistry fileSystem (Path "notifications")
+        let! result = NotificationConfiguration.read emptyRegistry fileSystem (MockedRoot / "notifications")
         let results = result |> Seq.toArray
         Assert.Single(results) |> ignore
-        match results.[0] with
+        match results[0] with
         | Error e -> Assert.Equal("Notification identifier is not defined", e.Message)
         | Ok _ -> Assert.True(false, "Expected Error but got Ok")
     }

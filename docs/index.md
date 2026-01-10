@@ -42,6 +42,10 @@ dotnet add package Nightwatch.Core
 
 Then use the components in your application to build custom monitoring solutions.
 
+## Developer Guides
+
+- [Implementing a Resource Type](implementing-a-resource-type.md) - Guide for creating custom resource checkers
+
 ## API Documentation
 
 Proceed to the [API documentation](api/Nightwatch.Core.html) to explore the available types and methods.

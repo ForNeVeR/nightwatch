@@ -50,15 +50,15 @@ Registering a factory
 ---------------------
 
 Currently, to register a Resource factory, you need to add it to the
-`resourceFactories` collection in [`Nightwatch.Program`][nightwatch-program]
+`resourceFactories` collection in [`Nightwatch.EntryPoint`][nightwatch-program]
 module and recompile Nightwatch.
 
 In future, there'll be a way to register a Resource factory without recompiling
 the code. See [the corresponding issue][issue-14].
 
-[readme]: ../Readme.md
-[resourcefactory]: ../Nightwatch.Core/Resources.fs
-[nightwatch-program]: ../Nightwatch/Program.fs
-[nightwatch-samples-csharp]: ../Nightwatch.Samples.CSharp
+[readme]: https://github.com/ForNeVeR/nightwatch/blob/HEAD/README.md
+[resourcefactory]: xref:Nightwatch.Core.Resources.ResourceFactory
+[nightwatch-program]: xref:Nightwatch.EntryPoint
+[nightwatch-samples-csharp]: https://github.com/ForNeVeR/nightwatch/tree/HEAD/Nightwatch.Samples.CSharp
 
 [issue-14]: https://github.com/ForNeVeR/nightwatch/issues/14

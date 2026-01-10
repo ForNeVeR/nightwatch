@@ -6,6 +6,8 @@
     <File Path=".github/workflows/release.yml" />
   </Folder>
   <Folder Name="/docs/">
+    <File Path="docs/docfx.json" />
+    <File Path="docs/docfx.json.license" />
     <File Path="docs/implementing-a-resource-type.md" />
   </Folder>
   <Folder Name="/LICENSES/">

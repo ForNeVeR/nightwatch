@@ -8,7 +8,7 @@
             "Nightwatch.Core/bin/Release/*/Nightwatch.Core.dll",
             "Nightwatch.Notifications/bin/Release/*/Nightwatch.Notifications.dll",
             "Nightwatch.Resources/bin/Release/*/Nightwatch.Resources.dll",
-            "Nightwatch.ServiceModel/bin/Release/*/Nightwatch.ServiceModel.dll"
+            "Nightwatch/bin/Release/*/Nightwatch.dll"
           ]
         }
       ],

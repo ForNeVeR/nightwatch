@@ -9,6 +9,8 @@
     <File Path="docs/docfx.json" />
     <File Path="docs/docfx.json.license" />
     <File Path="docs/implementing-a-resource-type.md" />
+    <File Path="docs/index.md" />
+    <File Path="docs/toc.yml" />
   </Folder>
   <Folder Name="/LICENSES/">
     <File Path="LICENSES/MIT.txt" />

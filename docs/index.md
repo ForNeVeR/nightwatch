@@ -21,7 +21,6 @@ It can be used as:
 Nightwatch is composed of several libraries that can be used independently:
 
 - **Nightwatch.Core** - Core monitoring logic and scheduling
-- **Nightwatch.ServiceModel** - Service model and data types
 - **Nightwatch.Resources** - Resource check implementations (HTTP, Shell, etc.)
 - **Nightwatch.Notifications** - Notification providers (Telegram, etc.)
 
@@ -29,15 +28,15 @@ Nightwatch is composed of several libraries that can be used independently:
 
 ### As a Standalone Tool
 
-```bash
-dotnet tool install -g Nightwatch
-nightwatch --config ./nightwatch.yml
+```console
+$ dotnet tool install -g FVNever.Nightwatch.Tool
+$ nightwatch --config ./nightwatch.yml
 ```
 
 ### As a Library
 
-```bash
-dotnet add package Nightwatch.Core
+```console
+$ dotnet add package FVNever.Nightwatch.Core
 ```
 
 Then use the components in your application to build custom monitoring solutions.
@@ -48,7 +47,7 @@ Then use the components in your application to build custom monitoring solutions
 
 ## API Documentation
 
-Proceed to the [API documentation](api/Nightwatch.Core.html) to explore the available types and methods.
+Proceed to the [API documentation](xref:Nightwatch) to explore the available types and methods.
 
 ## Links
 

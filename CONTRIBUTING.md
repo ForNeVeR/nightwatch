@@ -51,7 +51,7 @@ To prepare the NuGet packages locally:
 
 2. Install the tool locally:
    ```console
-   $ dotnet tool install --global --add-source ./Nightwatch/bin/Release Nightwatch.Tool
+   $ dotnet tool install --global --add-source ./Nightwatch.Tool/bin/Release Nightwatch.Tool
    ```
 
 3. Verify installation:

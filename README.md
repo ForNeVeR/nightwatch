@@ -115,7 +115,7 @@ _(note the space and quote placement, that's important)_
 Install the package `FVNever.Nightwatch` into a .NET project or an `fsx` file:
 ```fsharp
 #r "nuget: FVNever.Nightwatch"
-exit <| Nightwatch.EntryPoint.FsxMain fsi.CommandLineArgs
+exit <| Nightwatch.EntryPoint.FsiMain fsi.CommandLineArgs
 ```
 Read more in the [API reference][docs.api].
 
@@ -134,7 +134,7 @@ The license indication in the project's sources is compliant with the [REUSE spe
 [andivionian-status-classifier]: https://github.com/ForNeVeR/andivionian-status-classifier#status-umbra-
 [docs.contributing]: CONTRIBUTING.md
 [docs.license]: LICENSE.txt
-[dotnet]: https://dot.net
+[dotnet]: https://dotnet.microsoft.com
 [implementing-a-resource-type]: docs/implementing-a-resource-type.md
 [net-core-sdk]: https://www.microsoft.com/net/download/core#/sdk
 [reuse.spec]: https://reuse.software/spec-3.3/

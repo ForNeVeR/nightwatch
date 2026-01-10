@@ -9,11 +9,11 @@ open System
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
 open Nightwatch.NotificationConfiguration
+open Nightwatch.ProgramConfiguration
 open Serilog
 
 open Nightwatch
 open Nightwatch.Core
-open Nightwatch.Core.Environment
 open Nightwatch.Core.FileSystem
 open Nightwatch.Core.Network
 open Nightwatch.ResourceConfiguration
@@ -27,7 +27,7 @@ type ProgramInfo =
 
 let private logFullVersion (logger : ILogger) programInfo =
     logger.Information("Nightwatch v. {0}", programInfo.version)
-    logger.Information("Config file format v. {0}", ResourceConfiguration.configFormatVersion)
+    logger.Information("Config file format v. {0}", configFormatVersion)
 
 let private resourceFactories = [| Http.factory Http.system; Shell.factory Process.system |]
 let private notificationFactories = [| Telegram.Factory |]
@@ -61,7 +61,7 @@ let private splitResults seq =
 
 let private readResources fs config factories : Async<Result<Resource [], InvalidConfiguration []>> =
     async {
-        let! resources = Async.AwaitTask <| ResourceConfiguration.read factories fs config
+        let! resources = Async.AwaitTask <| read factories fs config
         let results, errors = splitResults resources
         return
             if Seq.isEmpty errors
@@ -88,7 +88,7 @@ let private createScheduler providers stateTracker resources =
         return scheduler
     }
 
-let private startService logger programInfo env fs (configFilePath : Path) =
+let private startService logger programInfo fs (config: ProgramConfiguration) =
     let resourceErrorsToString (errors: InvalidConfiguration[]) =
         let printError (error: InvalidConfiguration) =
             sprintf "Path: %s\nId: %s\nMessage: %s"
@@ -109,16 +109,14 @@ let private startService logger programInfo env fs (configFilePath : Path) =
 
     async {
         logFullVersion logger programInfo
-        logger.Information("Configuration file location: {0}", configFilePath)
-        let! config = ProgramConfiguration.read env fs configFilePath
-        logger.Information("Resource directory location: {0}", config.resourceDirectory)
+        logger.Information("Resource directory location: {0}", config.ResourceDirectory)
 
         let resourceRegistry = configureResourceRegistry logger
         let notificationRegistry = configureNotificationRegistry logger
 
         // Load notification providers if directory is configured
         let! notificationProviders =
-            match config.notificationDirectory with
+            match config.NotificationDirectory with
             | Some dir ->
                 logger.Information("Notification directory location: {0}", dir)
                 async {
@@ -157,13 +155,12 @@ let private startService logger programInfo env fs (configFilePath : Path) =
 
 let configure (logger : ILogger)
               (programInfo: ProgramInfo)
-              (environment : Environment)
               (fs : FileSystem)
-              (configFilePath : Path)
+              (config: ProgramConfiguration)
               (services : IServiceCollection) : unit =
     let startService =
         async {
-            let! service = startService logger programInfo environment fs configFilePath
+            let! service = startService logger programInfo fs config
             let startedService =
                 match service with
                 | None -> failwith "Cannot start Nightwatch service"

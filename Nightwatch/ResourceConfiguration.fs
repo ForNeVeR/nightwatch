@@ -68,7 +68,7 @@ let read (registry : ResourceRegistry)
          : Task<seq<Result<Resource, InvalidConfiguration>>> =
     let deserializer = buildDeserializer()
     task {
-        let! fileNames = fs.getFilesRecursively config.resourceDirectory configFileMask
+        let! fileNames = fs.getFilesRecursively config.ResourceDirectory configFileMask
         let tasks = fileNames |> Seq.map (loadFile fs deserializer)
         let! checks = Task.WhenAll tasks
         return Seq.map (toResource registry) checks

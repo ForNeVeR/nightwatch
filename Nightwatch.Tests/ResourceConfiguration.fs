@@ -15,10 +15,12 @@ open Nightwatch.Core.Resources
 open Nightwatch.Resources
 open Nightwatch.Tests.TestUtils.FileSystem
 
-let private programConfiguration =
-    { baseDirectory = Path "."
-      resourceDirectory = Path "dir"
-      notificationDirectory = None }
+let private programConfiguration = {
+    BaseDirectory = Path "."
+    ResourceDirectory = Path "dir"
+    NotificationDirectory = None
+    LogFilePath = None
+}
 
 [<Fact>]
 let ``ResourceConfiguration should read the YAML file`` () =

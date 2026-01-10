@@ -4,3 +4,4 @@
 
 resource-directory: "samples/resources"
 notification-directory: "samples/notifications"
+# log-file: "logs/nightwatch.log"

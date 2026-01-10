@@ -7,8 +7,7 @@ SPDX-License-Identifier: MIT
 Nightwatch [![Status Umbra][status-umbra]][andivionian-status-classifier]
 ==========
 
-Nightwatch is a monitoring service intedned to monitor daily and nightly
-activities and notify the administrator if something wrong happens.
+Nightwatch is a monitoring service intended to monitor daily and nightly activities and notify the administrator if something wrong happens.
 
 Configure
 ---------
@@ -22,6 +21,7 @@ the command-line arguments, see the Run section of this document.
 ```yaml
 resource-directory: "some/path"
 notification-directory: "notifications/path"
+log-file: "logs/nightwatch.log"  # optional
 ```
 
 Nightwatch searches the resource directory for the configuration files. At
@@ -30,6 +30,16 @@ directory, and set them up as periodic tasks. Each configuration file describes
 a _Resource_.
 
 Similarly, Nightwatch reads all `*.yml` files from the notification directory to configure _Notification_ providers. When a resource check fails or recovers, Nightwatch sends notifications via the providers listed in that resource's `notifications` section, not via all configured providers.
+
+### Logging Configuration
+
+By default, Nightwatch logs to the console. When running as a Windows service or in environments where console output is not accessible, you can redirect logs to a file:
+
+```yaml
+log-file: "logs/nightwatch.log"
+```
+
+The path can be relative (resolved from the configuration file's directory) or absolute. When this option is not set or empty, logs are written to the console.
 
 Currently supported resources are documented below.
 
@@ -110,6 +120,14 @@ $ sc.exe start Nightwatch
 ```
 
 _(note the space and quote placement, that's important)_
+
+**Note:** When running as a Windows service, logs are not visible in a console. It is recommended to configure file logging in your `nightwatch.yml`:
+
+```yaml
+log-file: "D:\\Path\\To\\logs\\nightwatch.log"
+```
+
+Make sure the service account has write permissions to the log directory.
 
 ### Installation as Package
 Install the package `FVNever.Nightwatch` into a .NET project or an `fsx` file:

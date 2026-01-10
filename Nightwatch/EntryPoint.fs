@@ -19,8 +19,12 @@ open Nightwatch.ServiceModel
 
 let private version = Assembly.GetEntryAssembly().GetName().Version
 
-let private createLogger() =
-    LoggerConfiguration().WriteTo.Console().CreateLogger()
+let private createLogger(logFilePath: Path option) =
+    let config = LoggerConfiguration()
+    match logFilePath with
+    | Some(Path path) -> config.WriteTo.File(path)
+    | None -> config.WriteTo.Console()
+    |> _.CreateLogger()
 
 module ExitCodes =
     let success = 0
@@ -47,26 +51,29 @@ let private runAsService(builder : IHostBuilder) =
 
 /// Main Nightwatch entry point. Returns zero if success or a non-zero exit code in case of errors.
 let Main(args: string[]): int =
-    let logger = createLogger()
-    Log.Logger <- logger
-
     let parser = ArgumentParser.Create<CliArguments>(programName = "nightwatch")
     let arguments = parser.ParseCommandLine(args, raiseOnUsage = false)
 
     if arguments.IsUsageRequested then
-        printfn "%s" (parser.PrintUsage())
+        printfn $"%s{parser.PrintUsage()}"
         ExitCodes.success
     else if arguments.Contains CliArguments.Version then
-        printfn "Nightwatch %A" version
+        printfn $"Nightwatch %A{version}"
         ExitCodes.success
     else
-        try
-            let configPath = Path(arguments.GetResult(CliArguments.Config, "nightwatch.yml"))
-            let programInfo = { version = version }
-            let env = Environment.fixedEnvironment (Path Environment.CurrentDirectory)
-            let fs = FileSystem.system
+        let configPath = Path(arguments.GetResult(CliArguments.Config, "nightwatch.yml"))
+        let env = Environment.fixedEnvironment (Path Environment.CurrentDirectory)
+        let fs = system
 
-            let builder = HostBuilder().ConfigureServices(Service.configure logger programInfo env fs configPath)
+        let config = ProgramConfiguration.read env fs configPath |> Async.RunSynchronously
+
+        let logger = createLogger config.LogFilePath
+        Log.Logger <- logger
+
+        try
+            let programInfo = { version = version }
+
+            let builder = HostBuilder().ConfigureServices(configure logger programInfo fs config)
 
             if arguments.Contains CliArguments.Service
             then runAsService builder

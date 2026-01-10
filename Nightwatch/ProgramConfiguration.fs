@@ -13,14 +13,18 @@ open Nightwatch.Core.Environment
 open Nightwatch.Core.FileSystem
 
 [<CLIMutable>]
-type ProgramConfigurationDescription =
-    { ``resource-directory`` : string
-      ``notification-directory`` : string }
+type ProgramConfigurationDescription = {
+    ``resource-directory``: string
+    ``notification-directory``: string
+    ``log-file``: string
+}
 
-type ProgramConfiguration =
-    { baseDirectory : Path
-      resourceDirectory : Path
-      notificationDirectory : Path option }
+type ProgramConfiguration = {
+    BaseDirectory: Path
+    ResourceDirectory: Path
+    NotificationDirectory: Path option
+    LogFilePath: Path option
+}
 
 let read (env : Environment) (fs : FileSystem) (configFilePath : Path) : Async<ProgramConfiguration> =
     let deserializer = Deserializer()
@@ -35,7 +39,12 @@ let read (env : Environment) (fs : FileSystem) (configFilePath : Path) : Async<P
             if String.IsNullOrWhiteSpace config.``notification-directory``
             then None
             else Some (baseDirectory / Path config.``notification-directory``)
-        return { baseDirectory = baseDirectory
-                 resourceDirectory = baseDirectory / relResourceDirectory
-                 notificationDirectory = notificationDirectory }
+        let logFilePath =
+            if String.IsNullOrWhiteSpace config.``log-file``
+            then None
+            else Some (baseDirectory / Path config.``log-file``)
+        return { BaseDirectory = baseDirectory
+                 ResourceDirectory = baseDirectory / relResourceDirectory
+                 NotificationDirectory = notificationDirectory
+                 LogFilePath = logFilePath }
     }

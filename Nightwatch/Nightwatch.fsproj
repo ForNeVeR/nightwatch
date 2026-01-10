@@ -8,9 +8,6 @@ SPDX-License-Identifier: MIT
     <PropertyGroup>
         <PackageDescription>Nightwatch is a monitoring service intended to monitor various resources and notify the administrator if something wrong happens.</PackageDescription>
         <IsPackable>true</IsPackable>
-        <PackAsTool>true</PackAsTool>
-        <ToolCommandName>nightwatch</ToolCommandName>
-        <PackageId>Nightwatch.Tool</PackageId>
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="../Nightwatch.Core/Nightwatch.Core.fsproj"/>

@@ -27,7 +27,6 @@ let workflows = [
         onWorkflowDispatch
     ]
 
-
     let dotNetJob id steps =
         job id [
             setEnv "DOTNET_CLI_TELEMETRY_OPTOUT" "1"

@@ -23,6 +23,9 @@ if ($RefName -match '^refs/tags/v') {
             break
         }
     }
+    if (!$version) {
+        throw "Cannot find the Version element in the `"$propsFilePath`"."
+    }
     Write-Host "Pushed ref is not a version tag, got version from $($propsFilePath): $version"
 }
 

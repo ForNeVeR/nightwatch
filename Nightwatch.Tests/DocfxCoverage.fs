@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2026 Nightwatch contributors <https://github.com/ForNeVeR/nightwatch>
+// SPDX-FileCopyrightText: 2026 Friedrich von Never <friedrich@fornever.me>
 //
 // SPDX-License-Identifier: MIT
 

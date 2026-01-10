@@ -25,6 +25,7 @@ SPDX-License-Identifier: MIT
         <Compile Include="CheckerJobTests.fs" />
         <Compile Include="ProgramConfiguration.fs"/>
         <Compile Include="Scheduler.fs"/>
+        <Compile Include="DocfxCoverage.fs"/>
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1"/>

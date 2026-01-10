@@ -8,14 +8,20 @@ SPDX-License-Identifier: MIT
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net10.0</TargetFramework>
+        <PackageDescription>Nightwatch is a monitoring service intended to monitor various resources and notify the administrator if something wrong happens.</PackageDescription>
+        <IsPackable>true</IsPackable>
+        <PackAsTool>true</PackAsTool>
+        <ToolCommandName>nightwatch</ToolCommandName>
+        <PackageId>Nightwatch.Tool</PackageId>
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="../Nightwatch.Core/Nightwatch.Core.fsproj"/>
         <ProjectReference Include="../Nightwatch.Resources/Nightwatch.Resources.fsproj"/>
         <ProjectReference Include="../Nightwatch.Notifications/Nightwatch.Notifications.fsproj"/>
-        <ProjectReference Include="../Nightwatch.ServiceModel/Nightwatch.ServiceModel.fsproj"/>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="ServiceModel\HostedService.fs" />
+        <Compile Include="ServiceModel\Lifetime.fs" />
         <Compile Include="Resources.fs"/>
         <Compile Include="Notifications.fs"/>
         <Compile Include="ResourceStateTracker.fs" />
@@ -35,6 +41,7 @@ SPDX-License-Identifier: MIT
         <PackageReference Include="Quartz" Version="3.15.1"/>
         <PackageReference Include="Serilog" Version="4.3.0"/>
         <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1"/>
+        <PackageReference Include="System.ServiceProcess.ServiceController" Version="10.0.1" />
         <PackageReference Include="YamlDotNet" Version="16.3.0"/>
     </ItemGroup>
 </Project>

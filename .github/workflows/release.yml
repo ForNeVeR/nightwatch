@@ -1,0 +1,83 @@
+# SPDX-FileCopyrightText: 2024-2026 Friedrich von Never <friedrich@fornever.me>
+#
+# SPDX-License-Identifier: MIT
+
+# This file is auto-generated.
+name: Release
+on:
+  push:
+    branches:
+    - master
+    - renovate/**
+    tags:
+    - v*
+  pull_request:
+    branches:
+    - master
+  schedule:
+  - cron: 0 0 * * 6
+  workflow_dispatch: 
+jobs:
+  nuget:
+    permissions:
+      contents: write
+    runs-on: ubuntu-24.04
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      DOTNET_NOLOGO: 1
+      NUGET_PACKAGES: ${{ github.workspace }}/.github/nuget-packages
+    steps:
+    - name: Check out the sources
+      uses: actions/checkout@v6
+    - name: Set up .NET SDK
+      uses: actions/setup-dotnet@v5
+    - name: Cache NuGet packages
+      uses: actions/cache@v5
+      with:
+        key: ${{ runner.os }}.nuget.${{ hashFiles('**/*.*proj', '**/*.props') }}
+        path: ${{ env.NUGET_PACKAGES }}
+    - id: version
+      name: Get version
+      shell: pwsh
+      run: echo "version=$(scripts/Get-Version.ps1 -RefName $env:GITHUB_REF)" >> $env:GITHUB_OUTPUT
+    - name: Read changelog
+      uses: ForNeVeR/ChangelogAutomation.action@v2
+      with:
+        output: ./release-notes.md
+    - name: Pack NuGet packages
+      run: dotnet pack --configuration Release -p:Version=${{ steps.version.outputs.version }}
+    - name: Upload NuGet artifacts
+      uses: actions/upload-artifact@v6
+      with:
+        name: nuget-packages
+        path: |-
+          ./release-notes.md
+          **/*.nupkg
+          **/*.snupkg
+    - if: startsWith(github.ref, 'refs/tags/v')
+      name: Create a release
+      uses: softprops/action-gh-release@v2
+      with:
+        body_path: ./release-notes.md
+        files: |-
+          Nightwatch/bin/Release/*.nupkg
+          Nightwatch/bin/Release/*.snupkg
+          Nightwatch.Core/bin/Release/*.nupkg
+          Nightwatch.Core/bin/Release/*.snupkg
+          Nightwatch.Notifications/bin/Release/*.nupkg
+          Nightwatch.Notifications/bin/Release/*.snupkg
+          Nigthtwatch.Resources/bin/Release/*.nupkg
+          Nigthtwatch.Resources/bin/Release/*.snupkg
+        name: Nightwatch v${{ steps.version.outputs.version }}
+    - if: startsWith(github.ref, 'refs/tags/v')
+      name: Push Nightwatch to NuGet
+      run: dotnet nuget push ./Nightwatch/bin/Release/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_TOKEN }}
+    - if: startsWith(github.ref, 'refs/tags/v')
+      name: Push Nightwatch.Core to NuGet
+      run: dotnet nuget push ./Nightwatch.Core/bin/Release/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_TOKEN }}
+    - if: startsWith(github.ref, 'refs/tags/v')
+      name: Push Nightwatch.Notifications to NuGet
+      run: dotnet nuget push ./Nightwatch.Notifications/bin/Release/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_TOKEN }}
+    - if: startsWith(github.ref, 'refs/tags/v')
+      name: Push Nigthtwatch.Resources to NuGet
+      run: dotnet nuget push ./Nigthtwatch.Resources/bin/Release/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_TOKEN }}

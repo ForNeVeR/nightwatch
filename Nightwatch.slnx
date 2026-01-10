@@ -1,7 +1,9 @@
 <Solution>
   <Folder Name="/.github/" />
   <Folder Name="/.github/workflows/">
+    <File Path=".github/workflows/docs.yml" />
     <File Path=".github/workflows/main.yml" />
+    <File Path=".github/workflows/release.yml" />
   </Folder>
   <Folder Name="/docs/">
     <File Path="docs/implementing-a-resource-type.md" />
@@ -17,13 +19,15 @@
   <Folder Name="/samples/notifications/">
     <File Path="samples/notifications/telegram.yml" />
   </Folder>
-  <Folder Name="/Scripts/">
+  <Folder Name="/scripts/">
+    <File Path="scripts/Get-Version.ps1" />
     <File Path="scripts/github-actions.fsx" />
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
     <File Path=".gitignore" />
     <File Path="CONTRIBUTING.md" />
+    <File Path="MAINTAINING.md" />
     <File Path="Directory.Build.props" />
     <File Path="global.json" />
     <File Path="global.json.license" />
@@ -39,7 +43,6 @@
   <Project Path="Nightwatch.Notifications/Nightwatch.Notifications.fsproj" />
   <Project Path="Nightwatch.Resources/Nightwatch.Resources.fsproj" />
   <Project Path="Nightwatch.Samples.CSharp/Nightwatch.Samples.CSharp.csproj" />
-  <Project Path="Nightwatch.ServiceModel/Nightwatch.ServiceModel.fsproj" />
   <Project Path="Nightwatch.Tests/Nightwatch.Tests.fsproj" />
   <Project Path="Nightwatch/Nightwatch.fsproj" />
 </Solution>

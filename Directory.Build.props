@@ -5,13 +5,39 @@ SPDX-License-Identifier: MIT
 -->
 
 <Project>
-    <PropertyGroup>
+    <PropertyGroup Label="Packaging">
+        <Version>0.0.0</Version>
+        <Authors>ForNeVeR</Authors>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Copyright>2017-2026 Nightwatch contributors &lt;https://github.com/ForNeVeR/nightwatch&gt;</Copyright>
+        <PackageProjectUrl>https://github.com/ForNeVeR/nightwatch</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/ForNeVeR/nightwatch.git</RepositoryUrl>
+        <PackageTags>monitoring;notifications</PackageTags>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <PackageId>FVNever.$(MSBuildProjectName)</PackageId>
+    </PropertyGroup>
+
+    <PropertyGroup Label="Build">
         <TargetFramework>net10.0</TargetFramework>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
     </PropertyGroup>
 
     <!-- Enable reproducible build on CI: -->
     <PropertyGroup Condition="$(CI) != ''">
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     </PropertyGroup>
+
+    <!-- Common package includes for packable projects -->
+    <ItemGroup Condition="'$(IsPackable)' == 'true'">
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+        <PackageReference Include="ChangelogAutomation.MSBuild" Version="3.0.4" PrivateAssets="All" />
+        <None Visible="false" Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" />
+        <None Visible="false" Include="$(MSBuildThisFileDirectory)CHANGELOG.md" Pack="true" PackagePath="\" />
+        <None Visible="false" Include="$(MSBuildThisFileDirectory)\LICENSE.txt" Pack="true" PackagePath="\" />
+    </ItemGroup>
 </Project>

@@ -6,7 +6,8 @@ SPDX-License-Identifier: MIT
 
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <PackageDescription>Notification providers for Nightwatch monitoring service. Includes Telegram notification support.</PackageDescription>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Telegram.fs" />

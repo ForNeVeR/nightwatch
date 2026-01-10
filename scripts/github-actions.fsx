@@ -19,6 +19,15 @@ let workflows = [
             yield! steps
         ]
 
+    let defaultTriggers = [
+        onPushTo "master"
+        onPushTo "renovate/**"
+        onPullRequestTo "master"
+        onSchedule "0 0 * * 6"
+        onWorkflowDispatch
+    ]
+
+
     let dotNetJob id steps =
         job id [
             setEnv "DOTNET_CLI_TELEMETRY_OPTOUT" "1"
@@ -47,11 +56,7 @@ let workflows = [
 
     workflow "main" [
         name "Main"
-        onPushTo "master"
-        onPushTo "renovate/**"
-        onPullRequestTo "master"
-        onSchedule "0 0 * * 6"
-        onWorkflowDispatch
+        yield! defaultTriggers
 
         dotNetJob "verify-workflows" [
             runsOn "ubuntu-24.04"
@@ -81,6 +86,22 @@ let workflows = [
             )
         ]
 
+        dotNetJob "check-docs" [
+            runsOn "ubuntu-24.04"
+            step(
+                name = "Restore dotnet tools",
+                run = "dotnet tool restore"
+            )
+            step(
+                name = "Build project in Release mode",
+                run = "dotnet build -c Release"
+            )
+            step(
+                name = "Validate docfx",
+                run = "dotnet docfx docs/docfx.json --warningsAsErrors"
+            )
+        ]
+
         job "licenses" [
             runsOn "ubuntu-24.04"
             step(
@@ -103,6 +124,124 @@ let workflows = [
                 name = "Verify encoding",
                 shell = "pwsh",
                 run = "Install-Module VerifyEncoding -Repository PSGallery -RequiredVersion 2.2.1 -Force && Test-Encoding"
+            )
+        ]
+    ]
+
+    workflow "docs" [
+        name "Docs"
+        onPushTo "master"
+        onWorkflowDispatch
+        workflowPermission(PermissionKind.Actions, AccessKind.Read)
+        workflowPermission(PermissionKind.Pages, AccessKind.Write)
+        workflowPermission(PermissionKind.IdToken, AccessKind.Write)
+        workflowConcurrency(
+            group = "pages",
+            cancelInProgress = false
+        )
+
+        dotNetJob "publish-docs" [
+            environment(name = "github-pages", url = "${{ steps.deployment.outputs.page_url }}")
+            runsOn "ubuntu-24.04"
+
+            step(
+                name = "Set up .NET tools",
+                run = "dotnet tool restore"
+            )
+            step(
+                name = "Build project in Release mode",
+                run = "dotnet build -c Release"
+            )
+            step(
+                name = "Build the documentation",
+                run = "dotnet docfx docs/docfx.json"
+            )
+            step(
+                name = "Upload artifact",
+                usesSpec = Auto "actions/upload-pages-artifact",
+                options = Map.ofList [
+                    "path", "docs/_site"
+                ]
+            )
+            step(
+                name = "Deploy to GitHub Pages",
+                id = "deployment",
+                usesSpec = Auto "actions/deploy-pages"
+            )
+        ]
+    ]
+
+    workflow "release" [
+        name "Release"
+        yield! defaultTriggers
+        onPushTags "v*"
+
+        dotNetJob "nuget" [
+            jobPermission(PermissionKind.Contents, AccessKind.Write)
+            runsOn "ubuntu-24.04"
+
+            step(
+                id = "version",
+                name = "Get version",
+                shell = "pwsh",
+                run = "echo \"version=$(scripts/Get-Version.ps1 -RefName $env:GITHUB_REF)\" >> $env:GITHUB_OUTPUT"
+            )
+            step(
+                name = "Read changelog",
+                usesSpec = Auto "ForNeVeR/ChangelogAutomation.action",
+                options = Map.ofList [
+                    "output", "./release-notes.md"
+                ]
+            )
+            step(
+                name = "Pack NuGet packages",
+                run = "dotnet pack --configuration Release -p:Version=${{ steps.version.outputs.version }}"
+            )
+            step(
+                name = "Upload NuGet artifacts",
+                usesSpec = Auto "actions/upload-artifact",
+                options = Map.ofList [
+                    "name", "nuget-packages"
+                    "path", String.concat "\n" [
+                        "./release-notes.md"
+                        "**/*.nupkg"
+                        "**/*.snupkg"
+                    ]
+                ]
+            )
+
+            let projectsToPublish = [
+                "Nightwatch"
+                "Nightwatch.Core"
+                "Nightwatch.Notifications"
+                "Nigthtwatch.Resources"
+            ]
+            let filesToUpload =
+                projectsToPublish
+                |> Seq.collect(fun project -> seq {
+                    $"{project}/bin/Release/*.nupkg"
+                    $"{project}/bin/Release/*.snupkg"
+                })
+
+            step(
+                condition = "startsWith(github.ref, 'refs/tags/v')",
+                name = "Create a release",
+                usesSpec = Auto "softprops/action-gh-release",
+                options = Map.ofList [
+                    "body_path", "./release-notes.md"
+                    "files", filesToUpload |> String.concat "\n"
+                    "name", "Nightwatch v${{ steps.version.outputs.version }}"
+                ]
+            )
+
+            yield! projectsToPublish |> Seq.map (fun project ->
+                step(
+                    condition = "startsWith(github.ref, 'refs/tags/v')",
+                    name = $"Push {project} to NuGet",
+                    run = $"dotnet nuget push ./{project}/bin/Release/*.nupkg"
+                        + " --source https://api.nuget.org/v3/index.json"
+                        + " --api-key ${{ secrets.NUGET_TOKEN }}"
+                )
             )
         ]
     ]

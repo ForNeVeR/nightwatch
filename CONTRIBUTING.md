@@ -32,6 +32,30 @@ Use the following shell command:
 $ dotnet test
 ```
 
+Local Packaging
+---------------
+To prepare the NuGet packages locally:
+
+1. Pack the packages:
+   ```console
+   $ dotnet pack --configuration Release
+   ```
+
+2. Install the tool locally:
+   ```console
+   $ dotnet tool install --global --add-source ./Nightwatch/bin/Release Nightwatch.Tool
+   ```
+
+3. Verify installation:
+   ```console
+   $ nightwatch --help
+   ```
+
+4. To uninstall:
+   ```console
+   $ dotnet tool uninstall --global Nightwatch.Tool
+   ```
+
 License Automation
 ------------------
 If the CI asks you to update the file licenses, follow one of these:

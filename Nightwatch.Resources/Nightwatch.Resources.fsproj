@@ -6,7 +6,8 @@ SPDX-License-Identifier: MIT
 
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <PackageDescription>Resource implementations for Nightwatch monitoring service. Includes HTTP health check and shell command resource.</PackageDescription>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Http.fs" />

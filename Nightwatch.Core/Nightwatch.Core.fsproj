@@ -6,7 +6,8 @@ SPDX-License-Identifier: MIT
 
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <PackageDescription>Core abstractions and interfaces for the Nightwatch monitoring service. Provides base types for resources, notifications, file system, environment, network, and process operations.</PackageDescription>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="FileSystem.fs" />

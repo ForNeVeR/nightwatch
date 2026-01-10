@@ -3,26 +3,27 @@ _disableBreadcrumb: true
 ---
 
 <!--
-SPDX-FileCopyrightText: 2026 Nightwatch contributors <https://github.com/ForNeVeR/nightwatch>
+SPDX-FileCopyrightText: 2026 Friedrich von Never <friedrich@fornever.me>
 
 SPDX-License-Identifier: MIT
 -->
 
 Nightwatch: Monitoring Service for .NET
 =======================================
-Nightwatch is a monitoring service intended to monitor daily and nightly activities and notify the administrator if something goes wrong.
+Nightwatch is a monitoring service intended to monitor a set of specified _resources_ and notify the administrator if something goes wrong with them.
 
 It can be used as:
-- A standalone monitoring server (installable via `dotnet tool install -g`)
-- A set of embeddable NuGet libraries for building custom monitoring solutions
+- a standalone monitoring server (installable as a .NET tool via `dotnet tool install -g`);
+- a set of embeddable NuGet libraries for building custom monitoring solutions.
 
 ## Components
 
 Nightwatch is composed of several libraries that can be used independently:
 
-- **Nightwatch.Core** - Core monitoring logic and scheduling
-- **Nightwatch.Resources** - Resource check implementations (HTTP, Shell, etc.)
-- **Nightwatch.Notifications** - Notification providers (Telegram, etc.)
+- **Nightwatch.Core** — core monitoring logic and scheduling;
+- **Nightwatch.Resources** — resource check implementations (HTTP, Shell, etc.);
+- **Nightwatch.Notifications** — notification providers (Telegram, etc.);
+- **Nightwatch** — the main package wiring everything else together.
 
 ## Getting Started
 

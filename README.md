@@ -80,7 +80,7 @@ param:
 
 Usage
 -----
-There are two ways to use Nightwatch: install it and run in a service mode and install it as a package into an F# project and build your own monitoring service based on its API.
+There are two ways to use Nightwatch: install it and run it in service mode, or install it as a package into an F# project and build your own monitoring service based on its API.
 
 ### Installation in Service Mode
 Install [.NET SDK][dotnet] 10.0 or later.

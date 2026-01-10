@@ -51,7 +51,7 @@ To prepare the NuGet packages locally:
 
 2. Install the tool locally:
    ```console
-   $ dotnet tool install --global --add-source ./Nightwatch.Tool/bin/Release Nightwatch.Tool
+   $ dotnet tool install --global --add-source ./Nightwatch.Tool/bin/Release FVNever.Nightwatch.Tool
    ```
 
 3. Verify installation:
@@ -61,7 +61,7 @@ To prepare the NuGet packages locally:
 
 4. To uninstall:
    ```console
-   $ dotnet tool uninstall --global Nightwatch.Tool
+   $ dotnet tool uninstall --global FVNever.Nightwatch.Tool
    ```
 
 License Automation

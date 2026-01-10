@@ -7,17 +7,15 @@ module Nightwatch.Tests.ResourceConfiguration
 open System
 open Xunit
 
-open Nightwatch
 open Nightwatch.ProgramConfiguration
 open Nightwatch.ResourceConfiguration
-open Nightwatch.Core.FileSystem
 open Nightwatch.Core.Resources
 open Nightwatch.Resources
 open Nightwatch.Tests.TestUtils.FileSystem
 
 let private programConfiguration = {
-    BaseDirectory = Path "."
-    ResourceDirectory = Path "dir"
+    BaseDirectory = MockedRoot
+    ResourceDirectory = MockedRoot / "dir"
     NotificationDirectory = None
     LogFilePath = None
 }
@@ -43,11 +41,11 @@ param:
     let registry = Registry.create [| factory |]
     let fileSystem = mockFileSystem [| "dir/test.yml", text |]
     task {
-        let! result = ResourceConfiguration.read registry fileSystem programConfiguration
+        let! result = read registry fileSystem programConfiguration
         Assert.Equal<_>([| Ok expected |], result)
 
         let param = Option.get parsedParam
-        Assert.Equal("ping localhost", param.["check"])
+        Assert.Equal("ping localhost", param["check"])
     }
 
 let private emptyRegistry = Registry.create [| |]
@@ -60,11 +58,11 @@ schedule: 00:05:00
 type: test"
     let path = "dir/test.yml"
     let fileSystem = mockFileSystem [| path, text |]
-    let expected = Error { path = (Path path)
-                           id = Some "test"
-                           message = "The resource factory for type \"test\" is not registered" }
+    let expected = Error { Path = MockedRoot / path
+                           Id = Some "test"
+                           Message = "The resource factory for type \"test\" is not registered" }
     task {
-        let! result = ResourceConfiguration.read emptyRegistry fileSystem programConfiguration
+        let! result = read emptyRegistry fileSystem programConfiguration
         Assert.Equal([| expected |], result)
     }
 
@@ -72,6 +70,6 @@ type: test"
 let ``ResourceConfiguration should ignore non-YAML file`` () =
     let fileSystem = mockFileSystem [| "test.yml2", "" |]
     task {
-        let! result = ResourceConfiguration.read emptyRegistry fileSystem programConfiguration
+        let! result = read emptyRegistry fileSystem programConfiguration
         Assert.Equal<Result<_, _>>(Seq.empty, result)
     }

@@ -92,16 +92,16 @@ let private startService logger programInfo fs (config: ProgramConfiguration) =
     let resourceErrorsToString (errors: InvalidConfiguration[]) =
         let printError (error: InvalidConfiguration) =
             sprintf "Path: %s\nId: %s\nMessage: %s"
-                (let (Path p) = error.path in p)
-                (defaultArg error.id "N/A")
-                error.message
+                error.Path.Value
+                (defaultArg error.Id "N/A")
+                error.Message
 
         String.Join("\n", Seq.map printError errors)
 
     let notificationErrorsToString (errors: NotificationConfigurationError[]) =
-        let printError { Path = (Path path); Id = id; Message = message } =
+        let printError({ Path = path; Id = id; Message = message }: NotificationConfigurationError) =
             sprintf "Path: %s\nId: %s\nMessage: %s"
-                path
+                path.Value
                 (defaultArg id "N/A")
                 message
 

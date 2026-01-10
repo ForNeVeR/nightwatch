@@ -4,28 +4,25 @@
 
 module Nightwatch.Tests.ProgramConfiguration
 
-open System.IO
 open System.Threading.Tasks
 
+open TruePath
 open Xunit
 
-open Nightwatch.Core.FileSystem
 open Nightwatch.ProgramConfiguration
 open Nightwatch.Tests.TestUtils.Environment
 open Nightwatch.Tests.TestUtils.FileSystem
 
-let private fullPath = Path.GetFullPath
-
 [<Fact>]
 let ``ProgramConfiguration should be read from the YAML file``() : Task =
-    let text = sprintf "resource-directory: %s" (fullPath "/Temp")
-    let fileSystem = mockFileSystem [| fullPath "/Users/gsomix/mytest/nightwatch.yml", text |]
-    let environment = mockEnvironment(fullPath "/Users/gsomix")
+    let text = sprintf "resource-directory: %s" (MockedRoot / "/Temp").Value
+    let fileSystem = mockFileSystem [| "/Users/gsomix/mytest/nightwatch.yml", text |]
+    let environment = mockEnvironment(MockedRoot / "/Users/gsomix")
     upcast (Async.StartAsTask <| async {
-        let! configuration = read environment fileSystem (Path(Path.Combine("mytest", "nightwatch.yml")))
+        let! configuration = read environment fileSystem (LocalPath "mytest" / "nightwatch.yml")
         let expected = {
-            BaseDirectory = Path(fullPath "/Users/gsomix/mytest")
-            ResourceDirectory = Path(fullPath "/Temp")
+            BaseDirectory = MockedRoot / "/Users/gsomix/mytest"
+            ResourceDirectory = MockedRoot / "/Temp"
             NotificationDirectory = None
             LogFilePath = None
         }
@@ -35,13 +32,13 @@ let ``ProgramConfiguration should be read from the YAML file``() : Task =
 [<Fact>]
 let ``ProgramConfiguration's resourcePath should be interpreted from basePath``() : Task =
     let text = "resource-directory: test-relative-path"
-    let fileSystem = mockFileSystem [| fullPath "/test/nightwatch.yml", text |]
-    let environment = mockEnvironment(fullPath "/test")
+    let fileSystem = mockFileSystem [| "/test/nightwatch.yml", text |]
+    let environment = mockEnvironment(MockedRoot / "/test")
     upcast (Async.StartAsTask <| async {
-        let! configuration = read environment fileSystem (Path "nightwatch.yml")
+        let! configuration = read environment fileSystem (LocalPath "nightwatch.yml")
         let expected = {
-            BaseDirectory = Path(fullPath "/test")
-            ResourceDirectory = Path(fullPath "/test/test-relative-path")
+            BaseDirectory = MockedRoot / "/test"
+            ResourceDirectory = MockedRoot / "/test/test-relative-path"
             NotificationDirectory = None
             LogFilePath = None
         }

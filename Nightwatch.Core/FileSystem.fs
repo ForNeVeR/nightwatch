@@ -1,32 +1,32 @@
-// SPDX-FileCopyrightText: 2017-2018 Friedrich von Never <friedrich@fornever.me>
+// SPDX-FileCopyrightText: 2017-2026 Friedrich von Never <friedrich@fornever.me>
 //
 // SPDX-License-Identifier: MIT
 
 module Nightwatch.Core.FileSystem
 
-open System
+open System.Collections.Generic
 open System.IO
 open System.Threading.Tasks
+open TruePath
 
-type Path = Path of string
-    with
-        static member parent(Path path) : Path = Path(Path.GetDirectoryName path)
-type Mask = Mask of string
+type FileSystem = {
+    GetFilesRecursively: AbsolutePath -> LocalPathPattern -> Task<IReadOnlyList<AbsolutePath>>
+    OpenStream: AbsolutePath -> Task<Stream>
+}
 
-let (/) (Path p1) (Path p2) : Path = Path(Path.Combine(p1, p2))
-
-type FileSystem =
-    { getFilesRecursively : Path -> Mask -> Task<Path seq>
-      openStream : Path -> Task<Stream> }
-
-let private getFilesRecursively (Path path) (Mask mask) =
+let private getFilesRecursively (path: AbsolutePath) (pattern: LocalPathPattern): Task<IReadOnlyList<AbsolutePath>> =
     Task.Run(fun () ->
-        Directory.GetFileSystemEntries(path, mask, SearchOption.AllDirectories)
-        |> Seq.map Path)
+        let result =
+            Directory.GetFileSystemEntries(path.Value, pattern.Value, SearchOption.AllDirectories)
+            |> Seq.map AbsolutePath
+            |> Seq.toArray
+        result: IReadOnlyList<AbsolutePath>
+    )
 
-let private openStream (Path path) =
-    Task.Run(fun () -> new FileStream(path, FileMode.Open, FileAccess.Read) :> Stream)
+let private openStream (path: AbsolutePath) =
+    Task.Run(fun () -> new FileStream(path.Value, FileMode.Open, FileAccess.Read) :> Stream)
 
-let system =
-    { getFilesRecursively = getFilesRecursively
-      openStream = openStream }
+let system = {
+    GetFilesRecursively = getFilesRecursively
+    OpenStream = openStream
+}

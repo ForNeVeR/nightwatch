@@ -78,13 +78,21 @@ param:
     chat-id: YOUR_CHAT_ID_HERE # target chat ID for notifications
 ```
 
-Run
----
+Usage
+-----
+There are two ways to use Nightwatch: install it and run in a service mode and install it as a package into an F# project and build your own monitoring service based on its API.
 
-In developer mode:
+### Installation in Service Mode
+Install [.NET SDK][dotnet] 10.0 or later.
 
+Then, install Nightwatch as a global tool:
 ```console
-$ dotnet run --project Nightwatch
+$ dotnet tool install --global FVNever.Nightwatch.Tool
+```
+
+After installation:
+```console
+$ nightwatch [--config ./some/path.yml] [--service]
 ```
 
 To stop the program, press `Ctrl-C`.
@@ -97,21 +105,23 @@ Add `--service` to run in a Windows service mode.
 To install the service on Windows, execute the following commands in your shell:
 
 ```pwsh
-$ sc.exe Nightwatch binpath= "D:\Path\To\Nightwatch.exe --config D:\Path\To\nightwatch.yml --service" start= auto
+$ sc.exe Nightwatch binpath= "D:\Path\To\nightwatch.exe --config D:\Path\To\nightwatch.yml --service" start= auto
 $ sc.exe start Nightwatch
 ```
 
 _(note the space and quote placement, that's important)_
 
-Test
-----
-
-```console
-$ dotnet test Nightwatch.Tests
+### Installation as Package
+Install the package `FVNever.Nightwatch` into a .NET project or an `fsx` file:
+```fsharp
+#r "nuget: FVNever.Nightwatch"
+exit <| Nightwatch.EntryPoint.FsxMain fsi.CommandLineArgs
 ```
+Read more in the [API reference][docs.api].
 
 Documentation
 -------------
+- [API Reference][docs.api]
 - [Implementing a Resource type][implementing-a-resource-type]
 - [Contributor Guide][docs.contributing]
 
@@ -124,7 +134,9 @@ The license indication in the project's sources is compliant with the [REUSE spe
 [andivionian-status-classifier]: https://github.com/ForNeVeR/andivionian-status-classifier#status-umbra-
 [docs.contributing]: CONTRIBUTING.md
 [docs.license]: LICENSE.txt
+[dotnet]: https://dot.net
 [implementing-a-resource-type]: docs/implementing-a-resource-type.md
 [net-core-sdk]: https://www.microsoft.com/net/download/core#/sdk
 [reuse.spec]: https://reuse.software/spec-3.3/
 [status-umbra]: https://img.shields.io/badge/status-umbra-red.svg
+[docs.api]: https://fornever.github.io/nightwatch/

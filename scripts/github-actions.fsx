@@ -214,6 +214,7 @@ let workflows = [
                 "Nightwatch"
                 "Nightwatch.Core"
                 "Nightwatch.Notifications"
+                "Nightwatch.Tool"
                 "Nigthtwatch.Resources"
             ]
             let filesToUpload =

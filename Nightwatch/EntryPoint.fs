@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-module Nightwatch.Program
+module Nightwatch.EntryPoint
 
 open System
 open System.Reflection
@@ -45,13 +45,13 @@ let private runAsService(builder : IHostBuilder) =
     builder.ConfigureServices Lifetime.useServiceBasedRuntime
     |> run
 
-[<EntryPoint>]
-let main (argv : string []) : int =
+/// Main Nightwatch entry point. Returns zero if success or a non-zero exit code in case of errors.
+let Main(args: string[]): int =
     let logger = createLogger()
     Log.Logger <- logger
 
     let parser = ArgumentParser.Create<CliArguments>(programName = "nightwatch")
-    let arguments = parser.ParseCommandLine(argv, raiseOnUsage = false)
+    let arguments = parser.ParseCommandLine(args, raiseOnUsage = false)
 
     if arguments.IsUsageRequested then
         printfn "%s" (parser.PrintUsage())
@@ -77,3 +77,10 @@ let main (argv : string []) : int =
             | ex ->
                 logger.Error(ex, "Service error")
                 ExitCodes.error
+
+let FsiMain(args: string[]): int =
+    let args =
+        if args.Length > 0 && args[0].EndsWith ".fsx"
+        then Array.skip 1 args
+        else args
+    Main args

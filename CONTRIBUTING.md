@@ -24,6 +24,14 @@ $ cd Nightwatch
 $ dotnet build --configuration Release --runtime win-x64 --output out
 ```
 
+Run
+---
+Use the following shell command:
+
+```console
+$ dotnet run --project Nightwatch.Tool
+```
+
 Test
 ----
 Use the following shell command:

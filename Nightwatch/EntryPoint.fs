@@ -4,10 +4,13 @@
 
 module Nightwatch.EntryPoint
 
+open System.Collections.Generic
 open System.Reflection
 
 open Argu
 open Microsoft.Extensions.Hosting
+open Nightwatch.Core.Notifications
+open Nightwatch.Core.Resources
 open Serilog
 
 open Nightwatch
@@ -49,8 +52,30 @@ let private runAsService(builder : IHostBuilder) =
     builder.ConfigureServices Lifetime.useServiceBasedRuntime
     |> run
 
-/// Main Nightwatch entry point. Returns zero if success or a non-zero exit code in case of errors.
-let Main(args: string[]): int =
+/// <summary>Main Nightwatch entry point.</summary>
+/// <param name="args">Command-line arguments used to start the service <see cref="CliArguments"/> for details.</param>
+/// <param name="resourceRegistry">
+///     <para>
+///         A mapping from a resource type name to a resource factory. If not passed,
+///         <see cref="Service.ConfigureResourceFactory"/> will be used.
+///     </para>
+///     <para>Use <see cref="Resources.ResourceRegistry.Create"/> to create a custom registry if needed.</para>
+/// </param>
+/// <param name="notificationRegistry">
+///     <para>
+///         A mapping from a notification type name to a notification factory. If not passed,
+///         <see cref="Service.ConfigureNotificationFactory"/> will be used.
+///     </para>
+///     <para>
+///         Use <see cref="Notifications.NotificationRegistryModule.Create"/> to create a custom registry if needed.
+///     </para>
+/// </param>
+/// <returns>See <see cref="ExitCodes"/>.</returns>
+let Main(
+    args: string[],
+    resourceRegistry: IReadOnlyDictionary<string, ResourceFactory> option,
+    notificationRegistry: IReadOnlyDictionary<string, NotificationFactory> option
+): int =
     let parser = ArgumentParser.Create<CliArguments>(programName = "nightwatch")
     let arguments = parser.ParseCommandLine(args, raiseOnUsage = false)
 
@@ -70,10 +95,14 @@ let Main(args: string[]): int =
         let logger = createLogger config.LogFilePath
         Log.Logger <- logger
 
+        let resourceRegistry = resourceRegistry |> Option.defaultWith(fun() -> ConfigureResourceRegistry logger)
+        let notificationRegistry =
+            notificationRegistry |> Option.defaultWith(fun() -> ConfigureNotificationRegistry logger)
+
         try
             let programInfo = { version = version }
 
-            let builder = HostBuilder().ConfigureServices(configure logger programInfo fs config)
+            let builder = HostBuilder().ConfigureServices(Configure(logger, programInfo, resourceRegistry, notificationRegistry, fs, config))
 
             if arguments.Contains CliArguments.Service
             then runAsService builder
@@ -85,9 +114,14 @@ let Main(args: string[]): int =
                 logger.Error(ex, "Service error")
                 ExitCodes.error
 
-let FsiMain(args: string[]): int =
+/// <inheritdoc cref="Main"/>
+let FsiMain(
+    args: string[],
+    resourceRegistry: IReadOnlyDictionary<string, ResourceFactory> option,
+    notificationRegistry: IReadOnlyDictionary<string, NotificationFactory> option
+): int =
     let args =
         if args.Length > 0 && args[0].EndsWith ".fsx"
         then Array.skip 1 args
         else args
-    Main args
+    Main(args, resourceRegistry, notificationRegistry)

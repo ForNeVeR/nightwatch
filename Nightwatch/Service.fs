@@ -6,8 +6,11 @@ module Nightwatch.Service
 
 open System
 
+open System.Collections.Generic
 open Microsoft.Extensions.DependencyInjection
 open Microsoft.Extensions.Hosting
+open Nightwatch.Core.Notifications
+open Nightwatch.Core.Resources
 open Nightwatch.NotificationConfiguration
 open Nightwatch.ProgramConfiguration
 open Serilog
@@ -29,18 +32,20 @@ let private logFullVersion (logger : ILogger) programInfo =
     logger.Information("Nightwatch v. {0}", programInfo.version)
     logger.Information("Config file format v. {0}", configFormatVersion)
 
-let private resourceFactories = [| Http.factory Http.system; Shell.factory Process.system |]
-let private notificationFactories = [| Telegram.Factory |]
+let resourceFactories = [| Http.factory Http.system; Shell.factory Process.system |]
+let notificationFactories = [| Telegram.Factory |]
 
-let private configureResourceRegistry(logger: ILogger) =
+/// <remarks>Uses <see cref="resourceFactories"/>.</remarks>
+let ConfigureResourceRegistry (logger: ILogger) =
     let names = resourceFactories |> Seq.map _.resourceType
     logger.Information("Available resources: {0}", String.Join(", ", names))
-    Registry.create resourceFactories
+    ResourceRegistry.Create resourceFactories
 
-let private configureNotificationRegistry(logger: ILogger) =
+/// <remarks>Uses <see cref="notificationFactories"/>.</remarks>
+let ConfigureNotificationRegistry (logger: ILogger) =
     let names = notificationFactories |> Seq.map _.NotificationType
     logger.Information("Available notification providers: {0}", String.Join(", ", names))
-    NotificationRegistry.create notificationFactories
+    NotificationRegistry.Create notificationFactories
 
 let private splitResults seq =
     let chooseOk = function
@@ -88,7 +93,7 @@ let private createScheduler providers stateTracker resources =
         return scheduler
     }
 
-let private startService logger programInfo fs (config: ProgramConfiguration) =
+let private startService logger resourceRegistry notificationRegistry programInfo fs (config: ProgramConfiguration) =
     let resourceErrorsToString (errors: InvalidConfiguration[]) =
         let printError (error: InvalidConfiguration) =
             sprintf "Path: %s\nId: %s\nMessage: %s"
@@ -110,9 +115,6 @@ let private startService logger programInfo fs (config: ProgramConfiguration) =
     async {
         logFullVersion logger programInfo
         logger.Information("Resource directory location: {0}", config.ResourceDirectory)
-
-        let resourceRegistry = configureResourceRegistry logger
-        let notificationRegistry = configureNotificationRegistry logger
 
         // Load notification providers if directory is configured
         let! notificationProviders =
@@ -153,14 +155,20 @@ let private startService logger programInfo fs (config: ProgramConfiguration) =
             return None
     }
 
-let configure (logger : ILogger)
-              (programInfo: ProgramInfo)
-              (fs : FileSystem)
-              (config: ProgramConfiguration)
-              (services : IServiceCollection) : unit =
+let internal Configure
+    (
+        logger: ILogger,
+        programInfo: ProgramInfo,
+        resources: IReadOnlyDictionary<string, ResourceFactory>,
+        notifications: NotificationRegistry,
+        fs: FileSystem,
+        config: ProgramConfiguration
+    )
+    (services: IServiceCollection)
+    : unit =
     let startService =
         async {
-            let! service = startService logger programInfo fs config
+            let! service = startService logger resources notifications programInfo fs config
             let startedService =
                 match service with
                 | None -> failwith "Cannot start Nightwatch service"

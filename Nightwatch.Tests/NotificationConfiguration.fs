@@ -27,7 +27,7 @@ param:
     let factory: NotificationFactory =
         { NotificationType = "test"
           Create = Func<_, _>(fun param -> parsedParam <- Some param; sender) }
-    let registry = NotificationRegistry.create [| factory |]
+    let registry = NotificationRegistry.Create [| factory |]
     let fileSystem = mockFileSystem [| "notifications/test.yml", text |]
     task {
         let path = MockedRoot / LocalPath "notifications"
@@ -41,7 +41,7 @@ param:
         Assert.Equal("abc123", param["token"])
     }
 
-let private emptyRegistry = NotificationRegistry.create [| |]
+let private emptyRegistry = NotificationRegistry.Create [| |]
 
 [<Fact>]
 let ``NotificationConfiguration returns error if type is not registered``(): Task =

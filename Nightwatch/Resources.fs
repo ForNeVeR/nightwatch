@@ -21,25 +21,26 @@ type ResourceDescription =
       param : Dictionary<string, string>
       notifications : string[] }
 
-type internal ResourceRegistry = Map<string, ResourceFactory>
-
 type internal Resource =
     { id : string
       runEvery : TimeSpan
       checker : ResourceChecker
       notificationIds : string[] }
 
-module internal Registry =
-    let create (factories : ResourceFactory seq) : ResourceRegistry =
-        factories
-        |> Seq.map (fun f -> f.resourceType, f)
-        |> Map.ofSeq
+module ResourceRegistry =
+    let Create (factories : ResourceFactory seq) : IReadOnlyDictionary<string, ResourceFactory> =
+        upcast (
+            factories
+            |> Seq.map(fun f -> f.resourceType, f)
+            |> Map.ofSeq
+        )
 
 module internal Checker =
-    let create (registry : ResourceRegistry) (resourceType : string) (param : IDictionary<string, string>)
+    let create (registry: IReadOnlyDictionary<string, ResourceFactory>) (resourceType: string) (param: IDictionary<string, string>)
                       : ResourceChecker option =
-        Map.tryFind resourceType registry
-        |> Option.map (fun factory -> factory.create.Invoke param)
+        match registry.TryGetValue resourceType with
+        | false, _ -> None
+        | true, factory -> Some <| factory.create.Invoke param
 
     let check (resource : Resource) : Task<bool> =
         task {

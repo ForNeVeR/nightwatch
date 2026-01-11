@@ -8,4 +8,4 @@ open Nightwatch
 
 [<EntryPoint>]
 let main(argv: string[]): int =
-    EntryPoint.Main argv
+    EntryPoint.Main(argv, None, None)

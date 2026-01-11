@@ -5,9 +5,11 @@
 module internal Nightwatch.ResourceConfiguration
 
 open System
+open System.Collections.Generic
 open System.Threading.Tasks
 open System.IO
 
+open Nightwatch.Core.Resources
 open TruePath
 open YamlDotNet.Serialization
 
@@ -64,9 +66,9 @@ let private toResource registry =
 
 let private configFileMask = LocalPathPattern "*.yml"
 
-let read (registry : ResourceRegistry)
-         (fs : FileSystem)
-         (config : ProgramConfiguration)
+let read (registry: IReadOnlyDictionary<string, ResourceFactory>)
+         (fs: FileSystem)
+         (config: ProgramConfiguration)
          : Task<seq<Result<Resource, InvalidConfiguration>>> =
     let deserializer = buildDeserializer()
     task {

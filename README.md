@@ -133,7 +133,8 @@ Make sure the service account has write permissions to the log directory.
 Install the package `FVNever.Nightwatch` into a .NET project or an `fsx` file:
 ```fsharp
 #r "nuget: FVNever.Nightwatch"
-exit <| Nightwatch.EntryPoint.FsiMain fsi.CommandLineArgs
+exit <| Nightwatch.EntryPoint.FsiMain(fsi.CommandLineArgs, None, None)
+// you may override the resources or notification registries via the last two parameters
 ```
 Read more in the [API reference][docs.api].
 

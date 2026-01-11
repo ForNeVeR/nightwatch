@@ -19,23 +19,26 @@ type NotificationDescription =
       ``type``: string
       param: Dictionary<string, string> }
 
-type internal NotificationRegistry = Map<string, NotificationFactory>
+type internal NotificationRegistry = IReadOnlyDictionary<string, NotificationFactory>
 
 type internal NotificationProvider =
     { id: string
       sender: NotificationSender }
 
-module internal NotificationRegistry =
-    let create (factories: NotificationFactory seq): NotificationRegistry =
-        factories
-        |> Seq.map (fun f -> f.NotificationType, f)
-        |> Map.ofSeq
+module NotificationRegistry =
+    let Create (factories: NotificationFactory seq): NotificationRegistry =
+        upcast (
+            factories
+            |> Seq.map (fun f -> f.NotificationType, f)
+            |> Map.ofSeq
+        )
 
 module internal NotificationSender =
     let create (registry: NotificationRegistry) (notificationType: string) (param: IDictionary<string, string>)
                : NotificationSender option =
-        Map.tryFind notificationType registry
-        |> Option.map (fun factory -> factory.Create.Invoke param)
+        match registry.TryGetValue notificationType with
+        | false, _ -> None
+        | true, factory -> Some <| factory.Create.Invoke param
 
     let send (provider: NotificationProvider) (notification: CheckNotification): Task =
         task {

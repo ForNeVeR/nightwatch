@@ -38,7 +38,7 @@ param:
     let factory : ResourceFactory =
         { resourceType = "test"
           create = Func<_, _>(fun param -> parsedParam <- Some param; checker) }
-    let registry = Registry.create [| factory |]
+    let registry = ResourceRegistry.Create [| factory |]
     let fileSystem = mockFileSystem [| "dir/test.yml", text |]
     task {
         let! result = read registry fileSystem programConfiguration
@@ -48,7 +48,7 @@ param:
         Assert.Equal("ping localhost", param["check"])
     }
 
-let private emptyRegistry = Registry.create [| |]
+let private emptyRegistry = ResourceRegistry.Create [| |]
 
 [<Fact>]
 let ``ResourceConfiguration returns error if the type is not registered in the factory``() =

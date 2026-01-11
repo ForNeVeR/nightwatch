@@ -10,6 +10,8 @@
     <File Path="docs/docfx.json.license" />
     <File Path="docs/implementing-a-resource-type.md" />
     <File Path="docs/index.md" />
+    <File Path="docs/notifications.md" />
+    <File Path="docs/resources.md" />
     <File Path="docs/toc.yml" />
   </Folder>
   <Folder Name="/LICENSES/">
@@ -18,6 +20,7 @@
   <Folder Name="/samples/" />
   <Folder Name="/samples/resources/">
     <File Path="samples/resources/http.yml" />
+    <File Path="samples/resources/https-certificate.yml" />
     <File Path="samples/resources/shell.yml" />
   </Folder>
   <Folder Name="/samples/notifications/">

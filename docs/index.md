@@ -44,6 +44,8 @@ Then use the components in your application to build custom monitoring solutions
 
 ## Developer Guides
 
+- [Resource Types](resources.md) - Available resource types and configuration
+- [Notification Providers](notifications.md) - Available notification providers and configuration
 - [Implementing a Resource Type](implementing-a-resource-type.md) - Guide for creating custom resource checkers
 
 ## API Documentation

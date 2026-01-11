@@ -32,7 +32,7 @@ let private logFullVersion (logger : ILogger) programInfo =
     logger.Information("Nightwatch v. {0}", programInfo.version)
     logger.Information("Config file format v. {0}", configFormatVersion)
 
-let ResourceFactories = [| Http.factory Http.system; Shell.factory Process.system |]
+let ResourceFactories = [| Http.factory Http.system; Shell.factory Process.system; HttpsCertificate.factory HttpsCertificate.system |]
 let NotificationFactories = [| Telegram.Factory |]
 
 /// <remarks>Uses <see cref="P:Nightwatch.Service.ResourceFactories"/>.</remarks>

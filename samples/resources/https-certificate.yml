@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: 2026 Friedrich von Never <friedrich@fornever.me>
+#
+# SPDX-License-Identifier: MIT
+
+version: 0.0.1.0 # should always be 0.0.1.0 for the current version
+id: sample/https-certificate # task identifier
+schedule: 00:00:25 # run every 25 seconds
+type: https-certificate
+param:
+    url: https://example.com/
+    valid-in: P3D # optional: ISO8601 duration — the certificate should expire more than in 3 days from now
+notifications:
+    - notifications/telegram

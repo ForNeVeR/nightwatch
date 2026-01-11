@@ -15,6 +15,7 @@ SPDX-License-Identifier: MIT
         <Compile Include="Core/Process.fs"/>
         <Compile Include="Resources/Http.fs"/>
         <Compile Include="Resources/Shell.fs"/>
+        <Compile Include="Resources/HttpsCertificate.fs"/>
         <Compile Include="TestUtils/FileSystem.fs"/>
         <Compile Include="TestUtils/Environment.fs"/>
         <Compile Include="ServiceModel\HostedService.fs"/>

@@ -12,6 +12,7 @@ SPDX-License-Identifier: MIT
   <ItemGroup>
     <Compile Include="Http.fs" />
     <Compile Include="Shell.fs" />
+    <Compile Include="HttpsCertificate.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../Nightwatch.Core/Nightwatch.Core.fsproj" />

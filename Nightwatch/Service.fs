@@ -35,13 +35,13 @@ let private logFullVersion (logger : ILogger) programInfo =
 let resourceFactories = [| Http.factory Http.system; Shell.factory Process.system |]
 let notificationFactories = [| Telegram.Factory |]
 
-/// <remarks>Uses <see cref="resourceFactories"/>.</remarks>
+/// <remarks>Uses <see cref="P:Nightwatch.Service.resourceFactories"/>.</remarks>
 let ConfigureResourceRegistry (logger: ILogger) =
     let names = resourceFactories |> Seq.map _.resourceType
     logger.Information("Available resources: {0}", String.Join(", ", names))
     ResourceRegistry.Create resourceFactories
 
-/// <remarks>Uses <see cref="notificationFactories"/>.</remarks>
+/// <remarks>Uses <see cref="P:Nightwatch.Service.notificationFactories"/>.</remarks>
 let ConfigureNotificationRegistry (logger: ILogger) =
     let names = notificationFactories |> Seq.map _.NotificationType
     logger.Information("Available notification providers: {0}", String.Join(", ", names))

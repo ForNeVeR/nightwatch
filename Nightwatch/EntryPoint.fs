@@ -53,24 +53,30 @@ let private runAsService(builder : IHostBuilder) =
     |> run
 
 /// <summary>Main Nightwatch entry point.</summary>
-/// <param name="args">Command-line arguments used to start the service <see cref="CliArguments"/> for details.</param>
+/// <param name="args">
+///     Command-line arguments used to start the service. See <see cref="T:Nightwatch.EntryPoint.CliArguments"/> for
+///     details.
+/// </param>
 /// <param name="resourceRegistry">
 ///     <para>
 ///         A mapping from a resource type name to a resource factory. If not passed,
-///         <see cref="Service.ConfigureResourceFactory"/> will be used.
+///         <see cref="T:Nightwatch.Service.ConfigureResourceFactory"/> will be used.
 ///     </para>
-///     <para>Use <see cref="Resources.ResourceRegistry.Create"/> to create a custom registry if needed.</para>
+///     <para>
+///         Use <see cref="T:Nightwatch.Resources.ResourceRegistry.Create"/> to create a custom registry if needed.
+///     </para>
 /// </param>
 /// <param name="notificationRegistry">
 ///     <para>
 ///         A mapping from a notification type name to a notification factory. If not passed,
-///         <see cref="Service.ConfigureNotificationFactory"/> will be used.
+///         <see cref="T:Nightwatch.Service.ConfigureNotificationFactory"/> will be used.
 ///     </para>
 ///     <para>
-///         Use <see cref="Notifications.NotificationRegistryModule.Create"/> to create a custom registry if needed.
+///         Use <see cref="T:Nightwatch.Notifications.NotificationRegistryModule.Create"/> to create a custom registry
+///         if needed.
 ///     </para>
 /// </param>
-/// <returns>See <see cref="ExitCodes"/>.</returns>
+/// <returns>See <see cref="T:Nightwatch.EntryPoint.ExitCodes"/>.</returns>
 let Main(
     args: string[],
     resourceRegistry: IReadOnlyDictionary<string, ResourceFactory> option,

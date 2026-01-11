@@ -22,9 +22,9 @@ type ServiceBaseLifetime(applicationLifetime : IHostApplicationLifetime) =
     let startedTask = TaskCompletionSource()
     let stoppedTask = TaskCompletionSource()
     let onStart = startedTask.SetResult
-    let onStop =
+    let onStop() =
         applicationLifetime.StopApplication()
-        stoppedTask.SetResult
+        stoppedTask.SetResult()
 
     let service = new ParametrizedServiceBase(onStart, onStop)
 

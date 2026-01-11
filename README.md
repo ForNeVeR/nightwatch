@@ -31,6 +31,10 @@ a _Resource_.
 
 Similarly, Nightwatch reads all `*.yml` files from the notification directory to configure _Notification_ providers. When a resource check fails or recovers, Nightwatch sends notifications via the providers listed in that resource's `notifications` section, not via all configured providers.
 
+See [Resource Documentation](docs/resources.md) for details on available resource types (Shell, HTTP, HTTPS Certificate).
+
+See [Notification Documentation](docs/notifications.md) for details on available notification providers (Telegram).
+
 ### Logging Configuration
 
 By default, Nightwatch logs to the console. When running as a Windows service or in environments where console output is not accessible, you can redirect logs to a file:
@@ -40,10 +44,6 @@ log-file: "logs/nightwatch.log"
 ```
 
 The path can be relative (resolved from the configuration file's directory) or absolute. When this option is not set or empty, logs are written to the console.
-
-See [Resource Documentation](docs/resources.md) for details on available resource types (Shell, HTTP, HTTPS Certificate).
-
-See [Notification Documentation](docs/notifications.md) for details on available notification providers (Telegram).
 
 Usage
 -----

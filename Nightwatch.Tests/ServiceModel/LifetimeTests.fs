@@ -4,6 +4,7 @@
 
 module Nightwatch.Tests.ServiceModel.LifetimeTests
 
+open System
 open System.Threading
 open Microsoft.Extensions.Hosting
 open Xunit
@@ -21,6 +22,7 @@ type MockHostApplicationLifetime() =
 
 [<Fact>]
 let ``ServiceBaseLifetime should not call StopApplication on construction``(): unit =
-    let lifetime = MockHostApplicationLifetime()
-    let _ = Lifetime.ServiceBaseLifetime(lifetime)
-    Assert.False(lifetime.StopApplicationCalled, "StopApplication should not be called during construction")
+    if OperatingSystem.IsWindows() then
+        let lifetime = MockHostApplicationLifetime()
+        let _ = Lifetime.ServiceBaseLifetime(lifetime)
+        Assert.False(lifetime.StopApplicationCalled, "StopApplication should not be called during construction")

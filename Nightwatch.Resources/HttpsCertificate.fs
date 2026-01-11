@@ -31,7 +31,7 @@ let private parseValidIn (validInStr: string) : TimeSpan =
 let private validateServerCertificate
     (_sender: obj)
     (certificate: X509Certificate)
-    (_chain: X509Chain)
+    (_chain: X509Chain) // The chain parameter is provided by the callback signature but we build our own for custom validation
     (sslPolicyErrors: SslPolicyErrors)
     : bool =
 

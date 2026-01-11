@@ -32,20 +32,20 @@ let private logFullVersion (logger : ILogger) programInfo =
     logger.Information("Nightwatch v. {0}", programInfo.version)
     logger.Information("Config file format v. {0}", configFormatVersion)
 
-let resourceFactories = [| Http.factory Http.system; Shell.factory Process.system |]
-let notificationFactories = [| Telegram.Factory |]
+let ResourceFactories = [| Http.factory Http.system; Shell.factory Process.system |]
+let NotificationFactories = [| Telegram.Factory |]
 
-/// <remarks>Uses <see cref="P:Nightwatch.Service.resourceFactories"/>.</remarks>
+/// <remarks>Uses <see cref="P:Nightwatch.Service.ResourceFactories"/>.</remarks>
 let ConfigureResourceRegistry (logger: ILogger) =
-    let names = resourceFactories |> Seq.map _.resourceType
+    let names = ResourceFactories |> Seq.map _.resourceType
     logger.Information("Available resources: {0}", String.Join(", ", names))
-    ResourceRegistry.Create resourceFactories
+    ResourceRegistry.Create ResourceFactories
 
-/// <remarks>Uses <see cref="P:Nightwatch.Service.notificationFactories"/>.</remarks>
+/// <remarks>Uses <see cref="P:Nightwatch.Service.NotificationFactories"/>.</remarks>
 let ConfigureNotificationRegistry (logger: ILogger) =
-    let names = notificationFactories |> Seq.map _.NotificationType
+    let names = NotificationFactories |> Seq.map _.NotificationType
     logger.Information("Available notification providers: {0}", String.Join(", ", names))
-    NotificationRegistry.Create notificationFactories
+    NotificationRegistry.Create NotificationFactories
 
 let private splitResults seq =
     let chooseOk = function

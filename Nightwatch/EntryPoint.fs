@@ -60,20 +60,23 @@ let private runAsService(builder : IHostBuilder) =
 /// <param name="resourceRegistry">
 ///     <para>
 ///         A mapping from a resource type name to a resource factory. If not passed,
-///         <see cref="T:Nightwatch.Service.ConfigureResourceFactory"/> will be used.
+///         <see cref="M:Nightwatch.Service.ConfigureResourceRegistry(Serilog.ILogger)"/> will be used.
 ///     </para>
 ///     <para>
-///         Use <see cref="T:Nightwatch.Resources.ResourceRegistry.Create"/> to create a custom registry if needed.
+///         Use
+///         <see cref="M:Nightwatch.Resources.ResourceRegistry.Create(System.Collections.Generic.IEnumerable{Nightwatch.Core.Resources.ResourceFactory})"/>
+///         to create a custom registry if needed.
 ///     </para>
 /// </param>
 /// <param name="notificationRegistry">
 ///     <para>
 ///         A mapping from a notification type name to a notification factory. If not passed,
-///         <see cref="T:Nightwatch.Service.ConfigureNotificationFactory"/> will be used.
+///         <see cref="M:Nightwatch.Service.ConfigureNotificationRegistry(Serilog.ILogger)"/> will be used.
 ///     </para>
 ///     <para>
-///         Use <see cref="T:Nightwatch.Notifications.NotificationRegistryModule.Create"/> to create a custom registry
-///         if needed.
+///         Use
+///         <see cref="M:Nightwatch.Notifications.NotificationRegistryModule.Create(System.Collections.Generic.IEnumerable{Nightwatch.Core.Notifications.NotificationFactory})"/>
+///         to create a custom registry if needed.
 ///     </para>
 /// </param>
 /// <returns>See <see cref="T:Nightwatch.EntryPoint.ExitCodes"/>.</returns>

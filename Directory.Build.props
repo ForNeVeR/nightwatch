@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 <Project>
     <PropertyGroup Label="Packaging">
-        <Version>0.1.0</Version>
+        <Version>0.1.1</Version>
         <Authors>ForNeVeR</Authors>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <Copyright>2017-2026 Nightwatch contributors &lt;https://github.com/ForNeVeR/nightwatch&gt;</Copyright>

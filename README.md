@@ -9,6 +9,16 @@ Nightwatch [![Status Ventis][status-ventis]][andivionian-status-classifier]
 
 Nightwatch is a monitoring service intended to monitor daily and nightly activities and notify the administrator if something wrong happens.
 
+Packages
+--------
+| Package                      | NuGet                                                                                        |
+|------------------------------|----------------------------------------------------------------------------------------------|
+| **Nightwatch**               | [![Nightwatch on nuget.org][badge.nightwatch]][nuget.nightwatch]                             |
+| **Nightwatch.Core**          | [![Nightwatch on nuget.org][badge.nightwatch.core]][nuget.nightwatch.core]                   |
+| **Nightwatch.Notifications** | [![Nightwatch on nuget.org][badge.nightwatch.notifications]][nuget.nightwatch.notifications] |
+| **Nightwatch.Resources**     | [![Nightwatch on nuget.org][badge.nightwatch.resources]][nuget.nightwatch.resources]         |
+| **Nightwatch.Tool**          | [![Nightwatch on nuget.org][badge.nightwatch.tool]][nuget.nightwatch.tool]                   |
+
 Configure
 ---------
 
@@ -110,11 +120,21 @@ The project is distributed under the terms of [the MIT license][docs.license].
 The license indication in the project's sources is compliant with the [REUSE specification v3.3][reuse.spec].
 
 [andivionian-status-classifier]: https://andivionian.fornever.me/v1/#status-ventis-
+[badge.nightwatch.core]: https://img.shields.io/nuget/v/FVNever.Nightwatch.Core?label=FVNever.Nightwatch.Core
+[badge.nightwatch.notifications]: https://img.shields.io/nuget/v/FVNever.Nightwatch.Notifications?label=FVNever.Nightwatch.Notifications
+[badge.nightwatch.resources]: https://img.shields.io/nuget/v/FVNever.Nightwatch.Resources?label=FVNever.Nightwatch.Resources
+[badge.nightwatch.tool]: https://img.shields.io/nuget/v/FVNever.Nightwatch.Tool?label=FVNever.Nightwatch.Tool
+[badge.nightwatch]: https://img.shields.io/nuget/v/FVNever.Nightwatch?label=FVNever.Nightwatch
 [docs.api]: https://fornever.github.io/nightwatch/
 [docs.contributing]: CONTRIBUTING.md
 [docs.license]: LICENSE.txt
 [dotnet]: https://dotnet.microsoft.com
 [implementing-a-resource-type]: docs/implementing-a-resource-type.md
 [net-core-sdk]: https://www.microsoft.com/net/download/core#/sdk
+[nuget.nightwatch.core]: https://www.nuget.org/packages/FVNever.Nightwatch.Core/
+[nuget.nightwatch.notifications]: https://www.nuget.org/packages/FVNever.Nightwatch.Notifications/
+[nuget.nightwatch.resources]: https://www.nuget.org/packages/FVNever.Nightwatch.Resources/
+[nuget.nightwatch.tool]: https://www.nuget.org/packages/FVNever.Nightwatch.Tool/
+[nuget.nightwatch]: https://www.nuget.org/packages/FVNever.Nightwatch/
 [reuse.spec]: https://reuse.software/spec-3.3/
 [status-ventis]: https://img.shields.io/badge/status-ventis-yellow.svg

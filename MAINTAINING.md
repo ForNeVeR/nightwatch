@@ -13,11 +13,12 @@ Publish a New Version
 2. Update the project's status in the `README.md` file, if required.
 3. Update the copyright statement in the `LICENSE.txt` file, if required.
 4. Update the `<Copyright>` statement in the `Directory.Build.props`, if required.
-5. Update the `<Version>` in `Directory.Build.props`.
-6. Prepare a corresponding entry in the `CHANGELOG.md` file (usually by renaming the "Unreleased" section).
-7. Merge the aforementioned changes via a pull request.
-8. Check if the NuGet key is still valid (see the **Rotate NuGet Publishing Key** section if it isn't).
-9. Push a tag in form of `v<VERSION>`, e.g. `v1.0.0`. GitHub Actions will do the rest (create a release, push NuGet packages).
+5. Update the `<Copyright>` in the `Nightwatch.Tool/Nightwatch.Tool.fsproj`, if required (if there were any changes in the bundled libraries).
+6. Update the `<Version>` in `Directory.Build.props`.
+7. Prepare a corresponding entry in the `CHANGELOG.md` file (usually by renaming the "Unreleased" section).
+8. Merge the aforementioned changes via a pull request.
+9. Check if the NuGet key is still valid (see the **Rotate NuGet Publishing Key** section if it isn't).
+10. Push a tag in form of `v<VERSION>`, e.g. `v1.0.0`. GitHub Actions will do the rest (create a release, push NuGet packages).
 
 Rotate NuGet Publishing Key
 ---------------------------

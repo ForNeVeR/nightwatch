@@ -17,7 +17,7 @@ open Nightwatch.Tests.TestUtils.FileSystem
 
 [<Fact>]
 let ``NotificationConfiguration should read the YAML file``(): Task =
-    let text = @"version: 0.0.1.0
+    let text = @"version: 0.1.0.0
 id: test-notification
 type: test
 param:
@@ -45,7 +45,7 @@ let private emptyRegistry = NotificationRegistry.Create [| |]
 
 [<Fact>]
 let ``NotificationConfiguration returns error if type is not registered``(): Task =
-    let text = @"version: 0.0.1.0
+    let text = @"version: 0.1.0.0
 id: test
 type: unknown"
     let path = "notifications/test.yml"
@@ -84,7 +84,7 @@ type: test"
 
 [<Fact>]
 let ``NotificationConfiguration returns error if id is missing``(): Task =
-    let text = @"version: 0.0.1.0
+    let text = @"version: 0.1.0.0
 type: test"
     let path = "notifications/test.yml"
     let fileSystem = mockFileSystem [| path, text |]

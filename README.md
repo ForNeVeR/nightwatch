@@ -4,7 +4,7 @@ SPDX-FileCopyrightText: 2017-2026 Friedrich von Never <friedrich@fornever.me>
 SPDX-License-Identifier: MIT
 -->
 
-Nightwatch [![Status Umbra][status-umbra]][andivionian-status-classifier]
+Nightwatch [![Status Ventis][status-ventis]][andivionian-status-classifier]
 ==========
 
 Nightwatch is a monitoring service intended to monitor daily and nightly activities and notify the administrator if something wrong happens.
@@ -109,12 +109,12 @@ The project is distributed under the terms of [the MIT license][docs.license].
 
 The license indication in the project's sources is compliant with the [REUSE specification v3.3][reuse.spec].
 
-[andivionian-status-classifier]: https://github.com/ForNeVeR/andivionian-status-classifier#status-umbra-
+[andivionian-status-classifier]: https://andivionian.fornever.me/v1/#status-ventis-
+[docs.api]: https://fornever.github.io/nightwatch/
 [docs.contributing]: CONTRIBUTING.md
 [docs.license]: LICENSE.txt
 [dotnet]: https://dotnet.microsoft.com
 [implementing-a-resource-type]: docs/implementing-a-resource-type.md
 [net-core-sdk]: https://www.microsoft.com/net/download/core#/sdk
 [reuse.spec]: https://reuse.software/spec-3.3/
-[status-umbra]: https://img.shields.io/badge/status-umbra-red.svg
-[docs.api]: https://fornever.github.io/nightwatch/
+[status-ventis]: https://img.shields.io/badge/status-ventis-yellow.svg

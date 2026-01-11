@@ -14,7 +14,7 @@ open YamlDotNet.Serialization
 open Nightwatch.Core.FileSystem
 open Nightwatch.Notifications
 
-let ConfigFormatVersion: Version = Version "0.0.1.0"
+let ConfigFormatVersion: Version = Version "0.1.0.0"
 
 type NotificationConfigurationError = {
     Path: AbsolutePath

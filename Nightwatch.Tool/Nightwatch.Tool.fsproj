@@ -12,6 +12,15 @@ SPDX-License-Identifier: MIT
         <IsPackable>true</IsPackable>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>nightwatch</ToolCommandName>
+        <PackageLicenseExpression>$(PackageLicenseExpression) AND Apache-2.0 <!-- Quartz, Serilog --></PackageLicenseExpression>
+        <Copyright>$(Copyright); <!-- Bundled packages: -->
+            2019 Eirik Tsarpalis; <!-- Argu -->
+            © Microsoft Corporation. All rights reserved.; <!-- Various F# and system packages -->
+            Nikolay Matyushin; <!-- Funogram -->
+            Copyright Marko Lahma; <!-- Quartz -->
+            Copyright © Serilog Contributors; <!-- Serilog -->
+            Copyright (c) Antoine Aubry and contributors <!-- YamlDotNet -->
+        </Copyright>
     </PropertyGroup>
 
     <ItemGroup>

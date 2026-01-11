@@ -14,7 +14,7 @@ Nightwatch monitors _resources_ — entities that can be checked periodically to
 Executes a shell command and considers the check successful if the command exits with code 0.
 
 ```yaml
-version: 0.0.1.0 # should always be 0.0.1.0 for the current version
+version: 0.1.0.0 # should always be 0.1.0.0 for the current version
 id: test # task identifier
 schedule: 00:05:00 # run every 5 minutes
 type: shell
@@ -29,7 +29,7 @@ notifications: # optional list of notification provider IDs to use
 Performs an HTTP request and considers the check successful if the response status code matches one of the expected codes.
 
 ```yaml
-version: 0.0.1.0 # should always be 0.0.1.0 for the current version
+version: 0.1.0.0 # should always be 0.1.0.0 for the current version
 id: test # task identifier
 schedule: 00:05:00 # run every 5 minutes
 type: http
@@ -45,7 +45,7 @@ notifications: # optional list of notification provider IDs to use
 Validates an HTTPS server's SSL/TLS certificate. The check performs full certificate chain validation (similar to what browsers do) and optionally verifies that the certificate doesn't expire within a specified time period.
 
 ```yaml
-version: 0.0.1.0 # should always be 0.0.1.0 for the current version
+version: 0.1.0.0 # should always be 0.1.0.0 for the current version
 id: test # task identifier
 schedule: 01:00:00 # run every hour
 type: https-certificate

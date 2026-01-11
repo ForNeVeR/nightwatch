@@ -16,7 +16,7 @@ Notification providers are configured in the notification directory specified in
 Sends notifications via a Telegram bot.
 
 ```yaml
-version: 0.0.1.0 # should always be 0.0.1.0 for the current version
+version: 0.1.0.0 # should always be 0.1.0.0 for the current version
 id: myNotifications/telegram # notification provider identifier
 type: telegram
 param:

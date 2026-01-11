@@ -17,7 +17,7 @@ open Nightwatch.Core.FileSystem
 open Nightwatch.ProgramConfiguration
 open Nightwatch.Resources
 
-let configFormatVersion : Version = Version "0.0.1.0"
+let configFormatVersion : Version = Version "0.1.0.0"
 
 type InvalidConfiguration = {
     Path: AbsolutePath

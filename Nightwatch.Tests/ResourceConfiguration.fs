@@ -22,7 +22,7 @@ let private programConfiguration = {
 
 [<Fact>]
 let ``ResourceConfiguration should read the YAML file`` () =
-    let text = @"version: 0.0.1.0
+    let text = @"version: 0.1.0.0
 id: test
 schedule: 00:05:00
 type: test
@@ -52,7 +52,7 @@ let private emptyRegistry = ResourceRegistry.Create [| |]
 
 [<Fact>]
 let ``ResourceConfiguration returns error if the type is not registered in the factory``() =
-    let text = @"version: 0.0.1.0
+    let text = @"version: 0.1.0.0
 id: test
 schedule: 00:05:00
 type: test"

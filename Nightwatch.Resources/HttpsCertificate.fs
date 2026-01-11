@@ -28,6 +28,27 @@ type CertificateChecker = {
 let private parseValidIn (validInStr: string) : TimeSpan =
     XmlConvert.ToTimeSpan validInStr
 
+let private validateServerCertificate
+    (_sender: obj)
+    (certificate: X509Certificate)
+    (_chain: X509Chain)
+    (sslPolicyErrors: SslPolicyErrors)
+    : bool =
+
+    if isNull certificate then
+        false
+    else
+        use cert2 = new X509Certificate2(certificate)
+        use chain = new X509Chain()
+        chain.ChainPolicy.RevocationMode <- X509RevocationMode.Online
+        chain.ChainPolicy.RevocationFlag <- X509RevocationFlag.ExcludeRoot
+        chain.ChainPolicy.VerificationFlags <- X509VerificationFlags.NoFlag
+        chain.ChainPolicy.VerificationTime <- DateTime.UtcNow
+        chain.ChainPolicy.UrlRetrievalTimeout <- TimeSpan.FromSeconds 30.0
+
+        let isChainValid = chain.Build cert2
+        isChainValid && sslPolicyErrors = SslPolicyErrors.None
+
 let private create (checker: CertificateChecker) (param: IDictionary<string, string>) =
     let url = param.["url"] |> Uri
     let validIn =
@@ -50,11 +71,11 @@ let private create (checker: CertificateChecker) (param: IDictionary<string, str
 /// System implementation that performs real SSL certificate checks.
 let system: CertificateChecker = {
     Check = fun uri -> task {
-       let port = if uri.Port > 0 then uri.Port else 443
+       let port = if uri.Port <> -1 then uri.Port else 443
        use client = new TcpClient()
        try
            do! client.ConnectAsync(uri.Host, port)
-           use stream = new SslStream(client.GetStream())
+           use stream = new SslStream(client.GetStream(), false, RemoteCertificateValidationCallback validateServerCertificate)
            do! stream.AuthenticateAsClientAsync(uri.Host)
            match stream.RemoteCertificate with
            | null -> return Invalid "No certificate received"
@@ -62,10 +83,23 @@ let system: CertificateChecker = {
                use x509 = new X509Certificate2(cert)
                return Valid(DateTimeOffset x509.NotAfter)
        with
-       | :? AuthenticationException as ex ->
-           return Invalid ex.Message
-       | ex ->
-           return Invalid ex.Message
+       | :? AuthenticationException ->
+           // TLS handshake or certificate validation failed.
+           return Invalid "TLS authentication failed"
+       | :? SocketException as ex ->
+           // Network-level issues such as timeouts or connection refused.
+           match ex.SocketErrorCode with
+           | SocketError.TimedOut ->
+               return Invalid "Connection timed out"
+           | SocketError.ConnectionRefused ->
+               return Invalid "Connection was refused by remote host"
+           | _ ->
+               return Invalid "Network error while connecting to remote host"
+       | :? TimeoutException ->
+           return Invalid "Connection timed out"
+       | _ ->
+           // Fallback for unexpected errors without exposing internal details.
+           return Invalid "Unexpected error while checking certificate"
    }
 }
 

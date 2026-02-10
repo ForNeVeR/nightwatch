@@ -14,7 +14,7 @@ SPDX-License-Identifier: MIT
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Funogram.Telegram" Version="9.2.0" />
-    <PackageReference Include="Serilog" Version="4.3.0" />
+    <PackageReference Include="Serilog" Version="4.3.1" />
     <ProjectReference Include="../Nightwatch.Core/Nightwatch.Core.fsproj" />
   </ItemGroup>
 </Project>

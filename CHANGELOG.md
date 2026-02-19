@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [0.2.0] - 2026-02-19
 ### Changed
 - [#51](https://github.com/ForNeVeR/nightwatch/issues/51): resources now should report the unavailability reasons — presented to the user via the notifications.
+- **(Breaking change!)** The `ResourceChecker` now returns a `Result<unit, string>` instead of just a `bool`. 
 
 ## [0.1.1] - 2026-01-11
 ### Fixed

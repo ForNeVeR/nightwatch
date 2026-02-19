@@ -30,10 +30,10 @@ param:
     check: ping localhost"
     let checker = ResourceChecker(fun () -> failwith "nop")
     let expected =
-        { id = "test"
-          runEvery = TimeSpan.FromMinutes 5.0
-          checker = checker
-          notificationIds = [||] }
+        { Id = "test"
+          RunEvery = TimeSpan.FromMinutes 5.0
+          Checker = checker
+          NotificationIds = [||] }
     let mutable parsedParam = None
     let factory : ResourceFactory =
         { resourceType = "test"

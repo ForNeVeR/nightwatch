@@ -20,7 +20,7 @@ let private create (http : Http.Client) (param : IDictionary<string, string>) =
     fun () -> task {
         let! response = http.get url
         let code = int response.StatusCode
-        return Set.contains code okCodes
+        return if Set.contains code okCodes then Ok() else Error $"HTTP Status Code {string code}"
     }
 
 let factory (http : Http.Client) : ResourceFactory = Factory.create "http" (create http)

@@ -20,7 +20,7 @@ open Nightwatch.Core.Notifications
 let private formatMessage(notification: CheckNotification) =
     let emoji, statusText =
         match notification.Status with
-        | Failed -> ("❌", "FAILED")
+        | Failed message -> ("❌", $"FAILED: {message}")
         | Recovered -> ("✅", "RECOVERED")
 
     $"%s{emoji} Resource <b>%s{notification.ResourceId}</b>: %s{statusText}"

@@ -59,7 +59,7 @@ let private toResource registry =
         match Checker.create registry res.``type`` res.param with
         | Some checker ->
             let notificationIds = if isNull res.notifications then [||] else res.notifications
-            Ok { id = res.id; runEvery = res.schedule; checker = checker; notificationIds = notificationIds }
+            Ok { Id = res.id; RunEvery = res.schedule; Checker = checker; NotificationIds = notificationIds }
         | None -> Error { Path = path
                           Id = Some res.id
                           Message = $"The resource factory for type \"%s{res.``type``}\" is not registered" })

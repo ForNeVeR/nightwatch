@@ -20,7 +20,7 @@ let prepareSchedule (providers: Map<string, NotificationProvider>)
                     (resources: Resource seq)
                     : Schedule =
     Seq.map (fun resource ->
-        let { id = id; runEvery = runEvery } = resource
+        let { Id = id; RunEvery = runEvery } = resource
         let trigger =
             TriggerBuilder.Create()
                 .WithIdentity(id)

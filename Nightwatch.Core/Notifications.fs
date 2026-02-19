@@ -10,7 +10,7 @@ open System.Threading.Tasks
 
 /// The status of a resource check for notification purposes.
 type CheckStatus =
-    | Failed
+    | Failed of string
     | Recovered
 
 /// Information about a check result to be sent in notifications.

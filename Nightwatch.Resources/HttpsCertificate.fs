@@ -50,7 +50,7 @@ let private validateServerCertificate
         isChainValid && sslPolicyErrors = SslPolicyErrors.None
 
 let private create (checker: CertificateChecker) (param: IDictionary<string, string>) =
-    let url = param.["url"] |> Uri
+    let url = param["url"] |> Uri
     let validIn =
         match param.TryGetValue("valid-in") with
         | true, v -> Some(parseValidIn v)
@@ -59,13 +59,15 @@ let private create (checker: CertificateChecker) (param: IDictionary<string, str
     fun () -> task {
         let! result = checker.Check url
         match result with
-        | Invalid _ -> return false
+        | Invalid message -> return Error message
         | Valid notAfter ->
             match validIn with
             | Some duration ->
                 let threshold = DateTimeOffset.UtcNow + duration
-                return notAfter > threshold
-            | None -> return true
+                return
+                    if notAfter > threshold then Ok()
+                    else Error $"Certificate Terminates Too Soon: {notAfter}"
+            | None -> return Ok()
     }
 
 /// System implementation that performs real SSL certificate checks.

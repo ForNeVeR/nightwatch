@@ -20,14 +20,14 @@ open Nightwatch.Resources
 module private TestHelpers =
     let createResource id notificationIds checkResult =
         let checker = ResourceChecker(fun () -> Task.FromResult(checkResult))
-        { id = id
-          runEvery = TimeSpan.FromMinutes(5.0)
-          checker = checker
-          notificationIds = notificationIds }
+        { Id = id
+          RunEvery = TimeSpan.FromMinutes(5.0)
+          Checker = checker
+          NotificationIds = notificationIds }
 
-    let createNotificationProvider id (capturedNotifications: CheckNotification list ref) =
+    let createNotificationProvider id (capturedNotifications: ResizeArray<CheckNotification>) =
         let sender = NotificationSender(fun notification ->
-            capturedNotifications.Value <- notification :: capturedNotifications.Value
+            capturedNotifications.Add notification
             Task.CompletedTask)
         { id = id; sender = sender }
 
@@ -46,7 +46,7 @@ module private TestHelpers =
             |]
             let jobDetail =
                 JobBuilder.Create<CheckerJob>()
-                    .WithIdentity(JobKey resource.id)
+                    .WithIdentity(JobKey resource.Id)
                     .UsingJobData(JobDataMap jobData)
                     .Build()
 
@@ -81,8 +81,8 @@ module private TestHelpers =
 let ``CheckerJob should send notification when resource fails`` () =
     task {
         // Arrange
-        let capturedNotifications = ref []
-        let resource = TestHelpers.createResource "test-resource" [|"provider1"|] false
+        let capturedNotifications = ResizeArray()
+        let resource = TestHelpers.createResource "test-resource" [|"provider1"|] (Error "x")
         let provider = TestHelpers.createNotificationProvider "provider1" capturedNotifications
         let providers = Map.ofList [("provider1", provider)]
         let stateTracker = ResourceStateTracker()
@@ -91,26 +91,26 @@ let ``CheckerJob should send notification when resource fails`` () =
         do! TestHelpers.executeJob resource providers stateTracker
 
         // Assert
-        Assert.Single(!capturedNotifications) |> ignore
-        let notification = List.head !capturedNotifications
+        Assert.Single capturedNotifications |> ignore
+        let notification = Seq.head capturedNotifications
         Assert.Equal("test-resource", notification.ResourceId)
-        Assert.Equal(Failed, notification.Status)
+        Assert.Equal(Failed "x", notification.Status)
     }
 
 [<Fact>]
 let ``CheckerJob should send notification when resource recovers`` () =
     task {
         // Arrange
-        let capturedNotifications = ref []
+        let capturedNotifications = ResizeArray()
         let stateTracker = ResourceStateTracker()
 
         // First, fail the resource
-        let failingResource = TestHelpers.createResource "test-resource" [||] false
+        let failingResource = TestHelpers.createResource "test-resource" [||] (Error "x")
         let emptyProviders: Map<string, NotificationProvider> = Map.empty
         do! TestHelpers.executeJob failingResource emptyProviders stateTracker
 
         // Now, recover the resource
-        let recoveringResource = TestHelpers.createResource "test-resource" [|"provider1"|] true
+        let recoveringResource = TestHelpers.createResource "test-resource" [|"provider1"|] (Ok())
         let provider = TestHelpers.createNotificationProvider "provider1" capturedNotifications
         let providers = Map.ofList [("provider1", provider)]
 
@@ -118,8 +118,8 @@ let ``CheckerJob should send notification when resource recovers`` () =
         do! TestHelpers.executeJob recoveringResource providers stateTracker
 
         // Assert
-        Assert.Single(!capturedNotifications) |> ignore
-        let notification = List.head !capturedNotifications
+        Assert.Single capturedNotifications |> ignore
+        let notification = Seq.head capturedNotifications
         Assert.Equal("test-resource", notification.ResourceId)
         Assert.Equal(Recovered, notification.Status)
     }
@@ -128,7 +128,7 @@ let ``CheckerJob should send notification when resource recovers`` () =
 let ``CheckerJob should handle notification sending errors gracefully`` () =
     task {
         // Arrange
-        let resource = TestHelpers.createResource "test-resource" [|"failing-provider"|] false
+        let resource = TestHelpers.createResource "test-resource" [|"failing-provider"|] (Error "x")
         let failingProvider = TestHelpers.createFailingNotificationProvider "failing-provider"
         let providers = Map.ofList [("failing-provider", failingProvider)]
         let stateTracker = ResourceStateTracker()
@@ -141,7 +141,7 @@ let ``CheckerJob should handle notification sending errors gracefully`` () =
 let ``CheckerJob should handle missing notification provider`` () =
     task {
         // Arrange
-        let resource = TestHelpers.createResource "test-resource" [|"missing-provider"|] false
+        let resource = TestHelpers.createResource "test-resource" [|"missing-provider"|] (Error "x")
         let providers: Map<string, NotificationProvider> = Map.empty  // No providers configured
         let stateTracker = ResourceStateTracker()
 
@@ -153,32 +153,32 @@ let ``CheckerJob should handle missing notification provider`` () =
 let ``CheckerJob should not send notifications when shouldNotify is false`` () =
     task {
         // Arrange
-        let capturedNotifications = ref []
+        let capturedNotifications = ResizeArray()
         let stateTracker = ResourceStateTracker()
 
         // First check passes - should not notify
-        let passingResource1 = TestHelpers.createResource "test-resource" [|"provider1"|] true
+        let passingResource1 = TestHelpers.createResource "test-resource" [|"provider1"|] (Ok())
         let provider = TestHelpers.createNotificationProvider "provider1" capturedNotifications
         let providers = Map.ofList [("provider1", provider)]
         do! TestHelpers.executeJob passingResource1 providers stateTracker
 
         // Second check still passes - should not notify
-        let passingResource2 = TestHelpers.createResource "test-resource" [|"provider1"|] true
+        let passingResource2 = TestHelpers.createResource "test-resource" [|"provider1"|] (Ok())
 
         // Act
         do! TestHelpers.executeJob passingResource2 providers stateTracker
 
         // Assert - no notifications should have been sent
-        Assert.Empty(!capturedNotifications)
+        Assert.Empty capturedNotifications
     }
 
 [<Fact>]
 let ``CheckerJob should send notifications to multiple providers`` () =
     task {
         // Arrange
-        let capturedNotifications1 = ref []
-        let capturedNotifications2 = ref []
-        let resource = TestHelpers.createResource "test-resource" [|"provider1"; "provider2"|] false
+        let capturedNotifications1 = ResizeArray()
+        let capturedNotifications2 = ResizeArray()
+        let resource = TestHelpers.createResource "test-resource" [|"provider1"; "provider2"|] (Error "x")
         let provider1 = TestHelpers.createNotificationProvider "provider1" capturedNotifications1
         let provider2 = TestHelpers.createNotificationProvider "provider2" capturedNotifications2
         let providers = Map.ofList [("provider1", provider1); ("provider2", provider2)]
@@ -188,18 +188,17 @@ let ``CheckerJob should send notifications to multiple providers`` () =
         do! TestHelpers.executeJob resource providers stateTracker
 
         // Assert
-        Assert.Single(!capturedNotifications1) |> ignore
-        Assert.Single(!capturedNotifications2) |> ignore
-        Assert.Equal("test-resource", (List.head !capturedNotifications1).ResourceId)
-        Assert.Equal("test-resource", (List.head !capturedNotifications2).ResourceId)
+        Assert.Equal("test-resource", (Assert.Single capturedNotifications1).ResourceId)
+        Assert.Equal("test-resource", (Assert.Single capturedNotifications2).ResourceId)
     }
 
 [<Fact>]
 let ``CheckerJob should continue sending to other providers when one fails`` () =
     task {
         // Arrange
-        let capturedNotifications = ref []
-        let resource = TestHelpers.createResource "test-resource" [|"failing-provider"; "working-provider"|] false
+        let capturedNotifications = ResizeArray()
+        let resource =
+            TestHelpers.createResource "test-resource" [|"failing-provider"; "working-provider"|] (Error "x")
         let failingProvider = TestHelpers.createFailingNotificationProvider "failing-provider"
         let workingProvider = TestHelpers.createNotificationProvider "working-provider" capturedNotifications
         let providers = Map.ofList [("failing-provider", failingProvider); ("working-provider", workingProvider)]
@@ -209,6 +208,5 @@ let ``CheckerJob should continue sending to other providers when one fails`` () 
         do! TestHelpers.executeJob resource providers stateTracker
 
         // Assert - working provider should have received notification despite failing provider
-        Assert.Single(!capturedNotifications) |> ignore
-        Assert.Equal("test-resource", (List.head !capturedNotifications).ResourceId)
+        Assert.Equal("test-resource", (Assert.Single capturedNotifications).ResourceId)
     }

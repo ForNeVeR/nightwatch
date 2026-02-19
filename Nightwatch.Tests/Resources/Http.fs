@@ -29,12 +29,12 @@ let private test okCodes =
 let ``Http Resource returns true on corresponding code``() =
     task {
         let! checkResult = test "200, 409"
-        Assert.True checkResult
+        Assert.True checkResult.IsOk
     }
 
 [<Fact>]
 let ``Http Resource returns false on non-corresponding code``() =
     task {
         let! checkResult = test "200, 408"
-        Assert.False checkResult
+        Assert.Equivalent(Error "HTTP Status Code 409", checkResult)
     }

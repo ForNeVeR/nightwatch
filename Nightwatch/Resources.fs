@@ -21,11 +21,12 @@ type ResourceDescription =
       param : Dictionary<string, string>
       notifications : string[] }
 
-type internal Resource =
-    { id : string
-      runEvery : TimeSpan
-      checker : ResourceChecker
-      notificationIds : string[] }
+type internal Resource = {
+      Id: string
+      RunEvery: TimeSpan
+      Checker: ResourceChecker
+      NotificationIds: string[]
+}
 
 module ResourceRegistry =
     let Create (factories : ResourceFactory seq) : IReadOnlyDictionary<string, ResourceFactory> =
@@ -42,8 +43,8 @@ module internal Checker =
         | false, _ -> None
         | true, factory -> Some <| factory.create.Invoke param
 
-    let check (resource : Resource) : Task<bool> =
+    let check (resource : Resource) : Task<Result<unit, string>> =
         task {
-            Log.Information("Checking resource {0}...", resource.id)
-            return! resource.checker.Invoke()
+            Log.Information("Checking resource {0}...", resource.Id)
+            return! resource.Checker.Invoke()
         }

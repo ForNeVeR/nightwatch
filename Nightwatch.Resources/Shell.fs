@@ -17,13 +17,13 @@ let private create (processController : Process.Controller)
     let separator = [|' '|]
     let args =
         match param.TryGetValue("args") with
-        | (true, x) -> x.Split(separator, StringSplitOptions.RemoveEmptyEntries)
-        | (false, _) -> Array.empty<string>
+        | true, x -> x.Split(separator, StringSplitOptions.RemoveEmptyEntries)
+        | false, _ -> Array.empty<string>
 
     fun () -> task {
         let! code = processController.execute command args
-        return code = 0
+        return if code = 0 then Ok() else Error $"Process Exit Code {string code}"
     }
 
-let factory(processController : Process.Controller) : ResourceFactory =
+let factory(processController: Process.Controller): ResourceFactory =
     Factory.create "shell" (create processController)

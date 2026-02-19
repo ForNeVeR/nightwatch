@@ -67,7 +67,7 @@ let ``Shell Resource returns success if process returns zero exit code``() =
     let checker = getChecker controller "" Array.empty<_>
     task {
         let! result = checker.Invoke()
-        Assert.True result
+        Assert.True result.IsOk
     }
 
 [<Fact>]
@@ -76,5 +76,5 @@ let ``Shell Resource returns success if process returns nonzero exit code``() =
     let checker = getChecker controller "" Array.empty<_>
     task {
         let! result = checker.Invoke()
-        Assert.False result
+        Assert.Equivalent(Error "Process Exit Code 1", result)
     }

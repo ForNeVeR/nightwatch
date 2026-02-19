@@ -33,7 +33,7 @@ let private test (checker: CertificateChecker) (validIn: string option) =
 let ``HttpsCertificate returns true for valid certificate without valid-in check``(): Task =
     task {
         let! result = test (validCertExpiring 30) None
-        Assert.True result
+        Assert.True result.IsOk
     }
 
 [<Fact>]
@@ -41,7 +41,7 @@ let ``HttpsCertificate returns true when certificate expires after valid-in peri
     task {
         // Certificate expires in 30 days, we require it to be valid for 7 days
         let! result = test (validCertExpiring 30) (Some "P7D")
-        Assert.True result
+        Assert.True result.IsOk
     }
 
 [<Fact>]
@@ -49,12 +49,16 @@ let ``HttpsCertificate returns false when certificate expires within valid-in pe
     task {
         // Certificate expires in 2 days, we require it to be valid for 7 days
         let! result = test (validCertExpiring 2) (Some "P7D")
-        Assert.False result
+        let errorMessage =
+            match result with
+            | Ok() -> failwith "Not expected"
+            | Error message -> message
+        Assert.StartsWith("Certificate Terminates Too Soon: ", errorMessage)
     }
 
 [<Fact>]
 let ``HttpsCertificate returns false for invalid certificate``(): Task =
     task {
         let! result = test invalidCert None
-        Assert.False result
+        Assert.Equivalent(Error "Certificate validation failed", result)
     }

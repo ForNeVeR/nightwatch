@@ -8,3 +8,9 @@ path = "*.DotSettings"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2019 Friedrich von Never <friedrich@fornever.me>"
 SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "**/packages.lock.json"
+precedence = "override"
+SPDX-FileCopyrightText = "2026 Friedrich von Never <friedrich@fornever.me>"
+SPDX-License-Identifier = "MIT"

@@ -25,6 +25,7 @@ SPDX-License-Identifier: MIT
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
     </PropertyGroup>
 
     <!-- Enable reproducible build on CI: -->
@@ -34,8 +35,8 @@ SPDX-License-Identifier: MIT
 
     <!-- Common package includes for packable projects -->
     <ItemGroup Condition="'$(IsPackable)' == 'true'">
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.200" PrivateAssets="All" />
-        <PackageReference Include="ChangelogAutomation.MSBuild" Version="3.0.5" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
+        <PackageReference Include="ChangelogAutomation.MSBuild" PrivateAssets="All" />
         <None Visible="false" Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" />
         <None Visible="false" Include="$(MSBuildThisFileDirectory)CHANGELOG.md" Pack="true" PackagePath="\" />
         <None Visible="false" Include="$(MSBuildThisFileDirectory)LICENSE.txt" Pack="true" PackagePath="\" />

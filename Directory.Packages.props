@@ -27,8 +27,8 @@ SPDX-License-Identifier: MIT
         <PackageVersion Include="xunit" Version="2.9.3" />
         <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
         <PackageVersion Include="YamlDotNet" Version="16.3.0" />
+        <PackageVersion Include="FSharp.Core" Version="10.1.201" />
         <!-- Transitive dependencies, pinned for security reasons: -->
         <PackageVersion Include="Microsoft.Bcl.Memory" Version="9.0.14" />
-        <PackageVersion Include="FSharp.Core" Version="10.1.201" />
     </ItemGroup>
 </Project>

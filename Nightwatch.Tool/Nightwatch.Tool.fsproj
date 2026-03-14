@@ -31,4 +31,8 @@ SPDX-License-Identifier: MIT
       <ProjectReference Include="..\Nightwatch\Nightwatch.fsproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="FSharp.Core" />
+    </ItemGroup>
+
 </Project>

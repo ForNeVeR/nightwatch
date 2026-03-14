@@ -17,6 +17,7 @@
       "FVNever.Nightwatch.Core": {
         "type": "Project",
         "dependencies": {
+          "FSharp.Core": "[10.1.201, )",
           "TruePath": "[1.11.0, )"
         }
       },

@@ -32,6 +32,7 @@ SPDX-License-Identifier: MIT
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Argu"/>
+        <PackageReference Include="FSharp.Core" />
         <PackageReference Include="Microsoft.Extensions.Hosting"/>
         <PackageReference Include="Quartz"/>
         <PackageReference Include="Serilog"/>

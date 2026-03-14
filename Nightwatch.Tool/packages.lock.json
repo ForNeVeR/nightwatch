@@ -13,6 +13,12 @@
           "Microsoft.Build.Utilities.Core": "17.8.43"
         }
       },
+      "FSharp.Core": {
+        "type": "Direct",
+        "requested": "[10.1.201, )",
+        "resolved": "10.1.201",
+        "contentHash": "s5w9LWYurZ9yZdIppoIaYLkRadyT5s3u0wbQCb0J4bQd3ubIlIWQ3Nd5+ll1y3pv5OnTS373dP8T1S/BP46QXg=="
+      },
       "Microsoft.SourceLink.GitHub": {
         "type": "Direct",
         "requested": "[10.0.200, )",
@@ -393,6 +399,7 @@
         "type": "Project",
         "dependencies": {
           "Argu": "[6.2.5, )",
+          "FSharp.Core": "[10.1.201, )",
           "FVNever.Nightwatch.Core": "[0.2.0, )",
           "FVNever.Nightwatch.Notifications": "[0.2.0, )",
           "FVNever.Nightwatch.Resources": "[0.2.0, )",
@@ -408,12 +415,14 @@
       "FVNever.Nightwatch.Core": {
         "type": "Project",
         "dependencies": {
+          "FSharp.Core": "[10.1.201, )",
           "TruePath": "[1.11.0, )"
         }
       },
       "FVNever.Nightwatch.Notifications": {
         "type": "Project",
         "dependencies": {
+          "FSharp.Core": "[10.1.201, )",
           "FVNever.Nightwatch.Core": "[0.2.0, )",
           "Funogram.Telegram": "[9.2.0, )",
           "Serilog": "[4.3.1, )"
@@ -422,6 +431,7 @@
       "FVNever.Nightwatch.Resources": {
         "type": "Project",
         "dependencies": {
+          "FSharp.Core": "[10.1.201, )",
           "FVNever.Nightwatch.Core": "[0.2.0, )"
         }
       },
@@ -434,12 +444,6 @@
           "FSharp.Core": "6.0.0",
           "System.Configuration.ConfigurationManager": "4.4.0"
         }
-      },
-      "FSharp.Core": {
-        "type": "CentralTransitive",
-        "requested": "[10.1.201, )",
-        "resolved": "10.1.201",
-        "contentHash": "s5w9LWYurZ9yZdIppoIaYLkRadyT5s3u0wbQCb0J4bQd3ubIlIWQ3Nd5+ll1y3pv5OnTS373dP8T1S/BP46QXg=="
       },
       "Funogram.Telegram": {
         "type": "CentralTransitive",

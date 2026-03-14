@@ -13,6 +13,12 @@
           "Microsoft.Build.Utilities.Core": "17.8.43"
         }
       },
+      "FSharp.Core": {
+        "type": "Direct",
+        "requested": "[10.1.201, )",
+        "resolved": "10.1.201",
+        "contentHash": "s5w9LWYurZ9yZdIppoIaYLkRadyT5s3u0wbQCb0J4bQd3ubIlIWQ3Nd5+ll1y3pv5OnTS373dP8T1S/BP46QXg=="
+      },
       "Microsoft.SourceLink.GitHub": {
         "type": "Direct",
         "requested": "[10.0.200, )",

@@ -13,6 +13,12 @@
           "Microsoft.Build.Utilities.Core": "17.8.43"
         }
       },
+      "FSharp.Core": {
+        "type": "Direct",
+        "requested": "[10.1.201, )",
+        "resolved": "10.1.201",
+        "contentHash": "s5w9LWYurZ9yZdIppoIaYLkRadyT5s3u0wbQCb0J4bQd3ubIlIWQ3Nd5+ll1y3pv5OnTS373dP8T1S/BP46QXg=="
+      },
       "Funogram.Telegram": {
         "type": "Direct",
         "requested": "[9.2.0, )",
@@ -158,14 +164,9 @@
       "FVNever.Nightwatch.Core": {
         "type": "Project",
         "dependencies": {
+          "FSharp.Core": "[10.1.201, )",
           "TruePath": "[1.11.0, )"
         }
-      },
-      "FSharp.Core": {
-        "type": "CentralTransitive",
-        "requested": "[10.1.201, )",
-        "resolved": "10.1.201",
-        "contentHash": "s5w9LWYurZ9yZdIppoIaYLkRadyT5s3u0wbQCb0J4bQd3ubIlIWQ3Nd5+ll1y3pv5OnTS373dP8T1S/BP46QXg=="
       },
       "Microsoft.Bcl.Memory": {
         "type": "CentralTransitive",

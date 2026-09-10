@@ -17,7 +17,7 @@ SPDX-License-Identifier: MIT
         <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.12" />
         <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.10.0" />
         <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.401" />
-        <PackageVersion Include="Quartz" Version="3.17.1" />
+        <PackageVersion Include="Quartz" Version="4.0.1" />
         <PackageVersion Include="Serilog" Version="4.4.0" />
         <PackageVersion Include="Serilog.Sinks.Console" Version="6.1.1" />
         <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0" />

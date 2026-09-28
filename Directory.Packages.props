@@ -12,7 +12,7 @@ SPDX-License-Identifier: MIT
     <ItemGroup>
         <PackageVersion Include="Argu" Version="6.2.5" />
         <PackageVersion Include="ChangelogAutomation.MSBuild" Version="3.0.5" />
-        <PackageVersion Include="Funogram.Telegram" Version="10.2.0" />
+        <PackageVersion Include="Funogram.Telegram" Version="10.3.0" />
         <PackageVersion Include="JetBrains.Annotations" Version="2026.2.0" />
         <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.12" />
         <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
